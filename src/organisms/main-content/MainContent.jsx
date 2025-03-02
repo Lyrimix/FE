@@ -4,12 +4,12 @@ import { EditSection } from "../../Molecules/edit-section-mols/edit-section/Edit
 
 export const MainContent = () => {
   return (
-    <div className="w-100 h-100">
-      <div className="main-content__video-section d-flex justify-content-center mt-3">
-        <VideoSection className="w-100 h-100" />
+    <div className="main-content">
+      <div className="main-content__video-section">
+        <VideoSection className="main-content__video-element"></VideoSection>
       </div>
-      <div className="main-content__edit-section w-100 d-flex justify-content-center position-fixed">
-        <EditSection className="w-100" />
+      <div className="main-content__edit-section">
+        <EditSection className="main-content__time-stamp"> </EditSection>
       </div>
     </div>
   );

@@ -1,17 +1,11 @@
 import React from "react";
 import SidebarItem from "../../atoms/items/SidebarItem";
 
-const SidebarGroup = ({ items, selectedTab, setSelectedTab }) => {
+const SidebarGroup = ({ items }) => {
   return (
-    <div className="sidebar__group mt-5">
+    <div className="sidebar__group">
       {items.map((item, index) => (
-        <SidebarItem
-          key={index}
-          icon={item.icon}
-          label={item.label}
-          isSelected={selectedTab === item.label}
-          onClick={() => setSelectedTab(item.label)}
-        />
+        <SidebarItem key={index} icon={item.icon} label={item.label} />
       ))}
     </div>
   );

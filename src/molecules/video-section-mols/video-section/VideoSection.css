@@ -1,7 +1,107 @@
-.cursor-pointer {
-    cursor: pointer;
+.video-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 40%; 
+    background-color: #CFF2E6; 
 }
 
-.bg-custom-green {
+.video-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
     background-color: #CFF2E6;
+}
+  
+.video-section__upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+    margin-left: 130px;
+}
+
+.video-section__upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 30px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    width: 300px;
+}
+  
+.video-section__upload-icon {
+    background: #00c3ff;
+    color: white;
+    padding: 15px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+.video-section__upload-icon {
+  background: #00c3ff;
+  color: white;
+  padding: 15px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.video-section__upload-icon:hover {
+  background: #0099cc;
+  cursor: pointer;
+}
+
+.video-section__upload-text {
+    font-size: 18px;
+    margin: 5px 0;
+}
+  
+.video-section__upload-subtext {
+    font-size: 14px;
+    color: gray;
+    margin-bottom: 15px;
+}
+  
+.video-section__upload-options {
+    display: flex;
+    gap: 10px;
+}
+  
+.video-section__upload-btn {
+    background: #e0e0e0;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+  
+.video-section__upload-btn:hover {
+    background: #d0d0d0;
+}
+
+.video-section__list { 
+  width: 50%;
+  height: 80%;
+  margin-left: 130px;
+}
+
+.video-section__preview {
+    width: 100%;
+    height: 100%;
+}
+
+.video-section__preview-video {
+    width: 100%;
+    height: 100%;
 }

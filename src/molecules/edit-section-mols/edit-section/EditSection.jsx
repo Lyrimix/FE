@@ -1,37 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Timeline } from "@xzdarcy/react-timeline-editor";
+import "./EditSection.css";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { updateProject, deleteBackGround } from "../../../apis/ProjectApi";
-import { ActionItem } from "./ActionItem";
-import { ROW_HEIGHT, MIN_SCALE_COUNT, SCALE } from "../../../utils/constant";
-import {
-  updateProjectBackgrounds,
-  generateTimelineData,
-} from "../../../utils/project";
-import {
-  clampActionsToFileLength,
-  generateEffectsFromFiles,
-} from "../../../utils/file";
-
 export const EditSection = ({ maxDuration = 1000 }) => {
   const { selectedFiles, setSelectedFiles, ranges, setRanges, fileLength } =
     useVideoContext();
   const [editorData, setEditorData] = useState([]);
   const { projectInfo, setProjectInfo } = useProjectContext();
   const [hoveredAction, setHoveredAction] = useState(null);
-  const effects = generateEffectsFromFiles(selectedFiles);
 
   useEffect(() => {
     if (selectedFiles.length !== fileLength.length) return;
 
     let accumulatedStart = 0;
 
-    const timelineData = generateTimelineData(
-      selectedFiles,
-      fileLength,
-      maxDuration
-    );
+    const timelineData = [
+      {
+        id: "singleRow",
+        actions: selectedFiles.map((file, index) => {
+          const start = accumulatedStart;
+          const duration = fileLength[index] || maxDuration;
+          const end = start + duration;
+          accumulatedStart = end;
+
+          return {
+            id: `action${index}`,
+            start,
+            end,
+            effectId: `effect${index}`,
+          };
+        }),
+      },
+    ];
 
     setEditorData(timelineData);
     setRanges(
@@ -42,28 +44,27 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   useEffect(() => {
     if (!projectInfo.id || ranges.length === 0) return;
 
-    const updatedProject = updateProjectBackgrounds(projectInfo, ranges);
+    const updatedBackgrounds = projectInfo.backgrounds.map((bg, index) => ({
+      ...bg,
+      startTime: ranges[index]?.[0] || 0,
+      endTime: ranges[index]?.[1] || 0,
+    }));
+
+    const updatedProject = { ...projectInfo, backgrounds: updatedBackgrounds };
 
     setProjectInfo(updatedProject);
 
     updateProject(updatedProject)
       .then(() => console.log("Project updated successfully"))
       .catch((error) => console.error("Error updating project:", error));
-  }, [ranges, editorData]);
+  }, [ranges]);
 
   const handleChange = (newData) => {
-    if (!newData || newData.length === 0) {
-      return;
-    }
-
-    const updatedData = clampActionsToFileLength(newData, fileLength);
-    setEditorData(updatedData);
-
-    const updatedRanges = updatedData[0].actions.map((action) => [
+    setEditorData(newData);
+    const updatedRanges = newData[0].actions.map((action) => [
       action.start,
       action.end,
     ]);
-
     setRanges(updatedRanges);
   };
 
@@ -81,15 +82,7 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     const actionIndex = editorData[0].actions.findIndex(
       (action) => action.id === actionId
     );
-
-    if (actionIndex === -1) {
-      return;
-    }
-
-    const updatedSelectedFiles = selectedFiles.filter(
-      (_, index) => index !== actionIndex
-    );
-    setSelectedFiles(updatedSelectedFiles);
+    if (actionIndex === -1) return;
 
     const backgroundToDelete = projectInfo.backgrounds[actionIndex];
 
@@ -106,26 +99,67 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   };
 
   return (
-    <div className="container-fluid p-0">
-      <div className="w-100 h-100 d-flex flex-column border border-secondary rounded">
-        <Timeline
-          editorData={editorData}
-          effects={effects}
-          style={{ width: "100%" }}
-          scale={SCALE}
-          minScaleCount={MIN_SCALE_COUNT}
-          rowHeight={ROW_HEIGHT}
-          onChange={handleChange}
-          getActionRender={(action) => (
-            <ActionItem
-              action={action}
-              hoveredAction={hoveredAction}
-              setHoveredAction={setHoveredAction}
-              handleDelete={handleDelete}
+    <div className="edit-section" style={{ width: "100%", height: "500px" }}>
+      <Timeline
+        editorData={editorData}
+        effects={selectedFiles.reduce(
+          (acc, file, index) => ({
+            ...acc,
+            [`effect${index}`]: { id: `effect${index}`, name: file.name },
+          }),
+          {}
+        )}
+        style={{ width: "100%" }}
+        scale={30}
+        minScaleCount={10}
+        rowHeight={40}
+        onChange={handleChange}
+        getActionRender={(action) => (
+          <div
+            style={{
+              height: "100%",
+              width: "100%",
+              borderRadius: "4px",
+              position: "relative",
+            }}
+            onMouseEnter={() => setHoveredAction(action.id)}
+            onMouseLeave={() => setHoveredAction(null)}
+          >
+            <img
+              src={
+                "https://res.cloudinary.com/duli95mss/image/upload/v1739947631/cld-sample-5.jpg"
+              }
+              crossOrigin="anonymous"
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                marginBottom: "40px",
+              }}
+              alt="Thumbnail"
             />
-          )}
-        />
-      </div>
+            {hoveredAction === action.id && (
+              <button
+                style={{
+                  position: "absolute",
+                  top: "5px",
+                  right: "5px",
+                  background: "red",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: "20px",
+                  height: "20px",
+                  cursor: "pointer",
+                }}
+                onClick={() => handleDelete(action.id)}
+              >
+                ×
+              </button>
+            )}
+          </div>
+        )}
+      />
     </div>
   );
 };

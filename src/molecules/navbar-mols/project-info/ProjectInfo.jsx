@@ -1,9 +1,8 @@
 import "./ProjectInfo.css";
-
-export const ProjectInfo = ({ projectName }) => {
+export const ProjectInfo = () => {
   return (
-    <div className="d-flex w-100">
-      <h1 className="fs-5 ms-custom">{projectName}</h1>
+    <div className="project-info">
+      <h1 className="project-info__project-name">helloworld</h1>
     </div>
   );
 };
