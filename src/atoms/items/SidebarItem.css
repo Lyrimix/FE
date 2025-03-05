@@ -1,0 +1,13 @@
+
+.sidebar__item {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    transition: background 0.3s;
+    border-radius: 10px;
+}
+
+.sidebar__item:hover {
+    background: #444;
+  }
+  
