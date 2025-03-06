@@ -1,13 +1,11 @@
-import logo from "./logo.svg";
 import "./App.css";
-import { HomePage } from "./components/homepage/HomePage";
-import { VideoProvider } from "./utils/context/VideoContext";
+import { HomePage } from "./pages/homepage/HomePage";
+import "bootstrap/dist/css/bootstrap.min.css";
+
 function App() {
   return (
     <div className="App">
-      <VideoProvider>
-        <HomePage className="home-page"></HomePage>
-      </VideoProvider>
+      <HomePage className="home-page"></HomePage>
     </div>
   );
 }

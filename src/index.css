@@ -15,3 +15,13 @@ code {
 .root {
   height: 100%;
 }
+.title {
+  text-align: center;
+  padding: 30px 0;
+  font-size: 20px;
+}
+
+.canvas-wrapper {
+  background-color: #111;
+  overflow-x: auto;
+}

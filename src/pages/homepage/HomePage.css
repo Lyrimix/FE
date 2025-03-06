@@ -1,0 +1,35 @@
+.home-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #ffffff;
+}
+
+.home-page__navbar {
+  width: 100%;
+  height: 60px;
+  background-color: #f0f0f0;
+
+}
+
+.home-page__body {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.home-page__sidebar {
+  width: 90px;
+  height: 100%;
+  background-color: black;
+  color: white;
+  z-index: 100000;
+
+}
+
+.home-page__main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
