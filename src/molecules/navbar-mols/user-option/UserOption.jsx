@@ -1,71 +1,68 @@
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./UserOption.css";
 import { FiUpload } from "react-icons/fi";
-import { handleFileSelected } from "../../../utils/handleFileSelected";
-import { useVideoContext } from "../../../utils/context/VideoContext";
-import { useRef, useEffect, useState } from "react";
-import { useProjectContext } from "../../../utils/context/ProjectContext";
+import { useRef, useState } from "react";
 import { ExportForm } from "../../export-form-mols/ExportForm";
+import { useVideoContext } from "../../../utils/context/VideoContext";
+import { useProjectContext } from "../../../utils/context/ProjectContext";
+import { handleFileSelected } from "../../../utils/handleFileSelected";
 
 export const UserOption = () => {
+  const [isExport, setIsExport] = useState(false);
   const { selectedFiles, setSelectedFiles, setPreviewUrls } = useVideoContext();
   const { projectInfo, setProjectInfo } = useProjectContext();
-  const [isExport, setIsExport] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleUploadClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    fileInputRef.current?.click();
   };
+
   const handleExportClick = () => {
     setIsExport(!isExport);
   };
 
-  useEffect(() => {
-    console.log("Project Info:", projectInfo);
-  }, [projectInfo]);
   return (
-    <div className="user-option">
-      <div className="user-option__header user-option__header--left"></div>
-      <div className="user-option__header user-option__header--right">
-        <input
-          ref={fileInputRef}
-          type="file"
-          id="video-section__file-input"
-          accept="video/*"
-          multiple
-          style={{ display: "none" }}
-          onChange={(event) =>
-            handleFileSelected(
-              event,
-              selectedFiles,
-              setSelectedFiles,
-              setPreviewUrls,
-              projectInfo,
-              setProjectInfo
-            )
-          }
-        />
-        <button className="user-option__btn" onClick={handleUploadClick}>
-          <FiUpload className="user-option__btn-icon" />
-          Upload
-        </button>
-        <button className="user-option__btn" onClick={handleExportClick}>
-          <FiUpload className="user-option__btn-icon" />
-          Export
-        </button>
-
-        <button
-          className="user-option__authenticaion"
-          onClick={handleUploadClick}
-        >
-          Sign In
-        </button>
-        <button className="user-option__authenticaion">Sign Up</button>
+    <div className="container p-0">
+      <div className="user-option d-flex justify-content-center align-items-center p-3 ">
+        <div className="user-option__header user-option__header--left"></div>
+        <div className="user-option__header--right d-flex gap-3">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="video/*"
+            multiple
+            className="d-none"
+            onChange={(event) => {
+              handleFileSelected(
+                event,
+                selectedFiles,
+                setSelectedFiles,
+                setPreviewUrls,
+                projectInfo,
+                setProjectInfo
+              );
+            }}
+          />
+          <button
+            className="user-option__btn d-flex align-items-center gap-2"
+            onClick={handleUploadClick}
+          >
+            <FiUpload />
+            Upload
+          </button>
+          <button
+            className="user-option__btn d-flex align-items-center gap-2"
+            onClick={handleExportClick}
+          >
+            <FiUpload />
+            Export
+          </button>
+          <button className="user-option__authenticaion">Sign In</button>
+          <button className="user-option__authenticaion">Sign Up</button>
+        </div>
       </div>
-
       {isExport && (
-        <div className="export-form-container">
+        <div className="export-form-container mt-3">
           <ExportForm />
         </div>
       )}

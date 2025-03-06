@@ -1,10 +1,4 @@
-.project-info {
-    display: flex;
-    align-items: flex-start;
-    align-items: flex-start;
-    width: 100%;
-}
-.project-info__project-name {
-    margin-left:25px ;
-    font-size: 18px;
-}
+.ms-custom {
+    margin-left: 25px !important;
+  }
+  

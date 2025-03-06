@@ -1,3 +1,7 @@
 .timeline-editor {
-    width: 92% !important;
+    width: 92%;
+}
+
+.h-500 {
+    height: 500px;
 }

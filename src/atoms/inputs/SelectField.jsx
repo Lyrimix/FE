@@ -1,13 +1,14 @@
 import React from "react";
+import { Input } from "reactstrap";
 
 export const SelectField = ({ options, className }) => {
   return (
-    <select className={`select-field ${className}`}>
+    <Input type="select" className={className}>
       {options.map((option, index) => (
         <option key={index} value={option}>
           {option}
         </option>
       ))}
-    </select>
+    </Input>
   );
 };

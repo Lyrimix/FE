@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Timeline } from "@xzdarcy/react-timeline-editor";
-import "./EditSection.css";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { updateProject, deleteBackGround } from "../../../apis/ProjectApi";
+import { ActionItem } from "./ActionItem";
+import { ROW_HEIGHT, MIN_SCALE_COUNT, SCALE } from "../../../utils/constant";
+
 export const EditSection = ({ maxDuration = 1000 }) => {
   const { selectedFiles, setSelectedFiles, ranges, setRanges, fileLength } =
     useVideoContext();
@@ -57,14 +59,43 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     updateProject(updatedProject)
       .then(() => console.log("Project updated successfully"))
       .catch((error) => console.error("Error updating project:", error));
-  }, [ranges]);
+  }, [ranges, editorData]);
 
   const handleChange = (newData) => {
-    setEditorData(newData);
-    const updatedRanges = newData[0].actions.map((action) => [
+    if (!newData || newData.length === 0) {
+      return;
+    }
+
+    const updatedData = newData.map((item) => {
+      return {
+        ...item,
+        actions: item.actions.map((action, index) => {
+          const startTime = action.start;
+          let endTime = action.end;
+          const maxDuration = fileLength[index] || Infinity;
+
+          if (endTime > maxDuration) {
+            alert(
+              `End time ${endTime} exceeds file length ${maxDuration}. Clamping to max.`
+            );
+            return {
+              ...action,
+              end: startTime + maxDuration,
+              maxEnd: maxDuration,
+            };
+          }
+          return action;
+        }),
+      };
+    });
+
+    setEditorData(updatedData);
+
+    const updatedRanges = updatedData[0].actions.map((action) => [
       action.start,
       action.end,
     ]);
+
     setRanges(updatedRanges);
   };
 
@@ -82,7 +113,15 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     const actionIndex = editorData[0].actions.findIndex(
       (action) => action.id === actionId
     );
-    if (actionIndex === -1) return;
+
+    if (actionIndex === -1) {
+      return;
+    }
+
+    const updatedSelectedFiles = selectedFiles.filter(
+      (_, index) => index !== actionIndex
+    );
+    setSelectedFiles(updatedSelectedFiles);
 
     const backgroundToDelete = projectInfo.backgrounds[actionIndex];
 
@@ -99,67 +138,32 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   };
 
   return (
-    <div className="edit-section" style={{ width: "100%", height: "500px" }}>
-      <Timeline
-        editorData={editorData}
-        effects={selectedFiles.reduce(
-          (acc, file, index) => ({
-            ...acc,
-            [`effect${index}`]: { id: `effect${index}`, name: file.name },
-          }),
-          {}
-        )}
-        style={{ width: "100%" }}
-        scale={30}
-        minScaleCount={10}
-        rowHeight={40}
-        onChange={handleChange}
-        getActionRender={(action) => (
-          <div
-            style={{
-              height: "100%",
-              width: "100%",
-              borderRadius: "4px",
-              position: "relative",
-            }}
-            onMouseEnter={() => setHoveredAction(action.id)}
-            onMouseLeave={() => setHoveredAction(null)}
-          >
-            <img
-              src={
-                "https://res.cloudinary.com/duli95mss/image/upload/v1739947631/cld-sample-5.jpg"
-              }
-              crossOrigin="anonymous"
-              style={{
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                marginBottom: "40px",
-              }}
-              alt="Thumbnail"
+    <div className="container-fluid p-0">
+      <div className="w-100 h-100 d-flex flex-column border border-secondary rounded">
+        <Timeline
+          editorData={editorData}
+          effects={selectedFiles.reduce(
+            (acc, file, index) => ({
+              ...acc,
+              [`effect${index}`]: { id: `effect${index}`, name: file.name },
+            }),
+            {}
+          )}
+          style={{ width: "100%" }}
+          scale={SCALE}
+          minScaleCount={MIN_SCALE_COUNT}
+          rowHeight={ROW_HEIGHT}
+          onChange={handleChange}
+          getActionRender={(action) => (
+            <ActionItem
+              action={action}
+              hoveredAction={hoveredAction}
+              setHoveredAction={setHoveredAction}
+              handleDelete={handleDelete}
             />
-            {hoveredAction === action.id && (
-              <button
-                style={{
-                  position: "absolute",
-                  top: "5px",
-                  right: "5px",
-                  background: "red",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "50%",
-                  width: "20px",
-                  height: "20px",
-                  cursor: "pointer",
-                }}
-                onClick={() => handleDelete(action.id)}
-              >
-                ×
-              </button>
-            )}
-          </div>
-        )}
-      />
+          )}
+        />
+      </div>
     </div>
   );
 };
