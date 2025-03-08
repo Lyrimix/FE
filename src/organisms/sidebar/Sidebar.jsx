@@ -3,6 +3,7 @@ import { Offcanvas, OffcanvasHeader, OffcanvasBody, Button } from "reactstrap";
 import SidebarGroup from "../../Molecules/sidebar-mols/SidebarGroup";
 import { FiUpload } from "react-icons/fi";
 import { useVideoContext } from "../../utils/context/VideoContext";
+import { intergrateLyricToVide } from "../../apis/ProjectApi";
 import {
   SIDEBAR_ITEMS,
   BACKGROUND_IMAGES,
@@ -10,11 +11,13 @@ import {
 } from "../../utils/constant";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Sidebar.css";
+import { useProjectContext } from "../../utils/context/ProjectContext";
 
 const Sidebar = () => {
   const [offcanvasOpen, setOffcanvasOpen] = useState(false);
   const [selectedTab, setSelectedTab] = useState(null);
   const { selectedFiles, setSelectedBackground } = useVideoContext();
+  const { videoFile, setVideoBlob } = useProjectContext();
 
   const onToggle = (tab) => {
     if (selectedTab !== tab || !offcanvasOpen) {
@@ -29,6 +32,21 @@ const Sidebar = () => {
       return;
     }
     setSelectedBackground(img);
+  };
+
+  const handleOptionClick = async (item) => {
+    if (selectedTab === "Lyric" && item === "Create lyric automatically") {
+      const formData = new FormData();
+      formData.append("file", videoFile);
+      try {
+        const response = await intergrateLyricToVide(formData);
+        const videoResponse = await fetch(response.data.videoUrl);
+        const videoBlob = await videoResponse.blob();
+        setVideoBlob(URL.createObjectURL(videoBlob));
+      } catch (error) {
+        console.error("Error while intergrating Lyrics:" + error);
+      }
+    }
   };
 
   return (
@@ -73,7 +91,12 @@ const Sidebar = () => {
           ) : (
             <div className="d-grid gap-2">
               {EXPANDED_ITEMS[selectedTab]?.map((item, index) => (
-                <Button key={index} color="dark" className="w-100">
+                <Button
+                  key={index}
+                  color="dark"
+                  className="w-100"
+                  onClick={() => handleOptionClick(item)}
+                >
                   {item}
                 </Button>
               ))}

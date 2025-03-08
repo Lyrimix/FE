@@ -4,6 +4,7 @@ import { getVideoDuration, extractVideoName } from "../../../utils/file";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { CLOUD_NAME } from "../../../utils/constant";
 import { uploadToCloudinary } from "../../../apis/ProjectApi";
+import { useProjectContext } from "../../../utils/context/ProjectContext";
 
 const ffmpeg = createFFmpeg({ log: false });
 
@@ -15,6 +16,14 @@ const VideoMerger = ({ files = [] }) => {
   const [background, setBackground] = useState(null);
   const { setFileLength, ranges, setProjectVideo, selectedBackground } =
     useVideoContext();
+  const { setVideoFile, videoBlob } = useProjectContext();
+
+  useEffect(() => {
+    if (!videoBlob) return;
+    setMergedVideo(videoBlob);
+
+    return () => URL.revokeObjectURL(videoBlob);
+  }, [videoBlob]);
 
   const ensureFFmpegLoaded = async () => {
     if (!ffmpeg.isLoaded()) {
@@ -115,7 +124,6 @@ const VideoMerger = ({ files = [] }) => {
       const mergedBlob = new Blob(videoBuffers, { type: "video/mp4" });
       setMergedVideo(URL.createObjectURL(mergedBlob));
       setProjectVideo(mergedBlob);
-      setMergedVideo(URL.createObjectURL(mergedBlob));
       const uploadUrl = await uploadToCloudinary(mergedBlob);
 
       if (uploadUrl) {
@@ -175,11 +183,14 @@ const VideoMerger = ({ files = [] }) => {
       const transformedVideo = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/l_${background},fl_relative,w_1.0,h_1.0,c_fill/${videoName}`;
 
       // I currently need this line to test the result because i havent implemented database save for it
-      console.log("url:", transformedVideo);
+      // console.log("url:", transformedVideo);
 
       try {
         const response = await fetch(transformedVideo);
         const blob = await response.blob();
+        setVideoFile(
+          new File([blob], "mergedVideo.mp4", { type: "video/mp4" })
+        );
         setMergedVideo(URL.createObjectURL(blob));
       } catch (error) {
         console.error("Error loading video:", error);

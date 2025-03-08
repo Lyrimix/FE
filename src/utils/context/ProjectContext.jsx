@@ -5,6 +5,8 @@ const ProjectContext = createContext();
 export const ProjectProvider = ({ children }) => {
   const [projectInfo, setProjectInfo] = useState({});
   const [previewImage, setPreviewImage] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoBlob, setVideoBlob] = useState(null);
 
   return (
     <ProjectContext.Provider
@@ -13,6 +15,10 @@ export const ProjectProvider = ({ children }) => {
         setProjectInfo,
         previewImage,
         setPreviewImage,
+        videoFile,
+        setVideoFile,
+        videoBlob,
+        setVideoBlob,
       }}
     >
       {children}

@@ -47,6 +47,14 @@ export const exportProject = async (formData) => {
   });
 };
 
+export const intergrateLyricToVide = async (formData) => {
+  return axios.post(`http://localhost:8080/Lyrimix/process`, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
 export const uploadToCloudinary = async (file) => {
   const formData = new FormData();
   formData.append("file", file);
