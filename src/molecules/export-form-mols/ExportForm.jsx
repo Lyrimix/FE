@@ -1,8 +1,8 @@
 import React from "react";
 import { InputField } from "../../atoms/inputs/InputField";
-import { ExportFormButton } from "../../atoms/buttons/ExportFormButton";
 import { ThumbnailPreview } from "../../atoms/medias/ThumbnailPreview";
 import { ExportOptions } from "../export-option-mols/ExportOptions";
+import { Input, Button, FormGroup, Label } from "reactstrap";
 import "./ExportForm.css";
 
 export const ExportForm = () => {
@@ -21,10 +21,7 @@ export const ExportForm = () => {
   };
 
   return (
-    <div
-      className="container p-4 border rounded bg-white"
-      style={{ maxWidth: "300px" }}
-    >
+    <div className="container p-4 border rounded bg-white">
       <h3 className="fs-6 mb-3">Cover image and video</h3>
       <div className="mb-3">
         <ThumbnailPreview
@@ -33,7 +30,10 @@ export const ExportForm = () => {
           className="img-fluid rounded"
         />
       </div>
-      <InputField placeholder="Name" className="form-control mb-3" />
+      <FormGroup className="mb-3">
+        <Label for="nameInput">Name</Label>
+        <Input id="nameInput" name="name" placeholder="Name" type="text" />
+      </FormGroup>
       <ExportOptions className="mb-3" />
       <button
         className="btn bg-custom-primary w-100 mb-2 text-dark"

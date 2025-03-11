@@ -18,3 +18,23 @@
   font-size: 14px;
   text-align: center;
 }
+
+.icon-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: inherit; 
+}
+
+.icon-button__tooltip {
+  margin-left: 8px;
+  font-size: 14px;
+  transition: color 0.3s ease;
+}
+
+.sidebar__item.active .icon-button__tooltip {
+  color: #C84444; 
+}
+

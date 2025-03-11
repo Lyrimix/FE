@@ -6,6 +6,10 @@
   top: 0px;
 }
 
+.sidebar-custom{
+  width: 110px;
+}
+
 .sidebar {
   width: 100%;
   background: #000000;
