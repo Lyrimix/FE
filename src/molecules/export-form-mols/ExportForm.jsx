@@ -35,12 +35,12 @@ export const ExportForm = () => {
         <Input id="nameInput" name="name" placeholder="Name" type="text" />
       </FormGroup>
       <ExportOptions className="mb-3" />
-      <ExportFormButton
+      <button
         className="btn bg-custom-primary w-100 mb-2 text-dark"
         onClick={handleExportProject}
       >
         Export
-      </ExportFormButton>
+      </button>
       <button className="btn bg-custom-secondary w-100 text-dark">
         Share to YouTube
       </button>

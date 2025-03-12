@@ -5,18 +5,20 @@ import { useVideoContext } from "../../../utils/context/VideoContext";
 import { CLOUD_NAME } from "../../../utils/constant";
 import { uploadToCloudinary } from "../../../apis/ProjectApi";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
+import { useLoadingStore } from "../../../store/useLoadingStore";
 
 const ffmpeg = createFFmpeg({ log: false });
 
 const VideoMerger = ({ files = [] }) => {
   const videoRef = useRef(null);
   const [mergedVideo, setMergedVideo] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const setIsLoading = useLoadingStore((state) => state.setIsLoading);
   const [videoName, setVideoName] = useState(null);
   const [background, setBackground] = useState(null);
   const { setFileLength, ranges, setProjectVideo, selectedBackground } =
     useVideoContext();
-  const { setVideoFile, videoBlob } = useProjectContext();
+  const { setVideoFile, videoBlob, setCloudinaryUrl, setProjectInfo } =
+    useProjectContext();
 
   useEffect(() => {
     if (!videoBlob) return;
@@ -31,40 +33,18 @@ const VideoMerger = ({ files = [] }) => {
     }
   };
 
-  const trimFirstVideo = async (file, range) => {
-    await ffmpeg.FS("writeFile", "input0.mp4", await fetchFile(file.file));
-    await ffmpeg.run(
-      "-i",
-      "input0.mp4",
-      "-ss",
-      range[0].toString(),
-      "-to",
-      range[1].toString(),
-      "-c",
-      "copy",
-      "trimmed0.mp4"
-    );
-  };
-
-  const writeAdditionalFiles = async (additionalFiles) => {
-    for (let i = 0; i < additionalFiles.length; i++) {
+  const writeVideosToFS = async (files) => {
+    for (let i = 0; i < files.length; i++) {
       await ffmpeg.FS(
         "writeFile",
-        `input${i + 1}.mp4`,
-        await fetchFile(additionalFiles[i].file)
+        `input${i}.mp4`,
+        await fetchFile(files[i].file)
       );
     }
   };
 
-  const createConcatFile = async (fileCount) => {
-    const fileList = [`file 'trimmed0.mp4'`]
-      .concat(
-        Array.from(
-          { length: fileCount - 1 },
-          (_, i) => `file 'input${i + 1}.mp4'`
-        )
-      )
-      .join("\n");
+  const createConcatFile = async (files) => {
+    const fileList = files.map((_, i) => `file 'input${i}.mp4'`).join("\n");
     await ffmpeg.FS("writeFile", "fileList.txt", fileList);
   };
 
@@ -82,14 +62,35 @@ const VideoMerger = ({ files = [] }) => {
       "+genpts",
       "-reset_timestamps",
       "1",
-      "output.mp4"
+      "merged.mp4"
     );
-    const mergedData = ffmpeg.FS("readFile", "output.mp4");
+
+    const mergedData = ffmpeg.FS("readFile", "merged.mp4");
     const mergedBlob = new Blob([mergedData.buffer], { type: "video/mp4" });
-    setVideoFile(
-      new File([mergedBlob], "mergedVideo.mp4", { type: "video/mp4" })
-    );
+
     return mergedBlob;
+  };
+
+  const trimMergedVideo = async (ranges) => {
+    const start = ranges[0][0];
+    const end = ranges[ranges.length - 1][1];
+
+    await ffmpeg.run(
+      "-i",
+      "merged.mp4",
+      "-ss",
+      start.toString(),
+      "-to",
+      end.toString(),
+      "-c",
+      "copy",
+      "final_trimmed.mp4"
+    );
+
+    const trimmedData = ffmpeg.FS("readFile", "final_trimmed.mp4");
+    const trimmedBlob = new Blob([trimmedData.buffer], { type: "video/mp4" });
+
+    return trimmedBlob;
   };
 
   const handleMergedVideo = async (blob) => {
@@ -100,6 +101,7 @@ const VideoMerger = ({ files = [] }) => {
     const uploadUrl = await uploadToCloudinary(blob);
     if (uploadUrl) {
       setVideoName(extractVideoName(uploadUrl));
+      setIsLoading(false);
     }
   };
 
@@ -107,7 +109,7 @@ const VideoMerger = ({ files = [] }) => {
     if (!files.length) {
       return;
     }
-    setLoading(false);
+    setIsLoading(false);
     const getDurations = async () => {
       const durations = [];
       for (let file of files) {
@@ -132,34 +134,34 @@ const VideoMerger = ({ files = [] }) => {
 
       if (uploadUrl) {
         setVideoName(extractVideoName(uploadUrl));
+        setIsLoading(false);
       }
-      setLoading(false);
     };
     getDurations();
     createBlobFromFiles();
   }, [files]);
 
   useEffect(() => {
-    if (!files.length) return;
+    if (!files.length || files.length < 2) return;
 
     const processVideos = async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         await ensureFFmpegLoaded();
 
-        await trimFirstVideo(files[0], ranges[0]);
+        await writeVideosToFS(files);
 
-        await writeAdditionalFiles(files.slice(1));
+        await createConcatFile(files);
 
-        await createConcatFile(files.length);
+        await mergeVideos();
 
-        const mergedBlob = await mergeVideos();
+        const trimmedBlob = await trimMergedVideo(ranges);
 
-        await handleMergedVideo(mergedBlob);
+        await handleMergedVideo(trimmedBlob);
       } catch (error) {
         console.error("Video processing failed:", error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -185,7 +187,11 @@ const VideoMerger = ({ files = [] }) => {
       if (!mergedVideo || !selectedBackground) return;
 
       const transformedVideo = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/l_${background},fl_relative,w_1.0,h_1.0,c_fill/${videoName}`;
-
+      setCloudinaryUrl(transformedVideo);
+      setProjectInfo((prev) => ({
+        ...prev,
+      }));
+      setIsLoading(true);
       try {
         const response = await fetch(transformedVideo);
         const blob = await response.blob();
@@ -195,6 +201,8 @@ const VideoMerger = ({ files = [] }) => {
         setMergedVideo(URL.createObjectURL(blob));
       } catch (error) {
         console.error("Error loading video:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -203,9 +211,6 @@ const VideoMerger = ({ files = [] }) => {
 
   return (
     <div className="d-flex flex-column align-items-center w-100 h-100">
-      {loading && (
-        <p className="text-warning mb-2 fs-6">🔄 Updating Project...</p>
-      )}
       {mergedVideo && (
         <video
           ref={videoRef}

@@ -2,11 +2,16 @@ import axios from "axios";
 import { addBackGroundToProject } from "../apis/ProjectApi";
 import { useProjectContext } from "../utils/context/ProjectContext";
 import { useVideoContext } from "../utils/context/VideoContext";
+import { API_URL, ContentType } from "../utils/constant";
+import { getVideoDuration } from "../utils/file";
+import { useLoadingStore } from "../store/useLoadingStore";
 
 export const useFileUpload = () => {
   const { selectedFiles, setSelectedFiles, previewUrls, setPreviewUrls } =
     useVideoContext();
-  const { projectInfo, setProjectInfo } = useProjectContext();
+  const { projectInfo, setProjectInfo, projectLength, setProjectLength } =
+    useProjectContext();
+  const  setIsLoading  = useLoadingStore((state) => state.setIsLoading);
 
   const uploadFiles = async (event) => {
     const files = Array.from(event.target.files);
@@ -34,9 +39,9 @@ export const useFileUpload = () => {
     if (!projectId) {
       try {
         const response = await axios.post(
-          "http://localhost:8080/Lyrimix/project/createProject",
+          `${API_URL}/project/createProject`,
           { name: "Nga's project" },
-          { headers: { "Content-Type": "application/json" } }
+          { headers: { "Content-Type": ContentType.Json } }
         );
 
         if (!response.data?.result) {
@@ -48,7 +53,9 @@ export const useFileUpload = () => {
           id: projectId,
           name: response.data.result.name,
           uploadTime: response.data.result.uploadTime,
-          backgrounds: [],
+          length: projectLength,
+          asset: null,
+          videos: [],
         });
       } catch (error) {
         console.error("Project creation failed:", error);
@@ -56,10 +63,16 @@ export const useFileUpload = () => {
       }
     }
 
-    // Upload files as backgrounds
     try {
+      setIsLoading(true);
       const formData = new FormData();
-      validFiles.forEach((file) => formData.append("files", file));
+      let totalLength = 0;
+
+      for (const file of validFiles) {
+        const fileLength = await getVideoDuration(file);
+        totalLength += fileLength;
+        formData.append("files", file);
+      }
       formData.append("projectId", projectId);
 
       const backgroundResponse = await addBackGroundToProject(formData);
@@ -67,15 +80,18 @@ export const useFileUpload = () => {
       if (!backgroundResponse.data?.result) {
         throw new Error("Invalid background upload response");
       }
-
+      setProjectLength((prev) => prev + totalLength);
       setProjectInfo((prev) => ({
         ...prev,
-        backgrounds: prev?.backgrounds
-          ? [...prev.backgrounds, ...backgroundResponse.data.result]
+        videos: prev?.videos
+          ? [...prev.videos, ...backgroundResponse.data.result]
           : [...backgroundResponse.data.result],
+        length: (prev?.length || 0) + totalLength,
       }));
     } catch (error) {
       console.error("Background upload failed:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

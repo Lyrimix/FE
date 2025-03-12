@@ -4,7 +4,7 @@ import "./IconButton.css";
 const IconButton = ({ icon, label, onClick, className = "" }) => {
   return (
     <button
-      className={className ? `icon-button ${className}` : "icon-button"} // Nếu có className, ghép vào, nếu không thì dùng mặc định
+      className={className ? `icon-button ${className}` : "icon-button"}
       onClick={onClick}
     >
       {icon}

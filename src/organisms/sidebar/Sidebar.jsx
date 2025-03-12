@@ -38,13 +38,16 @@ const Sidebar = () => {
       const formData = new FormData();
       formData.append("file", videoFile);
       formData.append("projectId", projectInfo.id);
+      setIsLoading(true);
       try {
         const response = await intergrateLyricToVideo(formData);
         const videoResponse = await fetch(response.data.videoUrl);
         const videoBlob = await videoResponse.blob();
         setVideoBlob(URL.createObjectURL(videoBlob));
       } catch (error) {
-        console.error("Error while integrating Lyrics:", error);
+        console.error("Error while intergrating Lyrics:" + error);
+      } finally {
+        setIsLoading(false);
       }
     }
 

@@ -9,6 +9,9 @@ import {
 } from "react-icons/fa";
 
 export const PROJECT_NAME = "Lyrimix";
+export const PROJECT_MAIN_THEME = "#CFF2E6";
+
+//TIMELINE
 export const MIN_SCALE = 2;
 export const SCALE = 30;
 export const MIN_SCALE_COUNT = 10;
