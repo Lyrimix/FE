@@ -81,3 +81,11 @@ export const BACKGROUND_IMAGES = [
   "https://res.cloudinary.com/duli95mss/image/upload/v1739947631/samples/man-on-a-escalator.jpg",
   "https://res.cloudinary.com/duli95mss/image/upload/v1739947631/samples/man-on-a-street.jpg",
 ];
+
+//API
+export const ContentType = {
+  Json: "application/json",
+  FormData: "multipart/form-data",
+  UrlEncoded: "application/x-www-form-urlencoded",
+  Text: "text/plain",
+};

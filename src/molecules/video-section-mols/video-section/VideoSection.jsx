@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FaPlus, FaGoogleDrive, FaDropbox } from "react-icons/fa";
-import { useVideoContext } from "../../../utils/context/VideoContext";
-import { handleFileSelected } from "../../../utils/handleFileSelected";
-import { useProjectContext } from "../../../utils/context/ProjectContext";
+import { useFileUpload } from "../../../hooks/useFileUpload";
 import VideoMerger from "./VideoMerger";
 import "./VideoSection.css";
 
 export const VideoSection = () => {
-  const { selectedFiles, setSelectedFiles, setPreviewUrls } = useVideoContext();
-  const { projectInfo, setProjectInfo } = useProjectContext();
+  const { selectedFiles, uploadFiles } = useFileUpload();
   const [mergedFiles, setMergedFiles] = useState(selectedFiles);
 
   const triggerFileInput = () => {
@@ -27,16 +24,7 @@ export const VideoSection = () => {
         accept="video/mp4"
         multiple
         className="d-none"
-        onChange={(event) =>
-          handleFileSelected(
-            event,
-            selectedFiles,
-            setSelectedFiles,
-            setPreviewUrls,
-            projectInfo,
-            setProjectInfo
-          )
-        }
+        onChange={uploadFiles}
       />
 
       {!selectedFiles.length ? (

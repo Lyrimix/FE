@@ -1,10 +1,16 @@
 import axios from "axios";
-import { API_URL, CLOUD_NAME, UPLOAD_PRESET } from "../utils/constant";
+import {
+  API_URL,
+  CLOUD_NAME,
+  UPLOAD_PRESET,
+  ContentType,
+} from "../utils/constant";
+import { AutoDismissToast } from "../molecules/auto-dismiss-toast-mols/AutoDismissToast";
 
 export const addBackGroundToProject = async (formData) => {
   return axios.post(`${API_URL}/background`, formData, {
     headers: {
-      "Content-Type": "multipart/form-data",
+      "Content-Type": ContentType.FormData,
     },
   });
 };
@@ -12,7 +18,7 @@ export const addBackGroundToProject = async (formData) => {
 export const getProjectById = async (projectId) => {
   return axios.get(`${API_URL}/project?id=${projectId}`, {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": ContentType.Json,
     },
   });
 };
@@ -20,7 +26,7 @@ export const getProjectById = async (projectId) => {
 export const updateProject = async (projectInfo) => {
   return axios.patch(`${API_URL}/project/updateProject`, projectInfo, {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": ContentType.Json,
     },
   });
 };
@@ -28,7 +34,7 @@ export const updateProject = async (projectInfo) => {
 export const deleteBackGround = async (backgroundId) => {
   return axios.delete(`${API_URL}/background?backgroundId=${backgroundId}`, {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": ContentType.Json,
     },
   });
 };
@@ -36,7 +42,7 @@ export const deleteBackGround = async (backgroundId) => {
 export const exportProject = async (formData) => {
   return axios.get(`${API_URL}/project/exportProject`, formData, {
     headers: {
-      "Content-Type": "multipart/form-data",
+      "Content-Type": ContentType.FormData,
     },
   });
 };
@@ -59,11 +65,11 @@ export const uploadToCloudinary = async (file) => {
     if (data.secure_url) {
       return data.secure_url;
     } else {
-      console.error("Upload failed", data);
+      <AutoDismissToast message={("Upload failed", data)} />;
       return null;
     }
   } catch (error) {
-    console.error("Error uploading to Cloudinary:", error);
+    <AutoDismissToast message={("Error uploading to Cloudinary:", error)} />;
     return null;
   }
 };

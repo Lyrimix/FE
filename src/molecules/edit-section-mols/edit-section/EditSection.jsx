@@ -8,11 +8,11 @@ import { ROW_HEIGHT, MIN_SCALE_COUNT, SCALE } from "../../../utils/constant";
 import {
   updateProjectBackgrounds,
   generateTimelineData,
-} from "../../../utils/ProjectUtil";
+} from "../../../utils/project";
 import {
   clampActionsToFileLength,
   generateEffectsFromFiles,
-} from "../../../utils/FileUtil";
+} from "../../../utils/file";
 
 export const EditSection = ({ maxDuration = 1000 }) => {
   const { selectedFiles, setSelectedFiles, ranges, setRanges, fileLength } =

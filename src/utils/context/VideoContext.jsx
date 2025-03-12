@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
+import { AutoDismissToast } from "../../molecules/auto-dismiss-toast-mols/AutoDismissToast";
+
 const VideoContext = createContext();
 
 export const VideoProvider = ({ children }) => {
@@ -15,7 +17,7 @@ export const VideoProvider = ({ children }) => {
 
   const handleChange = (index, newRange) => {
     if (!Array.isArray(newRange)) {
-      console.error("newRange is not an array:", newRange);
+      <AutoDismissToast message={("newRange is not an array:", newRange)} />;
       return;
     }
     setRanges((prev) => {

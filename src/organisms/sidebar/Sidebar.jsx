@@ -17,12 +17,10 @@ const Sidebar = () => {
   const { selectedFiles, setSelectedBackground } = useVideoContext();
 
   const onToggle = (tab) => {
-    if (selectedTab === tab && offcanvasOpen) {
-      setOffcanvasOpen((prev) => !prev);
-    } else {
+    if (selectedTab !== tab || !offcanvasOpen) {
       setSelectedTab(tab);
-      setOffcanvasOpen((prev) => !prev);
     }
+    setOffcanvasOpen((prev) => !prev);
   };
 
   const handleSampleImageClick = (img) => {

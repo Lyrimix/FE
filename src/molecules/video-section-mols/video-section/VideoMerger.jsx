@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
-import { getVideoDuration, extractVideoName } from "../../../utils/FileUtil";
+import { getVideoDuration, extractVideoName } from "../../../utils/file";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { CLOUD_NAME } from "../../../utils/constant";
 import { uploadToCloudinary } from "../../../apis/ProjectApi";
@@ -16,11 +16,86 @@ const VideoMerger = ({ files = [] }) => {
   const { setFileLength, ranges, setProjectVideo, selectedBackground } =
     useVideoContext();
 
+  const ensureFFmpegLoaded = async () => {
+    if (!ffmpeg.isLoaded()) {
+      await ffmpeg.load();
+    }
+  };
+
+  const trimFirstVideo = async (file, range) => {
+    await ffmpeg.FS("writeFile", "input0.mp4", await fetchFile(file.file));
+    await ffmpeg.run(
+      "-i",
+      "input0.mp4",
+      "-ss",
+      range[0].toString(),
+      "-to",
+      range[1].toString(),
+      "-c",
+      "copy",
+      "trimmed0.mp4"
+    );
+  };
+
+  const writeAdditionalFiles = async (additionalFiles) => {
+    for (let i = 0; i < additionalFiles.length; i++) {
+      await ffmpeg.FS(
+        "writeFile",
+        `input${i + 1}.mp4`,
+        await fetchFile(additionalFiles[i].file)
+      );
+    }
+  };
+
+  const createConcatFile = async (fileCount) => {
+    const fileList = [`file 'trimmed0.mp4'`]
+      .concat(
+        Array.from(
+          { length: fileCount - 1 },
+          (_, i) => `file 'input${i + 1}.mp4'`
+        )
+      )
+      .join("\n");
+    await ffmpeg.FS("writeFile", "fileList.txt", fileList);
+  };
+
+  const mergeVideos = async () => {
+    await ffmpeg.run(
+      "-f",
+      "concat",
+      "-safe",
+      "0",
+      "-i",
+      "fileList.txt",
+      "-c",
+      "copy",
+      "-fflags",
+      "+genpts",
+      "-reset_timestamps",
+      "1",
+      "output.mp4"
+    );
+    const mergedData = ffmpeg.FS("readFile", "output.mp4");
+    return new Blob([mergedData.buffer], { type: "video/mp4" });
+  };
+
+  const handleMergedVideo = async (blob) => {
+    setProjectVideo(blob);
+    const url = URL.createObjectURL(blob);
+    setMergedVideo(url);
+
+    const uploadUrl = await uploadToCloudinary(blob);
+    if (uploadUrl) {
+      setVideoName(extractVideoName(uploadUrl));
+    }
+  };
   useEffect(() => {
-    if (!files.length) return;
+    if (!files.length) {
+      return;
+    }
     setLoading(false);
     const getDurations = async () => {
-      let durations = [];
+      const durations = [];
       for (let file of files) {
         const duration = await getVideoDuration(file.file);
         durations.push(duration);
@@ -37,7 +112,6 @@ const VideoMerger = ({ files = [] }) => {
       }
 
       const mergedBlob = new Blob(videoBuffers, { type: "video/mp4" });
-      setLoading(false);
       setMergedVideo(URL.createObjectURL(mergedBlob));
       setProjectVideo(mergedBlob);
       setMergedVideo(URL.createObjectURL(mergedBlob));
@@ -55,74 +129,28 @@ const VideoMerger = ({ files = [] }) => {
   useEffect(() => {
     if (!files.length) return;
 
-    const mergeVideos = async () => {
-      setLoading(true);
+    const processVideos = async () => {
+      try {
+        setLoading(true);
+        await ensureFFmpegLoaded();
 
-      if (!ffmpeg.isLoaded()) {
-        await ffmpeg.load();
+        await trimFirstVideo(files[0], ranges[0]);
+
+        await writeAdditionalFiles(files.slice(1));
+
+        await createConcatFile(files.length);
+
+        const mergedBlob = await mergeVideos();
+
+        await handleMergedVideo(mergedBlob);
+      } catch (error) {
+        console.error("Video processing failed:", error);
+      } finally {
+        setLoading(false);
       }
-
-      await ffmpeg.FS(
-        "writeFile",
-        "input0.mp4",
-        await fetchFile(files[0].file)
-      );
-
-      await ffmpeg.run(
-        "-i",
-        "input0.mp4",
-        "-ss",
-        ranges[0][0].toString(),
-        "-to",
-        ranges[0][1].toString(),
-        "-c",
-        "copy",
-        "trimmed0.mp4"
-      );
-
-      for (let i = 1; i < files.length; i++) {
-        await ffmpeg.FS(
-          "writeFile",
-          `input${i}.mp4`,
-          await fetchFile(files[i].file)
-        );
-      }
-
-      const listFileContent = [`file 'trimmed0.mp4'`]
-        .concat(files.slice(1).map((_, i) => `file 'input${i + 1}.mp4'`))
-        .join("\n");
-      ffmpeg.FS("writeFile", "fileList.txt", listFileContent);
-
-      await ffmpeg.run(
-        "-f",
-        "concat",
-        "-safe",
-        "0",
-        "-i",
-        "fileList.txt",
-        "-c",
-        "copy",
-        "-fflags",
-        "+genpts",
-        "-reset_timestamps",
-        "1",
-        "output.mp4"
-      );
-
-      const mergedData = ffmpeg.FS("readFile", "output.mp4");
-      const mergedBlob = new Blob([mergedData.buffer], { type: "video/mp4" });
-
-      setProjectVideo(mergedBlob);
-      setMergedVideo(URL.createObjectURL(mergedBlob));
-      const uploadUrl = await uploadToCloudinary(mergedBlob);
-
-      if (uploadUrl) {
-        setVideoName(extractVideoName(uploadUrl));
-      }
-      setLoading(false);
     };
 
-    mergeVideos();
+    processVideos();
   }, [files, ranges]);
 
   useEffect(() => {

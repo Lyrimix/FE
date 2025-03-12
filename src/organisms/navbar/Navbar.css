@@ -3,18 +3,17 @@
   height: 10%;
   display: flex;
   position: fixed;
-  left: 110px; 
+  left: 110px;
   right: 0;
   top: 0;
-  background-color: #FFFFFF;
-
+  background-color: #ffffff;
 }
 
 .content-name,
 .zoom-section,
 .user-options {
-flex: 0.8; 
-display: flex;
-justify-content: center; 
-align-items: center; 
+  flex: 0.8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
