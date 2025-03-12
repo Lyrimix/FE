@@ -68,7 +68,7 @@ export const uploadToCloudinary = async (file) => {
       {
         method: "POST",
         body: formData,
-      },
+      }
     );
     const data = await response.json();
     if (data.secure_url) {
