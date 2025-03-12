@@ -8,6 +8,7 @@ import {
   SIDEBAR_ITEMS,
   BACKGROUND_IMAGES,
   EXPANDED_ITEMS,
+  TABS,
 } from "../../utils/constant";
 import "./Sidebar.css";
 import { useProjectContext } from "../../utils/context/ProjectContext";
@@ -17,7 +18,9 @@ const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
   const { selectedFiles, setSelectedBackground } = useVideoContext();
   const { videoFile, setVideoBlob } = useProjectContext();
-  const LYRIC_TAB = SIDEBAR_ITEMS.find((item) => item.label === "Lyric")?.label;
+  const isLyricTab = SIDEBAR_ITEMS.find(
+    (item) => item.label === TABS.LYRIC
+  )?.label;
 
   const onToggle = (tab) => {
     if (selectedTab !== tab || !offcanvasOpen) {
@@ -35,7 +38,7 @@ const Sidebar = () => {
   };
 
   const handleOptionClick = async (item) => {
-    if (selectedTab === LYRIC_TAB && item === EXPANDED_ITEMS.Lyric[0]) {
+    if (selectedTab === isLyricTab && item === EXPANDED_ITEMS.Lyric[0]) {
       const formData = new FormData();
       formData.append("file", videoFile);
       try {

@@ -60,6 +60,16 @@ export const EXPANDED_ITEMS = {
   ],
 };
 
+const TABS = {
+  LYRIC: "Lyric",
+  BACKGROUND: "Background",
+  SETTING: "Settings",
+  MEDIA: "Media",
+  AUDIO: "Audio",
+  EFFECT: "Effect",
+  TEXT: "Text",
+};
+
 export const BACKGROUND_IMAGES = [
   "https://s3-alpha-sig.figma.com/img/e2fd/af1b/8ad08b9754a92462e8db52279fb5c606?Expires=1742169600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=r6UOQ8dkk3UuX0iXKNZobkO7vD~jS8jhe2TJQUcFWp4Sm9qv8onCyFA82vScD4VcH1c0nluK2tBgLB6ne3vhFdYv3MOYX6MI5lVA2hpf7Q0U-pnAusg7kxaKJR24npmrciQx8XFLgjfD9OiJjBB2AT8hEKd9MZglSP-plwXTMe3xzKdEiDwJHnmF4lihH2FG9VAJazL8v1C-sLwhgzNGS-81Vnlf5ZHKbNnnHRF37bW18qxteUApjJUzTuOC8ZoCd5whmM-yY9oVhRCQD3Kn814lS8is~8MM4qouEUw2xVb1NtkTEw8DH8Vm51R0aCY3K2ir2G8mQbxZbp53fnHVog__",
   "https://s3-alpha-sig.figma.com/img/3164/120d/0d31f2410ad4b4977d01b4a7f5e9d124?Expires=1742169600&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=VTc52p9Ud622JukNygK~x0otL94w6A~KpvgG03gPh0iQqEVFwwz6Gaji8~E9dyopSq3OfsMcyrzxUfQMeuBkyRl0-kKfeMl6i-tKyPJItdrfB3SulGD6RawtYn1BQvb5kOeru3K5PqOWCITK0eCdWqKn5Mfdh6gbIsboN3w9~Z0GYNnGKy~~WzN62ILkmm3d7kYRaznDJWxcK2IJGLc4TG3tD9fTSAda2k07a5nkKKJAKg6cOMHk6KzG3h0kkHVHWK~--NWGjh0VXrK-v1P2kw9i21J49WPhgaSZ3dDALM2oLJQ1puPPXpKQAxl4k599bQBje4JlvcJdzCI-kfWgKQ__",
