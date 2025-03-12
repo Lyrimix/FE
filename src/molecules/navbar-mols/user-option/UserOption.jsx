@@ -1,12 +1,16 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./UserOption.css";
-import { FiUpload } from "react-icons/fi";
+import { FiUpload,FiSave } from "react-icons/fi";
 import { useRef, useState } from "react";
 import { ExportForm } from "../../export-form-mols/ExportForm";
+import { updateProject } from "../../../apis/ProjectApi";
+import { useProjectContext } from "../../../utils/context/ProjectContext";
+
 
 export const UserOption = () => {
   const [isExport, setIsExport] = useState(false);
   const fileInputRef = useRef(null);
+  const { projectInfo } = useProjectContext();
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
@@ -15,6 +19,13 @@ export const UserOption = () => {
   const handleExportClick = () => {
     setIsExport(!isExport);
   };
+
+  const handleUpdateClick = () => {
+    updateProject(projectInfo)
+      .then(() => console.log("Project updated successfully"))
+      .catch((error) => console.error("Error updating project:", error));
+  };
+
 
   return (
     <div className="container">
@@ -28,6 +39,13 @@ export const UserOption = () => {
             multiple
             className="d-none"
           />
+          <button
+            className="user-option__btn d-flex align-items-center gap-2"
+            onClick={handleUpdateClick}
+          >
+            <FiSave />
+            Save
+          </button>
           <button
             className="user-option__btn d-flex align-items-center gap-2"
             onClick={handleUploadClick}
