@@ -5,7 +5,6 @@ import { useRef, useState } from "react";
 import { ExportForm } from "../../export-form-mols/ExportForm";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
-import { handleFileSelected } from "../../../utils/handleFileSelected";
 
 export const UserOption = () => {
   const [isExport, setIsExport] = useState(false);
