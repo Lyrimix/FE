@@ -1,16 +1,13 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./UserOption.css";
-import { FiUpload,FiSave } from "react-icons/fi";
+import { FiUpload } from "react-icons/fi";
 import { useRef, useState } from "react";
 import { ExportForm } from "../../export-form-mols/ExportForm";
-import { updateProject } from "../../../apis/ProjectApi";
-import { useProjectContext } from "../../../utils/context/ProjectContext";
-
+import { useFileUpload } from "../../../hooks/useFileUpload";
 
 export const UserOption = () => {
   const [isExport, setIsExport] = useState(false);
+  const { uploadFiles } = useFileUpload();
   const fileInputRef = useRef(null);
-  const { projectInfo } = useProjectContext();
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
@@ -20,16 +17,9 @@ export const UserOption = () => {
     setIsExport(!isExport);
   };
 
-  const handleUpdateClick = () => {
-    updateProject(projectInfo)
-      .then(() => console.log("Project updated successfully"))
-      .catch((error) => console.error("Error updating project:", error));
-  };
-
-
   return (
-    <div className="container">
-      <div className="user-option d-flex justify-content-between align-items-center p-3 ">
+    <div className="container p-0">
+      <div className="user-option d-flex justify-content-center align-items-center p-3 ">
         <div className="user-option__header user-option__header--left"></div>
         <div className="user-option__header--right d-flex gap-3">
           <input
@@ -38,14 +28,8 @@ export const UserOption = () => {
             accept="video/*"
             multiple
             className="d-none"
+            onChange={uploadFiles}
           />
-          <button
-            className="user-option__btn d-flex align-items-center gap-2"
-            onClick={handleUpdateClick}
-          >
-            <FiSave />
-            Save
-          </button>
           <button
             className="user-option__btn d-flex align-items-center gap-2"
             onClick={handleUploadClick}
