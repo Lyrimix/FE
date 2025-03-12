@@ -9,7 +9,6 @@ import {
   BACKGROUND_IMAGES,
   EXPANDED_ITEMS,
 } from "../../utils/constant";
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./Sidebar.css";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 
