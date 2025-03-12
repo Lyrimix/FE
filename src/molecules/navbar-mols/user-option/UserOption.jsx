@@ -1,4 +1,3 @@
-import "bootstrap/dist/css/bootstrap.min.css";
 import "./UserOption.css";
 import { FiUpload } from "react-icons/fi";
 import { useRef, useState } from "react";

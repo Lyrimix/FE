@@ -17,6 +17,7 @@ const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
   const { selectedFiles, setSelectedBackground } = useVideoContext();
   const { videoFile, setVideoBlob } = useProjectContext();
+  const LYRIC_TAB = SIDEBAR_ITEMS.find((item) => item.label === "Lyric")?.label;
 
   const onToggle = (tab) => {
     if (selectedTab !== tab || !offcanvasOpen) {
@@ -34,7 +35,7 @@ const Sidebar = () => {
   };
 
   const handleOptionClick = async (item) => {
-    if (selectedTab === "Lyric" && item === "Create lyric automatically") {
+    if (selectedTab === LYRIC_TAB && item === EXPANDED_ITEMS.Lyric[0]) {
       const formData = new FormData();
       formData.append("file", videoFile);
       try {

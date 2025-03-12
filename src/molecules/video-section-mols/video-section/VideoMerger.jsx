@@ -85,7 +85,11 @@ const VideoMerger = ({ files = [] }) => {
       "output.mp4"
     );
     const mergedData = ffmpeg.FS("readFile", "output.mp4");
-    return new Blob([mergedData.buffer], { type: "video/mp4" });
+    const mergedBlob = new Blob([mergedData.buffer], { type: "video/mp4" });
+    setVideoFile(
+      new File([mergedBlob], "mergedVideo.mp4", { type: "video/mp4" })
+    );
+    return mergedBlob;
   };
 
   const handleMergedVideo = async (blob) => {
