@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Timeline } from "@xzdarcy/react-timeline-editor";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
-import { updateProject, deleteBackGround } from "../../../apis/ProjectApi";
+import { deleteBackGround } from "../../../apis/ProjectApi";
 import { ActionItem } from "./ActionItem";
 import { ROW_HEIGHT, MIN_SCALE_COUNT, SCALE } from "../../../utils/constant";
 import {
@@ -45,10 +45,6 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     const updatedProject = updateProjectBackgrounds(projectInfo, ranges);
 
     setProjectInfo(updatedProject);
-
-    updateProject(updatedProject)
-      .then(() => console.log("Project updated successfully"))
-      .catch((error) => console.error("Error updating project:", error));
   }, [ranges, editorData]);
 
   const handleChange = (newData) => {
