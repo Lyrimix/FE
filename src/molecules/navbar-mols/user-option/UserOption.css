@@ -1,61 +1,3 @@
-.user-option {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.user-option__header {
-    display: flex;
-    align-items: center;
-}
-
-.user-option__header--left {
-    margin-right: 20px;
-}
-
-.user-option__header--right {
-    display: flex;
-    gap: 10px;
-}
-
-.user-option__actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 6px 10px;
-    border-radius: 20px;
-    background-color: #f5f7fa;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.user-option__icon {
-    font-size: 16px;
-    color: black;
-}
-
-.user-option__icon--user {
-    font-size: 18px;
-    color: #333;
-}
-
-.user-option__icon--add {
-    font-size: 16px;
-    color: black;
-}
-
-.user-option__divider {
-    width: 1px;
-    height: 20px;
-    background-color: #d1d1d1;
-}
-
-.user-option__avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-}
-
 .user-option__btn {
     display: flex;
     align-items: center;
@@ -100,5 +42,6 @@
 
 .export-form-container {
     position: absolute;
-    top:50px
+    top:50px;
+    right:250px;
 }

@@ -1,29 +1,129 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Timeline } from "@xzdarcy/react-timeline-editor";
-import { SCALE, MIN_SCALE, ROW_HEIGHT } from "../../../utils/constant";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { useVideoContext } from "../../../utils/context/VideoContext";
+import { useProjectContext } from "../../../utils/context/ProjectContext";
+import { updateProject, deleteBackGround } from "../../../apis/ProjectApi";
+import { ActionItem } from "./ActionItem";
+import { ROW_HEIGHT, MIN_SCALE_COUNT, SCALE } from "../../../utils/constant";
+import {
+  updateProjectBackgrounds,
+  generateTimelineData,
+} from "../../../utils/project";
+import {
+  clampActionsToFileLength,
+  generateEffectsFromFiles,
+} from "../../../utils/file";
 
 export const EditSection = ({ maxDuration = 1000 }) => {
+  const { selectedFiles, setSelectedFiles, ranges, setRanges, fileLength } =
+    useVideoContext();
   const [editorData, setEditorData] = useState([]);
+  const { projectInfo, setProjectInfo } = useProjectContext();
+  const [hoveredAction, setHoveredAction] = useState(null);
+  const effects = generateEffectsFromFiles(selectedFiles);
+
+  useEffect(() => {
+    if (selectedFiles.length !== fileLength.length) return;
+
+    let accumulatedStart = 0;
+
+    const timelineData = generateTimelineData(
+      selectedFiles,
+      fileLength,
+      maxDuration
+    );
+
+    setEditorData(timelineData);
+    setRanges(
+      timelineData[0].actions.map((action) => [action.start, action.end])
+    );
+  }, [selectedFiles, fileLength]);
+
+  useEffect(() => {
+    if (!projectInfo.id || ranges.length === 0) return;
+
+    const updatedProject = updateProjectBackgrounds(projectInfo, ranges);
+
+    setProjectInfo(updatedProject);
+
+    updateProject(updatedProject)
+      .then(() => console.log("Project updated successfully"))
+      .catch((error) => console.error("Error updating project:", error));
+  }, [ranges, editorData]);
 
   const handleChange = (newData) => {
     if (!newData || newData.length === 0) {
       return;
     }
-    setEditorData(newData);
+
+    const updatedData = clampActionsToFileLength(newData, fileLength);
+    setEditorData(updatedData);
+
+    const updatedRanges = updatedData[0].actions.map((action) => [
+      action.start,
+      action.end,
+    ]);
+
+    setRanges(updatedRanges);
+  };
+
+  const handleDelete = (actionId) => {
+    const newEditorData = editorData.map((row) => ({
+      ...row,
+      actions: row.actions.filter((action) => action.id !== actionId),
+    }));
+
+    setEditorData(newEditorData);
+    setRanges(
+      newEditorData[0].actions.map((action) => [action.start, action.end])
+    );
+
+    const actionIndex = editorData[0].actions.findIndex(
+      (action) => action.id === actionId
+    );
+
+    if (actionIndex === -1) {
+      return;
+    }
+
+    const updatedSelectedFiles = selectedFiles.filter(
+      (_, index) => index !== actionIndex
+    );
+    setSelectedFiles(updatedSelectedFiles);
+
+    const backgroundToDelete = projectInfo.backgrounds[actionIndex];
+
+    if (backgroundToDelete) {
+      deleteBackGround(backgroundToDelete.id)
+        .then(() => console.log(`Background ${backgroundToDelete.id} deleted`))
+        .catch((error) => console.error("Error deleting background:", error));
+
+      const updatedBackgrounds = projectInfo.backgrounds.filter(
+        (_, index) => index !== actionIndex
+      );
+      setProjectInfo({ ...projectInfo, backgrounds: updatedBackgrounds });
+    }
   };
 
   return (
-    <div className="container-fluid">
+    <div className="container-fluid p-0">
       <div className="w-100 h-100 d-flex flex-column border border-secondary rounded">
         <Timeline
           editorData={editorData}
+          effects={effects}
           style={{ width: "100%" }}
-          className="w-100"
           scale={SCALE}
-          minScaleCount={MIN_SCALE}
+          minScaleCount={MIN_SCALE_COUNT}
           rowHeight={ROW_HEIGHT}
           onChange={handleChange}
+          getActionRender={(action) => (
+            <ActionItem
+              action={action}
+              hoveredAction={hoveredAction}
+              setHoveredAction={setHoveredAction}
+              handleDelete={handleDelete}
+            />
+          )}
         />
       </div>
     </div>

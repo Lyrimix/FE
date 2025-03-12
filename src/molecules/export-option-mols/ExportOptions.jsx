@@ -6,7 +6,7 @@ export const ExportOptions = () => {
     <div>
       <SelectField
         options={["Format", "mp4", "avi"]}
-        className="input-field mb-2"
+        className="input-field mb-3"
       />
     </div>
   );

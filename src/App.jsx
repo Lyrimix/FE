@@ -1,11 +1,16 @@
+import { VideoProvider } from "./utils/context/VideoContext";
+import { ProjectProvider } from "./utils/context/ProjectContext";
 import "./App.css";
 import { HomePage } from "./pages/homepage/HomePage";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   return (
     <div className="App">
-      <HomePage className="home-page"></HomePage>
+      <ProjectProvider>
+        <VideoProvider>
+          <HomePage className="home-page"></HomePage>
+        </VideoProvider>
+      </ProjectProvider>
     </div>
   );
 }
