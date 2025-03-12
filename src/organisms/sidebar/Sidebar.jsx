@@ -3,7 +3,7 @@ import { Offcanvas, OffcanvasHeader, OffcanvasBody, Button } from "reactstrap";
 import SidebarGroup from "../../Molecules/sidebar-mols/SidebarGroup";
 import { FiUpload } from "react-icons/fi";
 import { useVideoContext } from "../../utils/context/VideoContext";
-import { intergrateLyricToVide } from "../../apis/ProjectApi";
+import { intergrateLyricToVideo } from "../../apis/ProjectApi";
 import {
   SIDEBAR_ITEMS,
   BACKGROUND_IMAGES,
@@ -38,7 +38,7 @@ const Sidebar = () => {
       const formData = new FormData();
       formData.append("file", videoFile);
       try {
-        const response = await intergrateLyricToVide(formData);
+        const response = await intergrateLyricToVideo(formData);
         const videoResponse = await fetch(response.data.videoUrl);
         const videoBlob = await videoResponse.blob();
         setVideoBlob(URL.createObjectURL(videoBlob));

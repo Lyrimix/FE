@@ -182,9 +182,6 @@ const VideoMerger = ({ files = [] }) => {
 
       const transformedVideo = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/l_${background},fl_relative,w_1.0,h_1.0,c_fill/${videoName}`;
 
-      // I currently need this line to test the result because i havent implemented database save for it
-      // console.log("url:", transformedVideo);
-
       try {
         const response = await fetch(transformedVideo);
         const blob = await response.blob();

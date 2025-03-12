@@ -3,13 +3,11 @@ import "./UserOption.css";
 import { FiUpload } from "react-icons/fi";
 import { useRef, useState } from "react";
 import { ExportForm } from "../../export-form-mols/ExportForm";
-import { useVideoContext } from "../../../utils/context/VideoContext";
-import { useProjectContext } from "../../../utils/context/ProjectContext";
+import { useFileUpload } from "../../../hooks/useFileUpload";
 
 export const UserOption = () => {
   const [isExport, setIsExport] = useState(false);
-  const { selectedFiles, setSelectedFiles, setPreviewUrls } = useVideoContext();
-  const { projectInfo, setProjectInfo } = useProjectContext();
+  const { uploadFiles } = useFileUpload();
   const fileInputRef = useRef(null);
 
   const handleUploadClick = () => {
@@ -31,16 +29,7 @@ export const UserOption = () => {
             accept="video/*"
             multiple
             className="d-none"
-            onChange={(event) => {
-              handleFileSelected(
-                event,
-                selectedFiles,
-                setSelectedFiles,
-                setPreviewUrls,
-                projectInfo,
-                setProjectInfo
-              );
-            }}
+            onChange={uploadFiles}
           />
           <button
             className="user-option__btn d-flex align-items-center gap-2"
