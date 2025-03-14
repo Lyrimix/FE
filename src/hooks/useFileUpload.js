@@ -4,8 +4,9 @@ import { useProjectContext } from "../utils/context/ProjectContext";
 import { useVideoContext } from "../utils/context/VideoContext";
 
 export const useFileUpload = () => {
-  const {selectedFiles, setSelectedFiles,previewUrls, setPreviewUrls} = useVideoContext();
-  const {projectInfo, setProjectInfo} = useProjectContext();
+  const { selectedFiles, setSelectedFiles, previewUrls, setPreviewUrls } =
+    useVideoContext();
+  const { projectInfo, setProjectInfo } = useProjectContext();
 
   const uploadFiles = async (event) => {
     const files = Array.from(event.target.files);
@@ -33,7 +34,7 @@ export const useFileUpload = () => {
     if (!projectId) {
       try {
         const response = await axios.post(
-          "https://deloyapp-production-b11a.up.railway.app/Lyrimix/project/createProject",
+          "http://localhost:8080/Lyrimix/project/createProject",
           { name: "Nga's project" },
           { headers: { "Content-Type": "application/json" } }
         );

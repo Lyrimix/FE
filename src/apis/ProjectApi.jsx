@@ -66,7 +66,7 @@ export const uploadToCloudinary = async (file) => {
       {
         method: "POST",
         body: formData,
-      }
+      },
     );
 
     const data = await response.json();
@@ -80,4 +80,20 @@ export const uploadToCloudinary = async (file) => {
     <AutoDismissToast message={("Error uploading to Cloudinary:", error)} />;
     return null;
   }
+};
+
+export const getLyricById = async (projectId) => {
+  return axios.get(`${API_URL}/api/lyrics/project/${projectId}`, {
+    headers: {
+      "Content-Type": ContentType.FormData,
+    },
+  });
+};
+
+export const updateLyricByProjectId = async (formData) => {
+  return axios.put(`${API_URL}/api/lyrics`, formData, {
+    headers: {
+      "Content-Type": ContentType.FormData,
+    },
+  });
 };
