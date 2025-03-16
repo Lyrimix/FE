@@ -219,7 +219,6 @@ const VideoMerger = ({ files = [] }) => {
       }
 
       const mergedBlob = new Blob(videoBuffers, { type: "video/mp4" });
-      setIsLoading(false);
       setMergedVideo(URL.createObjectURL(mergedBlob));
       setProjectVideo(mergedBlob);
       const uploadUrl = await uploadToCloudinary(mergedBlob);
@@ -228,7 +227,6 @@ const VideoMerger = ({ files = [] }) => {
         setVideoName(extractVideoName(uploadUrl));
         setIsLoading(false);
       }
-      setIsLoading(false);
     };
     getDurations();
     createBlobFromFiles();
