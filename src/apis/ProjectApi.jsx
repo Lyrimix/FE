@@ -8,7 +8,7 @@ import {
 import { AutoDismissToast } from "../molecules/auto-dismiss-toast-mols/AutoDismissToast";
 
 export const addBackGroundToProject = async (formData) => {
-  return axios.post(`${API_URL}/background`, formData, {
+  return axios.post(`${API_URL}/video`, formData, {
     headers: {
       "Content-Type": ContentType.FormData,
     },
@@ -39,16 +39,19 @@ export const deleteBackGround = async (backgroundId) => {
   });
 };
 
-export const exportProject = async (formData) => {
-  return axios.get(`${API_URL}/project/exportProject`, formData, {
-    headers: {
-      "Content-Type": ContentType.FormData,
-    },
-  });
+export const exportProject = async (projectId, outputVideoPath) => {
+  return axios.get(
+    `${API_URL}/project/exportProject?projectId=${projectId}&outputVideoPath=${outputVideoPath}`,
+    {
+      headers: {
+        "Content-Type": ContentType.Json,
+      },
+    }
+  );
 };
 
 export const intergrateLyricToVideo = async (formData) => {
-  return axios.post(`http://localhost:8080/Lyrimix/process`, formData, {
+  return axios.post(`${API_URL}/process`, formData, {
     headers: {
       "Content-Type": ContentType.FormData,
     },

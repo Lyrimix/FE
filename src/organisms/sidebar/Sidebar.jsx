@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import SidebarGroup from "../../Molecules/sidebar-mols/SidebarGroup";
 import { useVideoContext } from "../../utils/context/VideoContext";
-import { useProjectContext } from "../../utils/context/ProjectContext";
 import {
   intergrateLyricToVideo,
   getLyricById,
@@ -11,6 +10,9 @@ import SidebarOptions from "./SidebarOptions";
 import EditLyric from "./EditLyric";
 import "./Sidebar.css";
 import { SIDEBAR_ITEMS, TABS } from "../../utils/constant";
+import "./Sidebar.css";
+import { useProjectContext } from "../../utils/context/ProjectContext";
+import { useLoadingStore } from "../../store/useLoadingStore";
 
 const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
@@ -19,6 +21,7 @@ const Sidebar = () => {
   const { videoFile, setVideoBlob, projectInfo } = useProjectContext();
   const [lyric, setLyric] = useState(null);
   const [lyricEdit, setLyricEdit] = useState(null);
+  const setIsLoading = useLoadingStore((state) => state.setIsLoading);
 
   const onToggle = (tab) => {
     setSelectedTab(tab);

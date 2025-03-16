@@ -7,6 +7,8 @@ export const ProjectProvider = ({ children }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
   const [videoBlob, setVideoBlob] = useState(null);
+  const [projectLength, setProjectLength] = useState(0);
+  const [cloudinaryUrl, setCloudinaryUrl] = useState(null);
 
   return (
     <ProjectContext.Provider
@@ -19,6 +21,10 @@ export const ProjectProvider = ({ children }) => {
         setVideoFile,
         videoBlob,
         setVideoBlob,
+        projectLength,
+        setProjectLength,
+        cloudinaryUrl,
+        setCloudinaryUrl,
       }}
     >
       {children}

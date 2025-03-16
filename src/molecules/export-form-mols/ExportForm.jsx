@@ -1,20 +1,17 @@
 import React from "react";
-import { InputField } from "../../atoms/inputs/InputField";
 import { ThumbnailPreview } from "../../atoms/medias/ThumbnailPreview";
 import { ExportOptions } from "../export-option-mols/ExportOptions";
-import { Input, Button, FormGroup, Label } from "reactstrap";
+import { Input, FormGroup, Label } from "reactstrap";
+import { useProjectContext } from "../../utils/context/ProjectContext";
+import { exportProject } from "../../apis/ProjectApi";
 import "./ExportForm.css";
 
 export const ExportForm = () => {
-  const handleExportProject = async (projectVideo) => {
+  const { projectInfo } = useProjectContext();
+
+  const handleExportProject = async () => {
     try {
-      const formData = new FormData();
-      const videoFile = new File([projectVideo], "merged_video.mp4", {
-        type: "video/mp4",
-      });
-      formData.append("file", videoFile);
-      formData.append("outputVideoPath", ".mkv");
-      await exportProject(formData);
+      await exportProject(projectInfo.id, ".mov");
     } catch (error) {
       console.error("Error sending files to the server:", error);
     }
