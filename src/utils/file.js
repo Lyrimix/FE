@@ -29,16 +29,16 @@ export const clampActionsToFileLength = (newData, fileLength) => {
       let endTime = action.end;
       const maxDuration = fileLength[index] || Infinity;
 
-      if (endTime > maxDuration) {
-        alert(
-          `End time ${endTime} exceeds file length ${maxDuration}. Clamping to max.`
-        );
-        return {
-          ...action,
-          end: startTime + maxDuration,
-          maxEnd: maxDuration,
-        };
-      }
+      // if (endTime > maxDuration) {
+      //   alert(
+      //     `End time ${endTime} exceeds file length ${maxDuration}. Clamping to max.`
+      //   );
+      //   return {
+      //     ...action,
+      //     end: startTime + maxDuration,
+      //     maxEnd: maxDuration,
+      //   };
+      // }
       return action;
     }),
   }));
