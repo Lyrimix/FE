@@ -8,10 +8,7 @@ import {
   FaClosedCaptioning,
 } from "react-icons/fa";
 
-//PROJECT
 export const PROJECT_NAME = "Lyrimix";
-
-//TIMELINE
 export const MIN_SCALE = 2;
 export const SCALE = 30;
 export const MIN_SCALE_COUNT = 10;
@@ -29,12 +26,11 @@ export const MOCK_EFFECT = {
 };
 
 //CLOUDINARY
-export const CLOUD_NAME = "duli95mss";
+export const CLOUD_NAME = "db6fvvwri";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
-export const API_URL =
-  "https://deloyapp-production-b11a.up.railway.app/Lyrimix";
+export const API_URL = "http://localhost:8080/Lyrimix";
 
 //SAMPLE IMAGE
 export const SIDEBAR_ITEMS = [
@@ -55,12 +51,12 @@ export const EXPANDED_ITEMS = {
   Settings: ["General", "Preferences"],
   Lyric: [
     "Create lyric automatically",
-    "Create lyric manually",
+    "Edit lyric manually",
     "Upload lyric file",
   ],
 };
 
-const TABS = {
+export const TABS = {
   LYRIC: "Lyric",
   BACKGROUND: "Background",
   SETTING: "Settings",
@@ -68,6 +64,10 @@ const TABS = {
   AUDIO: "Audio",
   EFFECT: "Effect",
   TEXT: "Text",
+  OPTIONS: "options",
+  EDITLYRIC: "editLyric",
+  EDITLYRICMANUALLY: "Edit lyric manually",
+  CREATELYRICAUTOMATICALLY: "Create lyric automatically",
 };
 
 export const BACKGROUND_IMAGES = [
