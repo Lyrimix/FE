@@ -1,11 +1,21 @@
-export const updateProjectBackgrounds = (projectInfo, ranges) => ({
-  ...projectInfo,
-  backgrounds: projectInfo.backgrounds.map((bg, index) => ({
+export const updateProjectBackgrounds = (projectInfo, ranges,cloudinaryUrl) => {
+  const updatedVideos = projectInfo.videos.map((bg, index) => ({
     ...bg,
     startTime: ranges[index]?.[0] || 0,
     endTime: ranges[index]?.[1] || 0,
-  })),
-});
+  }));
+
+  const projectLength = updatedVideos.length > 0 
+    ? Math.max(...updatedVideos.map(video => video.endTime))
+    : 0;
+
+  return {
+    ...projectInfo,
+    videos: updatedVideos,
+    length: projectLength,
+    asset: cloudinaryUrl
+  };
+};
 
 export const generateTimelineData = (
   selectedFiles,
@@ -35,3 +45,5 @@ export const generateTimelineData = (
 
   return timelineData;
 };
+
+

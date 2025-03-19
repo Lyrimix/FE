@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Timeline } from "@xzdarcy/react-timeline-editor";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
-import { deleteBackGround } from "../../../apis/ProjectApi";
+import { deleteBackGround, updateProject } from "../../../apis/ProjectApi";
 import { ActionItem } from "./ActionItem";
 import { ROW_HEIGHT, MIN_SCALE_COUNT, SCALE } from "../../../utils/constant";
 import {
@@ -18,14 +18,12 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   const { selectedFiles, setSelectedFiles, ranges, setRanges, fileLength } =
     useVideoContext();
   const [editorData, setEditorData] = useState([]);
-  const { projectInfo, setProjectInfo } = useProjectContext();
+  const { projectInfo, setProjectInfo, cloudinaryUrl } = useProjectContext();
   const [hoveredAction, setHoveredAction] = useState(null);
   const effects = generateEffectsFromFiles(selectedFiles);
 
   useEffect(() => {
     if (selectedFiles.length !== fileLength.length) return;
-
-    let accumulatedStart = 0;
 
     const timelineData = generateTimelineData(
       selectedFiles,
@@ -40,11 +38,20 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   }, [selectedFiles, fileLength]);
 
   useEffect(() => {
-    if (!projectInfo.id || ranges.length === 0) return;
-
-    const updatedProject = updateProjectBackgrounds(projectInfo, ranges);
+    if (!projectInfo.id || ranges.length === 0) {
+      return;
+    }
+    const updatedProject = updateProjectBackgrounds(
+      projectInfo,
+      ranges,
+      cloudinaryUrl
+    );
 
     setProjectInfo(updatedProject);
+
+    updateProject(updatedProject).catch((error) =>
+      console.error("Error updating project:", error)
+    );
   }, [ranges, editorData]);
 
   const handleChange = (newData) => {

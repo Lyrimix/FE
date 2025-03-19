@@ -47,7 +47,7 @@ export const clampActionsToFileLength = (newData, fileLength) => {
 export const generateEffectsFromFiles = (selectedFiles) => {
   return selectedFiles.reduce(
     (acc, file, index) => ({
-      ...acc,
+        ...acc,
       [`effect${index}`]: { id: `effect${index}`, name: file.name },
     }),
     {}

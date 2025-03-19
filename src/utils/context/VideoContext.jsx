@@ -13,7 +13,6 @@ export const VideoProvider = ({ children }) => {
   const [fileLength, setFileLength] = useState([]);
   const [projectVideo, setProjectVideo] = useState(null);
   const [selectedBackground, setSelectedBackground] = useState(null);
-  const [cloudinaryUrl, setCloudinaryUrl] = useState(null);
 
   const handleChange = (index, newRange) => {
     if (!Array.isArray(newRange)) {
@@ -61,8 +60,6 @@ export const VideoProvider = ({ children }) => {
         setProjectVideo,
         selectedBackground,
         setSelectedBackground,
-        cloudinaryUrl,
-        setCloudinaryUrl,
       }}
     >
       {children}
