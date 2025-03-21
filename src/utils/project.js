@@ -1,4 +1,6 @@
-export const updateProjectBackgrounds = (projectInfo, ranges,cloudinaryUrl) => {
+import { ratioSizes } from "./constant";
+
+export const updateProjectBackgrounds = (projectInfo, ranges,cloudinaryUrl,projectRatio ="") => {
   const updatedVideos = projectInfo.videos.map((bg, index) => ({
     ...bg,
     startTime: ranges[index]?.[0] || 0,
@@ -8,13 +10,15 @@ export const updateProjectBackgrounds = (projectInfo, ranges,cloudinaryUrl) => {
   const projectLength = updatedVideos.length > 0 
     ? Math.max(...updatedVideos.map(video => video.endTime))
     : 0;
-
-  return {
-    ...projectInfo,
-    videos: updatedVideos,
-    length: projectLength,
-    asset: cloudinaryUrl
-  };
+    const size = ratioSizes[projectRatio] || projectRatio; 
+  
+    return {
+      ...projectInfo,
+      videos: updatedVideos,
+      length: projectLength,
+      asset: cloudinaryUrl,
+      size: size
+    };
 };
 
 export const generateTimelineData = (

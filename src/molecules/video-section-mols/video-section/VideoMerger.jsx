@@ -23,8 +23,10 @@ const VideoMerger = ({ files = [] }) => {
     setProjectInfo,
     videoRef,
     timelineState,
+    projectRatio,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
+  const [isRendered, setIsRendered] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -157,7 +159,7 @@ const VideoMerger = ({ files = [] }) => {
 
     const mergedData = ffmpeg.FS("readFile", "merged.mp4");
     const mergedBlob = new Blob([mergedData.buffer], { type: "video/mp4" });
-
+    setVideoFile(new File([mergedBlob], "merged.mp4", { type: "video/mp4" }));
     return mergedBlob;
   };
 
@@ -186,13 +188,14 @@ const VideoMerger = ({ files = [] }) => {
   const handleMergedVideo = async (blob) => {
     setProjectVideo(blob);
     const url = URL.createObjectURL(blob);
-    setMergedVideo(url);
-    setProjectVideo(url);
-
-    const uploadUrl = await uploadToCloudinary(blob);
-    if (uploadUrl) {
-      setVideoName(extractVideoName(uploadUrl));
-      setIsLoading(false);
+    if (!mergedVideo || videoName == null) {
+      setMergedVideo(url);
+      setProjectVideo(url);
+      const uploadUrl = await uploadToCloudinary(blob);
+      if (uploadUrl) {
+        setVideoName(extractVideoName(uploadUrl));
+        setIsLoading(false);
+      }
     }
   };
 
@@ -239,12 +242,13 @@ const VideoMerger = ({ files = [] }) => {
       try {
         setIsLoading(true);
         await ensureFFmpegLoaded();
+        if (!isRendered || mergedVideo) {
+          await writeVideosToFS(files);
 
-        await writeVideosToFS(files);
+          await createConcatFile(files);
 
-        await createConcatFile(files);
-
-        await mergeVideos();
+          await mergeVideos();
+        }
 
         const trimmedBlob = await trimMergedVideo(ranges);
 
@@ -302,13 +306,19 @@ const VideoMerger = ({ files = [] }) => {
   }, [videoName, background]);
 
   return (
-    <div className="d-flex flex-column align-items-center w-100 h-100 position-relative">
+    <div
+      className="d-flex flex-column align-items-center justify-content-center h-100 position-relative"
+      style={{
+        aspectRatio: projectRatio.replace(":", "/") || "1/1",
+      }}
+    >
       {mergedVideo && (
         <>
           <video
             ref={videoRef}
             src={mergedVideo}
-            className="w-100 h-100 rounded-3"
+            className="w-100 h-100 rounded-3 object-fit-cover"
+            onLoadedData={() => setIsRendered(true)}
           />
           {!isInRange && (
             <div className="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-100" />

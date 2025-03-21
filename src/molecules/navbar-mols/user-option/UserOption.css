@@ -45,3 +45,11 @@
     top:50px;
     right:250px;
 }
+
+.user-option__header--left {
+    width: 20%;
+}
+
+.user-option__header--right {
+    width: 60%;
+}

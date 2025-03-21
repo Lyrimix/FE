@@ -4,6 +4,7 @@ import { ExportOptions } from "../export-option-mols/ExportOptions";
 import { Input, FormGroup, Label } from "reactstrap";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { exportProject } from "../../apis/ProjectApi";
+import { exportOptions } from "../../utils/constant";
 import "./ExportForm.css";
 
 export const ExportForm = () => {
@@ -31,7 +32,7 @@ export const ExportForm = () => {
         <Label for="nameInput">Name</Label>
         <Input id="nameInput" name="name" placeholder="Name" type="text" />
       </FormGroup>
-      <ExportOptions className="mb-3" />
+      <ExportOptions options={exportOptions} className="mb-3" />
       <button
         className="btn bg-custom-primary w-100 mb-2 text-dark"
         onClick={handleExportProject}

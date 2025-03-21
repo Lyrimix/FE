@@ -10,10 +10,16 @@
 }
 
 .content-name,
-.zoom-section,
 .user-options {
-  flex: 0.46;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.content-name {
+  flex: 0.3; 
+}
+
+.user-options {
+  flex: 0.7; 
 }
