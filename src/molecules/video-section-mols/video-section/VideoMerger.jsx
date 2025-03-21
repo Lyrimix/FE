@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { getVideoDuration, extractVideoName } from "../../../utils/file";
 import { useVideoContext } from "../../../utils/context/VideoContext";
-import { ENGINE_EVENTS } from "../../../utils/constant";
-import { generateCloudinaryUrl } from "../../../utils/cloudinaryUtils";
+import { CLOUD_NAME } from "../../../utils/constant";
 import {
   uploadToCloudinary,
   addExistLyricForVideo,
