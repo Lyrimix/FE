@@ -1,12 +1,12 @@
 .main-content__video-section {
-    height: 70%;
+  height: 70%;
 }
 
 .main-content__edit-section {
-    height: 40%;
-    left: 110px;
+  height: 40%;
+  left: 90px;
 }
 
 .main-content__time-stamp {
-    width: 100%;
+  width: 100%;
 }

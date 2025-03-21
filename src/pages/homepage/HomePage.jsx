@@ -1,7 +1,7 @@
 import React from "react";
-import { Navbar } from "../../Organisms/navbar/Navbar";
-import { MainContent } from "../../Organisms/main-content/MainContent";
-import Sidebar from "../../Organisms/sidebar/Sidebar";
+import { Navbar } from "../../organisms/navbar/Navbar";
+import { MainContent } from "../../organisms/main-content/MainContent";
+import Sidebar from "../../organisms/sidebar/Sidebar";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./HomePage.css";
 
