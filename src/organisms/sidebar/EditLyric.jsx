@@ -8,22 +8,58 @@ const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
 
   useEffect(() => {
     if (Array.isArray(lyric) && typeof lyric[0] === "string") {
-      setLyricEdit(lyric[0].split("\n"));
+      const assContent = lyric[0];
+      const lines = assContent.split("\n");
+
+      const dialogueLines = lines.filter((line) =>
+        line.startsWith("Dialogue:")
+      );
+
+      const parsedLyrics = dialogueLines.map((line) => {
+        const parts = line.split(",");
+        return {
+          raw: line,
+          start: parts[1].trim(),
+          end: parts[2].trim(),
+          text: parts.slice(9).join(",").trim(),
+        };
+      });
+
+      setLyricEdit(parsedLyrics);
     } else {
       setLyricEdit([]);
     }
   }, [lyric]);
 
-  const handleChange = (index, value) => {
-    setLyricEdit((prev) => {
-      const updatedLyrics = [...prev];
-      updatedLyrics[index] = value;
-      return updatedLyrics;
-    });
+  const handleChange = (index, field, value) => {
+    setLyricEdit((prev) =>
+      prev.map((item, i) =>
+        i === index ? { ...item, [field]: value.trim() } : item
+      )
+    );
   };
 
   const handleSelect = (index) => {
     setSelectedIndex(index);
+  };
+
+  const handleSave = () => {
+    const formattedLyrics = lyricEdit.map((item) => {
+      const parts = item.raw.split(",");
+      parts[1] = item.start.trim();
+      parts[2] = item.end.trim();
+      parts.splice(9, parts.length - 9, item.text.trim());
+      return parts.join(",");
+    });
+
+    const assContent = lyric[0]
+      .split("\n")
+      .map((line) =>
+        line.startsWith("Dialogue:") ? formattedLyrics.shift() : line
+      )
+      .join("\n");
+
+    handleSaveLyric(assContent);
   };
 
   return (
@@ -38,43 +74,45 @@ const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
         Edit Lyrics
       </OffcanvasHeader>
       <OffcanvasBody className="bg-black">
-        <div className="overflow-auto" style={{ maxHeight: "530px" }}>
-          {lyricEdit.map((line, index) => {
-            if (index % 4 === 1) {
-              return (
-                <div
-                  key={index}
-                  onClick={() => handleSelect(index)}
-                  className={`p-2 mb-2 rounded ${
-                    selectedIndex === index
-                      ? "border border-info"
-                      : "border border-secondary"
-                  } bg-black transition`}
-                >
-                  <input
-                    type="text"
-                    value={lyricEdit[index]}
-                    onChange={(e) => handleChange(index, e.target.value)}
-                    className="form-control text-info opacity-75 border-0 bg-transparent"
-                  />
-                  {index + 1 < lyricEdit.length && (
-                    <input
-                      type="text"
-                      value={lyricEdit[index + 1]}
-                      onChange={(e) => handleChange(index + 1, e.target.value)}
-                      className="form-control text-white border-0 bg-transparent"
-                    />
-                  )}
-                </div>
-              );
-            }
-            return null;
-          })}
+        <div className="overflow-auto space-edit">
+          {lyricEdit.map((line, index) => (
+            <div
+              key={index}
+              onClick={() => handleSelect(index)}
+              className={`p-2 mb-2 rounded ${
+                selectedIndex === index
+                  ? "border border-info"
+                  : "border border-secondary"
+              } bg-black transition`}
+            >
+              <div className="d-flex gap-2">
+                <input
+                  type="text"
+                  value={line.start}
+                  onChange={(e) => handleChange(index, "start", e.target.value)}
+                  className="form-control text-info border-0 bg-transparent flex-grow-1 input-time"
+                />
+                <input
+                  type="text"
+                  value={line.end}
+                  onChange={(e) => handleChange(index, "end", e.target.value)}
+                  className="form-control text-info border-0 bg-transparent flex-grow-1 input-time"
+                />
+              </div>
+
+              <input
+                type="text"
+                value={line.text}
+                onChange={(e) => handleChange(index, "text", e.target.value)}
+                className="form-control text-white border-0 bg-transparent"
+              />
+            </div>
+          ))}
         </div>
         <Button
           color="light"
           className="mt-3 w-100"
-          onClick={() => handleSaveLyric(lyricEdit.join("\n"))}
+          onClick={handleSave}
           disabled={lyricEdit.length === 0}
         >
           Save

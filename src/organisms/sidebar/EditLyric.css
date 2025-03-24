@@ -1,3 +1,9 @@
 .custom-offcanvas {
   width: 360px !important;
 }
+.input-time {
+  max-width: 100px;
+}
+.space-edit {
+  max-height: 530px;
+}
