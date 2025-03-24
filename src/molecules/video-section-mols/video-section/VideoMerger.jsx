@@ -8,6 +8,7 @@ import {
   addExistLyricForVideo,
   updateProject,
   getLyricById,
+  updateProject,
 } from "../../../apis/ProjectApi";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useLoadingStore } from "../../../store/useLoadingStore";
