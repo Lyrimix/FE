@@ -10,9 +10,9 @@ import SidebarOptions from "./SidebarOptions";
 import EditLyric from "./EditLyric";
 import "./Sidebar.css";
 import { SIDEBAR_ITEMS, TABS } from "../../utils/constant";
-import "./Sidebar.css";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { useLoadingStore } from "../../store/useLoadingStore";
+import { fetchVideoBlob, convertBase64ToBlob } from "../../utils/file";
 
 const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
@@ -44,13 +44,14 @@ const Sidebar = () => {
       if (item === TABS.CREATELYRICAUTOMATICALLY) {
         setIsSidebarOptionsOpen(false);
         const responseLyric = await getLyricById(projectInfo.id);
-        if (responseLyric.data.length != 0) return;
+        if (responseLyric.data.length !== 0) return;
+
         const formData = new FormData();
         formData.append("file", projectVideo);
         formData.append("projectId", projectInfo.id);
+
         const response = await intergrateLyricToVideo(formData);
-        const videoResponse = await fetch(response.data.videoUrl);
-        const videoBlob = await videoResponse.blob();
+        const videoBlob = await fetchVideoBlob(response.data.videoUrl);
         setVideoBlob(URL.createObjectURL(videoBlob));
       }
 
@@ -73,23 +74,16 @@ const Sidebar = () => {
 
   const handleSaveLyric = async (updatedLyric) => {
     setIsEditLyricOpen(false);
-    if (updatedLyric == lyricEdit) return;
-    if (!updatedLyric.trim()) return;
+    if (updatedLyric === lyricEdit[0]) return;
 
     try {
       const formData = new FormData();
       formData.append("text", updatedLyric);
       formData.append("projectId", projectInfo.id);
       formData.append("file", projectVideo);
+
       const response = await updateLyricByProjectId(formData);
-      const base64String = response.data.result;
-      const byteCharacters = atob(base64String);
-      const byteNumbers = new Array(byteCharacters.length);
-      for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      const videoBlob = new Blob([byteArray], { type: "video/mp4" });
+      const videoBlob = convertBase64ToBlob(response.data.result);
       setVideoBlob(URL.createObjectURL(videoBlob));
     } catch (error) {
       console.error("Error updating lyric:", error);

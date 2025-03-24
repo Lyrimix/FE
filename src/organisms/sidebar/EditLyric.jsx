@@ -1,34 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Offcanvas, OffcanvasHeader, OffcanvasBody, Button } from "reactstrap";
 import "./EditLyric.css";
+import { TABS } from "../../utils/constant";
 
 const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
   const [lyricEdit, setLyricEdit] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
   useEffect(() => {
-    if (Array.isArray(lyric) && typeof lyric[0] === "string") {
-      const assContent = lyric[0];
-      const lines = assContent.split("\n");
+    const parseLyrics = (lyric) => {
+      if (!Array.isArray(lyric) || typeof lyric[0] !== "string") return [];
 
-      const dialogueLines = lines.filter((line) =>
-        line.startsWith("Dialogue:")
-      );
+      return lyric[0]
+        .split(/\r?\n/)
+        .filter((line) => line.startsWith(TABS.DIALOGUE))
+        .map((line) => {
+          const parts = line.split(",");
+          return {
+            raw: line,
+            start: parts[1]?.trim() || "",
+            end: parts[2]?.trim() || "",
+            text: parts.slice(9).join(",").trim() || "",
+          };
+        });
+    };
 
-      const parsedLyrics = dialogueLines.map((line) => {
-        const parts = line.split(",");
-        return {
-          raw: line,
-          start: parts[1].trim(),
-          end: parts[2].trim(),
-          text: parts.slice(9).join(",").trim(),
-        };
-      });
-
-      setLyricEdit(parsedLyrics);
-    } else {
-      setLyricEdit([]);
-    }
+    setLyricEdit(parseLyrics(lyric));
   }, [lyric]);
 
   const handleChange = (index, field, value) => {
@@ -49,15 +46,16 @@ const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
       parts[1] = item.start.trim();
       parts[2] = item.end.trim();
       parts.splice(9, parts.length - 9, item.text.trim());
-      return parts.join(",");
+
+      return parts.map((p, i) => (i >= 9 ? p.trimStart() : p)).join(",");
     });
 
     const assContent = lyric[0]
-      .split("\n")
+      .split(/\r?\n/)
       .map((line) =>
-        line.startsWith("Dialogue:") ? formattedLyrics.shift() : line
+        line.startsWith(TABS.DIALOGUE) ? formattedLyrics.shift() : line
       )
-      .join("\n");
+      .join("\r\n");
 
     handleSaveLyric(assContent);
   };
