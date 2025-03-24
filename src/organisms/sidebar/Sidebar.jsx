@@ -65,6 +65,7 @@ const Sidebar = () => {
 
         default:
           console.warn("Unhandled option:", item);
+<<<<<<< HEAD
       }
       if (item === TABS.CUSTOMLYRIC) {
         setIsSidebarOptionsOpen(false);
@@ -77,6 +78,8 @@ const Sidebar = () => {
           console.error("Error while getting lyrics", error);
           setLyricEdit("");
         }
+=======
+>>>>>>> 3506755 ([5-3] feat: Implement show/hide lyrics)
       }
     } catch (error) {
       console.error("Error in handleOptionClick:", error);
