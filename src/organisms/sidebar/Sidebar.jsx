@@ -4,6 +4,7 @@ import { useVideoContext } from "../../utils/context/VideoContext";
 import {
   intergrateLyricToVideo,
   getLyricById,
+  showHideLyrics,
   updateLyricByProjectId,
   uploadToCloudinary,
   updateProject,
@@ -25,6 +26,7 @@ const Sidebar = () => {
   const { setVideoBlob, projectInfo } = useProjectContext();
   const [lyricEdit, setLyricEdit] = useState(null);
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
+  const [showHideLabel, setShowHideLabel] = useState(TABS.HIDDENLYRICS);
 
   const onToggle = (tab) => {
     setSelectedTab(tab);
@@ -40,40 +42,105 @@ const Sidebar = () => {
   };
 
   const handleOptionClick = async (item) => {
-    if (selectedTab !== TABS.LYRIC) return;
+    if (selectedTab !== TABS.LYRIC) {
+      return;
+    }
 
     try {
-      if (item === TABS.CREATELYRICAUTOMATICALLY) {
-        setIsSidebarOptionsOpen(false);
-        const responseLyric = await getLyricById(projectInfo.id);
-        if (responseLyric.data.length !== 0) return;
+      switch (item) {
+        case TABS.CREATELYRICAUTOMATICALLY:
+          await processAutomaticLyrics();
+          break;
 
-        const formData = new FormData();
-        formData.append("file", projectVideo);
-        formData.append("projectId", projectInfo.id);
+        case TABS.EDITLYRICMANUALLY:
+          await openLyricEditor();
+          break;
 
-        const response = await intergrateLyricToVideo(formData);
-        const videoBlob = await fetchVideoBlob(response.data.videoUrl);
-        setVideoBlob(URL.createObjectURL(videoBlob));
-        const cloudinaryUrl = await uploadToCloudinary(videoBlob);
-        projectInfo.asset = cloudinaryUrl;
-        updateProject(projectInfo);
-      }
+        case TABS.HIDDENLYRICS:
+          await toggleLyricsVisibility();
+          break;
 
-      if (item === TABS.EDITLYRICMANUALLY) {
-        setIsSidebarOptionsOpen(false);
-        setIsEditLyricOpen(true);
-
-        try {
-          const response = await getLyricById(projectInfo.id);
-          setLyricEdit(response.data || "");
-        } catch (error) {
-          console.error("Error while getting lyrics", error);
-          setLyricEdit("");
-        }
+        default:
+          console.warn("Unhandled option:", item);
       }
     } catch (error) {
-      console.error("Error handling lyric action:", error);
+      console.error("Error in handleOptionClick:", error);
+    }
+  };
+
+  const processAutomaticLyrics = async () => {
+    setIsLoading(true);
+
+    try {
+      const formData = createLyricFormData(projectVideo, projectInfo.id);
+      const response = await intergrateLyricToVideo(formData);
+      await uploadVideo(response.data.videoUrl);
+    } catch (error) {
+      console.error("Error while integrating lyrics:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openLyricEditor = async () => {
+    setOffcanvasType(TABS.EDITLYRIC);
+
+    try {
+      const response = await getLyricById(projectInfo.id);
+      setLyric(response.data);
+      setLyricEdit(response.data);
+    } catch (error) {
+      console.error("Error fetching lyric:", error);
+    }
+  };
+
+  const toggleLyricsVisibility = async () => {
+    setIsSidebarOptionsOpen(false);
+
+    try {
+      const responseLyric = await getLyricById(projectInfo.id);
+      if (!responseLyric.data.length) {
+        alert("You need to create lyrics before showing or hiding them.");
+        return;
+      }
+
+      setIsLoading(true);
+
+      const formData = createLyricFormData(projectVideo, projectInfo.id);
+      const response = await showHideLyrics(projectInfo.id, formData);
+
+      const isHidden = response.data.lyricHidden;
+      setShowHideLabel(isHidden ? TABS.SHOWLYRICS : TABS.HIDDENLYRICS);
+
+      formData.append("text", isHidden ? " " : response.data.text);
+
+      await uploadVideo(response.data.videoUrl);
+    } catch (error) {
+      console.error("Error while toggling lyrics visibility:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const createLyricFormData = (file, projectId) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("projectId", projectId);
+    return formData;
+  };
+
+  const uploadVideo = async (videoUrl) => {
+    try {
+      const videoResponse = await fetch(videoUrl);
+
+      if (!videoResponse.ok) {
+        throw new Error(`Failed to fetch video: ${videoResponse.status}`);
+      }
+
+      const videoBlob = await videoResponse.blob();
+      setVideoBlob(URL.createObjectURL(videoBlob));
+    } catch (error) {
+      console.error("Error uploading video:", error);
     }
   };
 
@@ -112,6 +179,7 @@ const Sidebar = () => {
         selectedTab={selectedTab}
         handleOptionClick={handleOptionClick}
         handleSampleImageClick={handleSampleImageClick}
+        showHideLabel={showHideLabel}
       />
 
       <EditLyric
