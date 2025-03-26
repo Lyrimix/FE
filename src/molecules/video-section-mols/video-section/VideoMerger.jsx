@@ -7,6 +7,8 @@ import { generateCloudinaryUrl } from "../../../utils/cloudinaryUtils";
 import {
   uploadToCloudinary,
   addExistLyricForVideo,
+  updateProject,
+  getLyricById,
 } from "../../../apis/ProjectApi";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useLoadingStore } from "../../../store/useLoadingStore";
@@ -19,8 +21,13 @@ const VideoMerger = ({ files = [] }) => {
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
   const [videoName, setVideoName] = useState(null);
   const [background, setBackground] = useState(null);
-  const { setFileLength, ranges, setProjectVideo, selectedBackground } =
-    useVideoContext();
+  const {
+    setFileLength,
+    ranges,
+    setProjectVideo,
+    projectVideo,
+    selectedBackground,
+  } = useVideoContext();
   const {
     setVideoFile,
     videoBlob,
@@ -29,6 +36,7 @@ const VideoMerger = ({ files = [] }) => {
     videoRef,
     timelineState,
     projectRatio,
+    projectInfo,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);
@@ -191,16 +199,13 @@ const VideoMerger = ({ files = [] }) => {
   };
 
   const handleMergedVideo = async (blob) => {
-    setProjectVideo(blob);
-    const url = URL.createObjectURL(blob);
     try {
-      if (!mergedVideo || videoName === null) {
-        setMergedVideo(url);
-        setProjectVideo(url);
-        const uploadUrl = await uploadToCloudinary(blob);
-        if (uploadUrl) {
-          setVideoName(extractVideoName(uploadUrl));
-        }
+      setProjectVideo(blob);
+      const url = URL.createObjectURL(blob);
+      setMergedVideo(url);
+      const uploadUrl = await uploadToCloudinary(blob);
+      if (uploadUrl) {
+        setVideoName(extractVideoName(uploadUrl));
       }
     } catch (error) {
       console.error("Error uploading video:", error);
@@ -305,12 +310,23 @@ const VideoMerger = ({ files = [] }) => {
         );
         setProjectVideo(videoBlob);
 
+        const responseLyric = await getLyricById(projectInfo.id);
+        if (responseLyric.data.length === 0) {
+          setMergedVideo(URL.createObjectURL(videoBlob));
+          const cloudinaryUrl = await uploadToCloudinary(transformedVideo);
+          projectInfo.asset = cloudinaryUrl;
+          updateProject(projectInfo);
+          return;
+        }
         const finalVideo = await processVideoWithLyrics(
           videoBlob,
           projectInfo.id,
           addExistLyricForVideo
         );
         setMergedVideo(URL.createObjectURL(finalVideo));
+        const cloudinaryUrl = await uploadToCloudinary(finalVideo);
+        projectInfo.asset = cloudinaryUrl;
+        updateProject(projectInfo);
       } catch (error) {
         console.error("Error loading video:", error);
       } finally {

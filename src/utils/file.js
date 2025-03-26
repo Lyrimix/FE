@@ -115,9 +115,6 @@ export const processVideoWithLyrics = async (
   projectId,
   apiFunction
 ) => {
-  const responseLyric = await getLyricById(projectId);
-  if (responseLyric.data.length === 0) return videoBlob;
-
   const formData = new FormData();
   formData.append("file", videoBlob);
   formData.append("projectId", projectId);
