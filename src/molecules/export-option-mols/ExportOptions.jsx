@@ -6,7 +6,6 @@ export const ExportOptions = ({ options }) => {
   const { setProjectRatio } = useProjectContext();
 
   const handleChange = (event) => {
-    const newRatio = event.target.value;
     setProjectRatio(event.target.value);
   };
 

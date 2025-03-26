@@ -188,14 +188,19 @@ const VideoMerger = ({ files = [] }) => {
   const handleMergedVideo = async (blob) => {
     setProjectVideo(blob);
     const url = URL.createObjectURL(blob);
-    if (!mergedVideo || videoName == null) {
-      setMergedVideo(url);
-      setProjectVideo(url);
-      const uploadUrl = await uploadToCloudinary(blob);
-      if (uploadUrl) {
-        setVideoName(extractVideoName(uploadUrl));
-        setIsLoading(false);
+    try {
+      if (!mergedVideo || videoName === null) {
+        setMergedVideo(url);
+        setProjectVideo(url);
+        const uploadUrl = await uploadToCloudinary(blob);
+        if (uploadUrl) {
+          setVideoName(extractVideoName(uploadUrl));
+        }
       }
+    } catch (error) {
+      console.error("Error uploading video:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
