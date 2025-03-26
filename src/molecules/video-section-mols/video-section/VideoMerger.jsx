@@ -2,10 +2,15 @@ import { useState, useEffect } from "react";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { getVideoDuration, extractVideoName } from "../../../utils/file";
 import { useVideoContext } from "../../../utils/context/VideoContext";
-import { CLOUD_NAME, ENGINE_EVENTS } from "../../../utils/constant";
-import { uploadToCloudinary } from "../../../apis/ProjectApi";
+import { ENGINE_EVENTS } from "../../../utils/constant";
+import { generateCloudinaryUrl } from "../../../utils/cloudinaryUtils";
+import {
+  uploadToCloudinary,
+  addExistLyricForVideo,
+} from "../../../apis/ProjectApi";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useLoadingStore } from "../../../store/useLoadingStore";
+import { fetchVideoBlob, processVideoWithLyrics } from "../../../utils/file";
 
 const ffmpeg = createFFmpeg({ log: false });
 
@@ -286,20 +291,26 @@ const VideoMerger = ({ files = [] }) => {
     const fetchAndSetMergedVideo = async () => {
       if (!mergedVideo || !selectedBackground) return;
 
-      const transformedVideo = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/l_${background},fl_relative,w_1.0,h_1.0,c_fill/${videoName}`;
-      setCloudinaryUrl(transformedVideo);
-      setProjectInfo((prev) => ({
-        ...prev,
-      }));
-      setIsLoading(true);
       try {
-        const response = await fetch(transformedVideo);
-        const blob = await response.blob();
+        const transformedVideo = generateCloudinaryUrl(videoName, background);
+        setCloudinaryUrl(transformedVideo);
+        setProjectInfo((prev) => ({
+          ...prev,
+        }));
+        setIsLoading(true);
+
+        const videoBlob = await fetchVideoBlob(transformedVideo);
         setVideoFile(
-          new File([blob], "mergedVideo.mp4", { type: "video/mp4" })
+          new File([videoBlob], "mergedVideo.mp4", { type: "video/mp4" })
         );
-        setMergedVideo(URL.createObjectURL(blob));
-        setProjectVideo(URL.createObjectURL(blob));
+        setProjectVideo(videoBlob);
+
+        const finalVideo = await processVideoWithLyrics(
+          videoBlob,
+          projectInfo.id,
+          addExistLyricForVideo
+        );
+        setMergedVideo(URL.createObjectURL(finalVideo));
       } catch (error) {
         console.error("Error loading video:", error);
       } finally {
