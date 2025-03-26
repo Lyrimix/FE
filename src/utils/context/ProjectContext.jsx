@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useRef } from "react";
 
 const ProjectContext = createContext();
 
@@ -9,6 +9,8 @@ export const ProjectProvider = ({ children }) => {
   const [videoBlob, setVideoBlob] = useState(null);
   const [projectLength, setProjectLength] = useState(0);
   const [cloudinaryUrl, setCloudinaryUrl] = useState(null);
+  const videoRef = useRef(null);
+  const timelineState = useRef(null);
 
   return (
     <ProjectContext.Provider
@@ -25,6 +27,8 @@ export const ProjectProvider = ({ children }) => {
         setProjectLength,
         cloudinaryUrl,
         setCloudinaryUrl,
+        videoRef,
+        timelineState,
       }}
     >
       {children}
