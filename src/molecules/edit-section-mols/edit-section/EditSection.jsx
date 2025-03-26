@@ -33,12 +33,16 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     videoRef,
     timelineState,
     projectRatio,
+    originalStartAndEndTime,
+    setVideosDuration,
   } = useProjectContext();
-
   const [hoveredAction, setHoveredAction] = useState(null);
-
   const [effects, setEffects] = useState([]);
   const autoScrollWhenPlay = useRef(true);
+
+  useEffect(() => {
+    console.log("Updated originalStartAndEndTime:", originalStartAndEndTime);
+  }, [originalStartAndEndTime]);
 
   useEffect(() => {
     if (!projectVideo) {
@@ -76,16 +80,18 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     const updatedProject = updateProjectBackgrounds(
       projectInfo,
       ranges,
-      cloudinaryUrl,
-      projectRatio
+      cloudinaryUrl
     );
 
+    const durations = updatedProject.videos.map((video) => video.duration);
+    setVideosDuration(durations);
+    console.log("updatedProject:", updatedProject);
     setProjectInfo(updatedProject);
 
     updateProject(updatedProject).catch((error) =>
       console.error("Error updating project:", error)
     );
-  }, [ranges, editorData, projectRatio]);
+  }, [ranges, editorData]);
 
   const handleChange = (newData) => {
     if (!newData || newData.length === 0) {
@@ -93,9 +99,26 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     }
 
     const updatedData = clampActionsToFileLength(newData, fileLength);
+
+    if (!updatedData[0] || !updatedData[0].actions) {
+      return;
+    }
+
+    const sortedActions = [...updatedData[0].actions].sort(
+      (a, b) => a.start - b.start
+    );
+
+    for (let i = 1; i < sortedActions.length; i++) {
+      const duration = sortedActions[i].end - sortedActions[i].start;
+      sortedActions[i].start = sortedActions[i - 1].end;
+      sortedActions[i].end = sortedActions[i].start + duration;
+    }
+
+    updatedData[0].actions = sortedActions;
+
     setEditorData(updatedData);
 
-    const updatedRanges = updatedData[0].actions.map((action) => [
+    const updatedRanges = sortedActions.map((action) => [
       action.start,
       action.end,
     ]);

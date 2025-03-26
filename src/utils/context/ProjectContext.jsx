@@ -14,6 +14,9 @@ export const ProjectProvider = ({ children }) => {
   const [projectRatio, setProjectRatio] = useState("16:9");
   const [mergedVideo, setMergedVideo] = useState(null);
   const [alignAttribute, setAlignAttribute] = useState(null);
+  const [projectVideosID, setProjectVideosId] = useState([]);
+  const [videosDuration, setVideosDuration] = useState([]);
+  const [originalStartAndEndTime, setOriginalStartAndEndTime] = useState([]);
 
   return (
     <ProjectContext.Provider
@@ -38,6 +41,12 @@ export const ProjectProvider = ({ children }) => {
         setMergedVideo,
         alignAttribute,
         setAlignAttribute,
+        projectVideosID,
+        setProjectVideosId,
+        videosDuration,
+        setVideosDuration,
+        originalStartAndEndTime,
+        setOriginalStartAndEndTime,
       }}
     >
       {children}

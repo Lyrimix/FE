@@ -13,6 +13,11 @@ export const extractVideoName = (url) => {
   return parts[parts.length - 1];
 };
 
+export const extractCloudinaryVideoId = (uploadUrl) => {
+  const parts = uploadUrl.split("/");
+  return parts[parts.length - 1].split(".")[0]; // Lấy phần cuối URL và bỏ phần mở rộng .mp4
+};
+
 export const getVideoDuration = (file) => {
   return new Promise((resolve) => {
     const video = document.createElement("video");
@@ -39,16 +44,16 @@ export const clampActionsToFileLength = (newData, fileLength) => {
       let endTime = action.end;
       const maxDuration = fileLength[index] || Infinity;
 
-      if (endTime > maxDuration) {
-        alert(
-          `End time ${endTime} exceeds file length ${maxDuration}. Clamping to max.`
-        );
-        return {
-          ...action,
-          end: startTime + maxDuration,
-          maxEnd: maxDuration,
-        };
-      }
+      // if (endTime > maxDuration) {
+      //   alert(
+      //     `End time ${endTime} exceeds file length ${maxDuration}. Clamping to max.`
+      //   );
+      //   return {
+      //     ...action,
+      //     end: startTime + maxDuration,
+      //     maxEnd: maxDuration,
+      //   };
+      // }
       return action;
     }),
   }));

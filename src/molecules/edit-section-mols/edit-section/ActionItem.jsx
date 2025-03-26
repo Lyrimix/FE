@@ -15,15 +15,15 @@ export const ActionItem = ({
       onMouseEnter={() => setHoveredAction(action.id)}
       onMouseLeave={() => setHoveredAction(null)}
     >
-      <img
+      {/* <img
         src={
           "https://res.cloudinary.com/duli95mss/image/upload/v1739947631/cld-sample-5.jpg"
         }
         crossOrigin="anonymous"
         className="w-100 h-100 object-fit-cover mb-5"
         alt="Thumbnail"
-      />
-      {hoveredAction === action.id && (
+      /> */}
+      {/* {hoveredAction === action.id && (
         <IconButton
           icon={<FaTrash size={22} />}
           label=""
@@ -32,7 +32,7 @@ export const ActionItem = ({
                   mt-1 me-1 bg-danger text-white border-0 rounded-circle 
                   p-10 d-flex align-items-center justify-content-center"
         />
-      )}
+      )} */}
     </div>
   );
 };

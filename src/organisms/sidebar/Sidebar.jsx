@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SidebarGroup from "../../Molecules/sidebar-mols/SidebarGroup";
 import { useVideoContext } from "../../utils/context/VideoContext";
 import {
@@ -10,8 +10,7 @@ import {
   updateProject,
 } from "../../apis/ProjectApi";
 import SidebarOptions from "./SidebarOptions";
-import EditLyric from "../../organisms/sidebar/EditLyric";
-import CustomLyrics from "../../organisms/sidebar/CustomLyrics";
+import EditLyric from "./EditLyric";
 import "./Sidebar.css";
 import { SIDEBAR_ITEMS, TABS } from "../../utils/constant";
 import { useProjectContext } from "../../utils/context/ProjectContext";
@@ -22,12 +21,13 @@ const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
   const [isSidebarOptionsOpen, setIsSidebarOptionsOpen] = useState(false);
   const [isEditLyricOpen, setIsEditLyricOpen] = useState(false);
-  const [isCustomLyricOpen, setIsCustomLyricOpen] = useState(false);
   const { selectedFiles, setSelectedBackground, projectVideo } =
     useVideoContext();
-  const { setVideoBlob, projectInfo } = useProjectContext();
+  const [offcanvasType, setOffcanvasType] = useState(null);
+  const { videoFile, setVideoBlob, projectInfo, setCloudinaryUrl } =
+    useProjectContext();
   const [lyricEdit, setLyricEdit] = useState(null);
-  const [customLyrics, setCustomLyrics] = useState(null);
+  const [lyric, setLyric] = useState(null);
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
   const [showHideLabel, setShowHideLabel] = useState(TABS.HIDDENLYRICS);
 
@@ -56,6 +56,7 @@ const Sidebar = () => {
           break;
 
         case TABS.EDITLYRICMANUALLY:
+          setIsEditLyricOpen(true);
           await openLyricEditor();
           break;
 
@@ -65,21 +66,6 @@ const Sidebar = () => {
 
         default:
           console.warn("Unhandled option:", item);
-<<<<<<< HEAD
-      }
-      if (item === TABS.CUSTOMLYRIC) {
-        setIsSidebarOptionsOpen(false);
-        setIsCustomLyricOpen(true);
-
-        try {
-          const response = await getLyricById(projectInfo.id);
-          setLyricEdit(response.data || "");
-        } catch (error) {
-          console.error("Error while getting lyrics", error);
-          setLyricEdit("");
-        }
-=======
->>>>>>> 3506755 ([5-3] feat: Implement show/hide lyrics)
       }
     } catch (error) {
       console.error("Error in handleOptionClick:", error);
@@ -93,6 +79,11 @@ const Sidebar = () => {
       const formData = createLyricFormData(projectVideo, projectInfo.id);
       const response = await intergrateLyricToVideo(formData);
       await uploadVideo(response.data.videoUrl);
+      const videoBlob = await fetchVideoBlob(response.data.videoUrl);
+      setVideoBlob(URL.createObjectURL(videoBlob));
+      const cloudinaryUrl = await uploadToCloudinary(videoBlob);
+      projectInfo.asset = cloudinaryUrl;
+      updateProject(projectInfo);
     } catch (error) {
       console.error("Error while integrating lyrics:", error);
     } finally {
@@ -102,7 +93,7 @@ const Sidebar = () => {
 
   const openLyricEditor = async () => {
     setOffcanvasType(TABS.EDITLYRIC);
-
+    console.log("OffcanvasType:", offcanvasType);
     try {
       const response = await getLyricById(projectInfo.id);
       setLyric(response.data);
@@ -205,13 +196,6 @@ const Sidebar = () => {
         toggle={() => setIsEditLyricOpen(false)}
         lyric={lyricEdit || ""}
         setLyricEdit={setLyricEdit}
-        handleSaveLyric={handleSaveLyric}
-      />
-      <CustomLyrics
-        isOpen={isCustomLyricOpen}
-        toggle={() => setIsCustomLyricOpen(false)}
-        lyric={lyricEdit || ""}
-        setCustomLyrics={setCustomLyrics}
         handleSaveLyric={handleSaveLyric}
       />
     </div>

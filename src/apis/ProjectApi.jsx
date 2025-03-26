@@ -40,14 +40,35 @@ export const deleteBackGround = async (backgroundId) => {
 };
 
 export const exportProject = async (projectId, outputVideoPath) => {
-  return axios.get(
-    `${API_URL}/project/exportProject?projectId=${projectId}&outputVideoPath=${outputVideoPath}`,
-    {
+  try {
+    const response = await axios.get(`${API_URL}/project/exportProject`, {
+      params: { projectId, outputVideoPath },
+      responseType: "blob",
       headers: {
         "Content-Type": ContentType.Json,
       },
+    });
+
+    const disposition = response.headers["content-disposition"];
+    let filename = "video.mp4";
+    if (disposition) {
+      const match = disposition.match(/filename="(.+)"/);
+      if (match && match[1]) {
+        filename = match[1];
+      }
     }
-  );
+
+    const url = window.URL.createObjectURL(response.data);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Export and download failed", error);
+  }
 };
 
 export const intergrateLyricToVideo = async (formData) => {
@@ -81,6 +102,71 @@ export const uploadToCloudinary = async (file) => {
     <AutoDismissToast message={("Error uploading to Cloudinary:", error)} />;
     return null;
   }
+};
+
+export const concatVideoUsingCloudinary = (videoIds) => {
+  if (!videoIds || videoIds.length === 0) {
+    throw new Error("At least two video IDs are required");
+  }
+
+  const cloudinaryBaseUrl = "https://res.cloudinary.com/db6fvvwri/video/upload";
+  const commonTransform = "c_fill,w_640,h_360";
+  const defaultStart = 0;
+  const defaultEnd = 102;
+
+  if (videoIds.length === 1) {
+    console.warn("Only one video provided, adding default so_0, eo_100");
+
+    const singleVideoUrl = videoIds[0].replace(
+      "/upload/",
+      `/upload/so_${defaultStart},eo_${defaultEnd}/`
+    );
+
+    return singleVideoUrl;
+  }
+
+  // console.log("Original videoIds:", videoIds);
+
+  const cleanedVideoIds = videoIds.map((url) => url.replace(/\/v\d+\//, "/"));
+
+  // console.log("Cleaned videoIds (removed v1):", cleanedVideoIds);
+
+  const updatedVideoIds = cleanedVideoIds.map((url) => {
+    const hasStartEnd = /so_\d+/.test(url) && /eo_\d+/.test(url);
+    if (!hasStartEnd) {
+      return url.replace(
+        "/upload/",
+        `/upload/so_${defaultStart},eo_${defaultEnd}/`
+      );
+    }
+    return url;
+  });
+
+  // console.log("Updated videoIds:", updatedVideoIds);
+
+  const extractCloudinaryVideoData = (url) => {
+    const match = url.match(/\/upload\/([^/]+)\/([^/.]+)(?:\.[a-z]+)?$/);
+    if (!match) return null;
+
+    const transformations = match[1];
+    const videoId = match[2];
+
+    return { transformations, videoId };
+  };
+
+  const videoList = updatedVideoIds
+    .map(extractCloudinaryVideoData)
+    .filter((data) => data && data.videoId);
+
+  // console.log("video list:", videoList);
+
+  if (videoList.length < 2) {
+    throw new Error("At least two valid video IDs are required");
+  }
+
+  let baseVideo = `${cloudinaryBaseUrl}/${commonTransform},${videoList[0].transformations}/fl_splice,l_video:${videoList[1].videoId},${videoList[1].transformations},${commonTransform}/fl_layer_apply/${videoList[0].videoId}.mp4`;
+
+  return baseVideo;
 };
 
 export const getLyricById = async (projectId) => {
