@@ -1,8 +1,8 @@
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { getVideoDuration, extractVideoName } from "../../../utils/file";
 import { useVideoContext } from "../../../utils/context/VideoContext";
-import { CLOUD_NAME } from "../../../utils/constant";
+import { CLOUD_NAME, ENGINE_EVENTS } from "../../../utils/constant";
 import { uploadToCloudinary } from "../../../apis/ProjectApi";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useLoadingStore } from "../../../store/useLoadingStore";
@@ -10,15 +10,105 @@ import { useLoadingStore } from "../../../store/useLoadingStore";
 const ffmpeg = createFFmpeg({ log: false });
 
 const VideoMerger = ({ files = [] }) => {
-  const videoRef = useRef(null);
   const [mergedVideo, setMergedVideo] = useState(null);
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
   const [videoName, setVideoName] = useState(null);
   const [background, setBackground] = useState(null);
   const { setFileLength, ranges, setProjectVideo, selectedBackground } =
     useVideoContext();
-  const { setVideoFile, videoBlob, setCloudinaryUrl, setProjectInfo } =
-    useProjectContext();
+  const {
+    setVideoFile,
+    videoBlob,
+    setCloudinaryUrl,
+    setProjectInfo,
+    videoRef,
+    timelineState,
+  } = useProjectContext();
+  const [isInRange, setIsInRange] = useState(true);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || ranges.length === 0) return;
+
+    let timeoutId = null;
+
+    const handleTimeUpdate = () => {
+      const currentTime = video.currentTime;
+
+      const inRange = ranges.some(
+        ([start, end]) => currentTime >= start && currentTime <= end
+      );
+
+      if (inRange) {
+        setIsInRange(true);
+        return;
+      }
+
+      setIsInRange(false);
+      video.pause();
+
+      const nextRange = ranges.find(([start]) => start > currentTime);
+
+      if (nextRange) {
+        const gapDuration = nextRange[0] - currentTime;
+
+        timeoutId = setTimeout(() => {
+          video.currentTime = nextRange[0];
+          video.play();
+          setIsInRange(true);
+        }, gapDuration * 1000);
+      } else {
+        video.pause();
+      }
+    };
+
+    video.addEventListener("timeupdate", handleTimeUpdate);
+    return () => {
+      video.removeEventListener("timeupdate", handleTimeUpdate);
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [ranges]);
+
+  useEffect(() => {
+    if (!timelineState.current || !videoRef.current) return;
+
+    const engine = timelineState.current;
+    const video = videoRef.current;
+    let isSeeking = false;
+
+    const handlePlay = () => {
+      if (!isSeeking) {
+        video.play().catch((err) => console.error("Play error:", err));
+      }
+    };
+
+    const handlePause = () => {
+      video.pause();
+    };
+
+    const handleBeforeSetTime = () => {
+      isSeeking = true;
+    };
+
+    const handleAfterSetTime = ({ time }) => {
+      video.currentTime = time;
+      setTimeout(() => {
+        isSeeking = false;
+      }, 100);
+    };
+
+    engine.listener.on(ENGINE_EVENTS.PLAY, handlePlay);
+    engine.listener.on(ENGINE_EVENTS.PAUSE, handlePause);
+    engine.listener.on(ENGINE_EVENTS.BEFORE_SET_TIME, handleBeforeSetTime);
+    engine.listener.on(ENGINE_EVENTS.AFTER_SET_TIME, handleAfterSetTime);
+
+    return () => {
+      engine.listener.off(ENGINE_EVENTS.PLAY, handlePlay);
+      engine.listener.off(ENGINE_EVENTS.PAUSE, handlePause);
+      engine.listener.off(ENGINE_EVENTS.BEFORE_SET_TIME, handleBeforeSetTime);
+      engine.listener.off(ENGINE_EVENTS.AFTER_SET_TIME, handleAfterSetTime);
+    };
+  }, [timelineState.current, videoRef]);
 
   useEffect(() => {
     if (!videoBlob) return;
@@ -97,6 +187,7 @@ const VideoMerger = ({ files = [] }) => {
     setProjectVideo(blob);
     const url = URL.createObjectURL(blob);
     setMergedVideo(url);
+    setProjectVideo(url);
 
     const uploadUrl = await uploadToCloudinary(blob);
     if (uploadUrl) {
@@ -199,6 +290,7 @@ const VideoMerger = ({ files = [] }) => {
           new File([blob], "mergedVideo.mp4", { type: "video/mp4" })
         );
         setMergedVideo(URL.createObjectURL(blob));
+        setProjectVideo(URL.createObjectURL(blob));
       } catch (error) {
         console.error("Error loading video:", error);
       } finally {
@@ -210,14 +302,18 @@ const VideoMerger = ({ files = [] }) => {
   }, [videoName, background]);
 
   return (
-    <div className="d-flex flex-column align-items-center w-100 h-100">
+    <div className="d-flex flex-column align-items-center w-100 h-100 position-relative">
       {mergedVideo && (
-        <video
-          ref={videoRef}
-          src={mergedVideo}
-          controls
-          className="w-100 h-100 rounded-3"
-        />
+        <>
+          <video
+            ref={videoRef}
+            src={mergedVideo}
+            className="w-100 h-100 rounded-3"
+          />
+          {!isInRange && (
+            <div className="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-100" />
+          )}
+        </>
       )}
     </div>
   );

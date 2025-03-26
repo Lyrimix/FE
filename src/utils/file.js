@@ -1,3 +1,13 @@
+import eventBus from "./eventBus";
+import { EVENT_BUS_EVENTS } from "./constant";
+
+let globalTime = 0;
+
+eventBus.on(EVENT_BUS_EVENTS.TIME_UPDATED, (time) => {
+  globalTime = time;
+});
+
+
 export const extractVideoName = (url) => {
   const parts = url.split("/");
   return parts[parts.length - 1];
@@ -29,27 +39,61 @@ export const clampActionsToFileLength = (newData, fileLength) => {
       let endTime = action.end;
       const maxDuration = fileLength[index] || Infinity;
 
-      // if (endTime > maxDuration) {
-      //   alert(
-      //     `End time ${endTime} exceeds file length ${maxDuration}. Clamping to max.`
-      //   );
-      //   return {
-      //     ...action,
-      //     end: startTime + maxDuration,
-      //     maxEnd: maxDuration,
-      //   };
-      // }
+      if (endTime > maxDuration) {
+        alert(
+          `End time ${endTime} exceeds file length ${maxDuration}. Clamping to max.`
+        );
+        return {
+          ...action,
+          end: startTime + maxDuration,
+          maxEnd: maxDuration,
+        };
+      }
       return action;
     }),
   }));
 };
 
-export const generateEffectsFromFiles = (selectedFiles) => {
+export const generateEffectsFromFiles = (selectedFiles, videoRef) => {
   return selectedFiles.reduce(
-    (acc, file, index) => ({
+    (acc, fileObj, index) => {
+      if (!fileObj || !fileObj.file || !fileObj.url) {
+        return acc;
+      }
+
+      return {
         ...acc,
-      [`effect${index}`]: { id: `effect${index}`, name: file.name },
-    }),
-    {}
+        [`effect${index}`]: {
+          id: `effect${index}`,
+          name: fileObj.file.name || `Unnamed Effect ${index}`, 
+          data: { src: fileObj.url },
+          source: {
+            enter: ({ action }) => {
+              const stopAtEnd = () => {
+                if (videoRef.current.currentTime >= action.end) {
+                  videoRef.current.pause();
+                  videoRef.current.removeEventListener("timeupdate", stopAtEnd);
+                }
+              };
+              if (videoRef.current) {
+                videoRef.current.currentTime = action.start;
+                videoRef.current.addEventListener("timeupdate", stopAtEnd);
+              }
+            },
+            
+            leave: () => {
+              if (videoRef.current && !videoRef.current.paused) {
+                videoRef.current.pause();
+              }
+            },
+            update: ({ time }) => {
+              if (videoRef.current && videoRef.current.paused) {
+                videoRef.current.currentTime = time;
+              }
+            }
+          },
+        },
+      };
+    },
   );
 };

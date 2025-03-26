@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Timeline } from "@xzdarcy/react-timeline-editor";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
@@ -13,14 +13,45 @@ import {
   clampActionsToFileLength,
   generateEffectsFromFiles,
 } from "../../../utils/file";
+import TimelinePlayer from "../../../organisms/player/Player";
+import "./EditSection.css";
 
 export const EditSection = ({ maxDuration = 1000 }) => {
-  const { selectedFiles, setSelectedFiles, ranges, setRanges, fileLength } =
-    useVideoContext();
+  const {
+    selectedFiles,
+    setSelectedFiles,
+    ranges,
+    setRanges,
+    fileLength,
+    projectVideo,
+  } = useVideoContext();
   const [editorData, setEditorData] = useState([]);
-  const { projectInfo, setProjectInfo, cloudinaryUrl } = useProjectContext();
+  const {
+    projectInfo,
+    setProjectInfo,
+    cloudinaryUrl,
+    videoRef,
+    timelineState,
+  } = useProjectContext();
+
   const [hoveredAction, setHoveredAction] = useState(null);
-  const effects = generateEffectsFromFiles(selectedFiles);
+
+  const [effects, setEffects] = useState([]);
+  const autoScrollWhenPlay = useRef(true);
+
+  useEffect(() => {
+    if (!projectVideo) {
+      return;
+    }
+    const checkVideoRef = setInterval(() => {
+      if (videoRef.current) {
+        setEffects(generateEffectsFromFiles(selectedFiles, videoRef));
+        clearInterval(checkVideoRef);
+      }
+    }, 500);
+
+    return () => clearInterval(checkVideoRef);
+  }, [projectVideo]);
 
   useEffect(() => {
     if (selectedFiles.length !== fileLength.length) return;
@@ -111,11 +142,19 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   return (
     <div className="container-fluid p-0">
       <div className="w-100 h-100 d-flex flex-column border border-secondary rounded">
+        <div className="player-config w-100 h-5 d-flex">
+          <TimelinePlayer
+            timelineState={timelineState}
+            autoScrollWhenPlay={autoScrollWhenPlay}
+          />
+        </div>
+
         <Timeline
           editorData={editorData}
           effects={effects}
           style={{ width: "100%" }}
           scale={SCALE}
+          ref={timelineState}
           minScaleCount={MIN_SCALE_COUNT}
           rowHeight={ROW_HEIGHT}
           onChange={handleChange}
