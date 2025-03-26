@@ -11,7 +11,13 @@ const SidebarOptions = ({
   handleSampleImageClick,
 }) => {
   return (
-    <Offcanvas isOpen={isOpen} toggle={toggle} direction="start">
+    <Offcanvas
+      isOpen={isOpen}
+      toggle={toggle}
+      backdrop={false}
+      direction="start"
+      className="custom-offcanvas"
+    >
       <OffcanvasHeader toggle={toggle} className="bg-dark text-white">
         Options
       </OffcanvasHeader>

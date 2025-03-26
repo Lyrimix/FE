@@ -10,26 +10,27 @@ import SidebarOptions from "./SidebarOptions";
 import EditLyric from "./EditLyric";
 import "./Sidebar.css";
 import { SIDEBAR_ITEMS, TABS } from "../../utils/constant";
-import "./Sidebar.css";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { useLoadingStore } from "../../store/useLoadingStore";
+import { fetchVideoBlob, convertBase64ToBlob } from "../../utils/file";
 
 const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
-  const [offcanvasType, setOffcanvasType] = useState(null);
-  const { selectedFiles, setSelectedBackground } = useVideoContext();
-  const { videoFile, setVideoBlob, projectInfo } = useProjectContext();
-  const [lyric, setLyric] = useState(null);
+  const [isSidebarOptionsOpen, setIsSidebarOptionsOpen] = useState(false);
+  const [isEditLyricOpen, setIsEditLyricOpen] = useState(false);
+  const { selectedFiles, setSelectedBackground, projectVideo } =
+    useVideoContext();
+  const { setVideoBlob, projectInfo } = useProjectContext();
   const [lyricEdit, setLyricEdit] = useState(null);
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
 
   const onToggle = (tab) => {
     setSelectedTab(tab);
-    setOffcanvasType(TABS.OPTIONS);
+    setIsSidebarOptionsOpen(true);
   };
 
   const handleSampleImageClick = (img) => {
-    if (selectedFiles.length === 0) {
+    if (!selectedFiles.length) {
       alert("No files have been selected");
       return;
     }
@@ -37,48 +38,53 @@ const Sidebar = () => {
   };
 
   const handleOptionClick = async (item) => {
-    if (selectedTab === TABS.LYRIC && item === TABS.CREATELYRICAUTOMATICALLY) {
-      const formData = new FormData();
-      formData.append("file", videoFile);
-      formData.append("projectId", projectInfo.id);
-      setIsLoading(true);
-      try {
-        const response = await intergrateLyricToVideo(formData);
-        const videoResponse = await fetch(response.data.videoUrl);
-        const videoBlob = await videoResponse.blob();
-        setVideoBlob(URL.createObjectURL(videoBlob));
-      } catch (error) {
-        console.error("Error while intergrating Lyrics:" + error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
+    if (selectedTab !== TABS.LYRIC) return;
 
-    if (selectedTab === TABS.LYRIC && item === TABS.EDITLYRICMANUALLY) {
-      setOffcanvasType(TABS.EDITLYRIC);
-      try {
-        const response = await getLyricById(projectInfo.id);
-        setLyric(response.data);
-        setLyricEdit(response.data);
-      } catch (error) {
-        console.error("Error fetching lyric:", error);
+    try {
+      if (item === TABS.CREATELYRICAUTOMATICALLY) {
+        setIsSidebarOptionsOpen(false);
+        const responseLyric = await getLyricById(projectInfo.id);
+        if (responseLyric.data.length !== 0) return;
+
+        const formData = new FormData();
+        formData.append("file", projectVideo);
+        formData.append("projectId", projectInfo.id);
+
+        const response = await intergrateLyricToVideo(formData);
+        const videoBlob = await fetchVideoBlob(response.data.videoUrl);
+        setVideoBlob(URL.createObjectURL(videoBlob));
       }
+
+      if (item === TABS.EDITLYRICMANUALLY) {
+        setIsSidebarOptionsOpen(false);
+        setIsEditLyricOpen(true);
+
+        try {
+          const response = await getLyricById(projectInfo.id);
+          setLyricEdit(response.data || "");
+        } catch (error) {
+          console.error("Error while getting lyrics", error);
+          setLyricEdit("");
+        }
+      }
+    } catch (error) {
+      console.error("Error handling lyric action:", error);
     }
   };
 
-  const handleSaveLyric = async () => {
-    setOffcanvasType(null);
+  const handleSaveLyric = async (updatedLyric) => {
+    setIsEditLyricOpen(false);
+    if (updatedLyric === lyricEdit[0]) return;
+
     try {
-      if (lyricEdit !== lyric) {
-        const formData = new FormData();
-        formData.append("text", lyricEdit);
-        formData.append("projectId", projectInfo.id);
-        formData.append("file", videoFile);
-        const response = await updateLyricByProjectId(formData);
-        const videoResponse = await fetch(response.data.videoUrl);
-        const videoBlob = await videoResponse.blob();
-        setVideoBlob(URL.createObjectURL(videoBlob));
-      }
+      const formData = new FormData();
+      formData.append("text", updatedLyric);
+      formData.append("projectId", projectInfo.id);
+      formData.append("file", projectVideo);
+
+      const response = await updateLyricByProjectId(formData);
+      const videoBlob = convertBase64ToBlob(response.data.result);
+      setVideoBlob(URL.createObjectURL(videoBlob));
     } catch (error) {
       console.error("Error updating lyric:", error);
     }
@@ -93,17 +99,17 @@ const Sidebar = () => {
       />
 
       <SidebarOptions
-        isOpen={offcanvasType === TABS.OPTIONS}
-        toggle={() => setOffcanvasType(null)}
+        isOpen={isSidebarOptionsOpen}
+        toggle={() => setIsSidebarOptionsOpen(false)}
         selectedTab={selectedTab}
         handleOptionClick={handleOptionClick}
         handleSampleImageClick={handleSampleImageClick}
       />
 
       <EditLyric
-        isOpen={offcanvasType === TABS.EDITLYRIC}
-        toggle={() => setOffcanvasType(null)}
-        lyricEdit={lyricEdit}
+        isOpen={isEditLyricOpen}
+        toggle={() => setIsEditLyricOpen(false)}
+        lyric={lyricEdit || ""}
         setLyricEdit={setLyricEdit}
         handleSaveLyric={handleSaveLyric}
       />

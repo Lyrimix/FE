@@ -11,7 +11,7 @@ export const useFileUpload = () => {
     useVideoContext();
   const { projectInfo, setProjectInfo, projectLength, setProjectLength } =
     useProjectContext();
-  const  setIsLoading  = useLoadingStore((state) => state.setIsLoading);
+  const setIsLoading = useLoadingStore((state) => state.setIsLoading);
 
   const uploadFiles = async (event) => {
     const files = Array.from(event.target.files);

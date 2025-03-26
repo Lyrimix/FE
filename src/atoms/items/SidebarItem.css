@@ -1,13 +1,11 @@
-
 .sidebar__item {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 20px;
-    transition: background 0.1s ease;
-    border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  transition: background 0.1s ease;
+  border-radius: 10px;
 }
 
 .sidebar__item:hover {
-    background: #444;
-  }
-  
+  background: #444;
+}

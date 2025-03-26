@@ -84,7 +84,7 @@ export const uploadToCloudinary = async (file) => {
 };
 
 export const getLyricById = async (projectId) => {
-  return axios.get(`${API_URL}/api/lyrics/project/${projectId}`, {
+  return axios.get(`${API_URL}/lyrics/project/${projectId}`, {
     headers: {
       "Content-Type": ContentType.FormData,
     },
@@ -92,7 +92,15 @@ export const getLyricById = async (projectId) => {
 };
 
 export const updateLyricByProjectId = async (formData) => {
-  return axios.put(`${API_URL}/api/lyrics`, formData, {
+  return axios.put(`${API_URL}/lyrics`, formData, {
+    headers: {
+      "Content-Type": ContentType.FormData,
+    },
+  });
+};
+
+export const addExistLyricForVideo = async (formData) => {
+  return axios.post(`${API_URL}/lyrics/addSrtToVideo`, formData, {
     headers: {
       "Content-Type": ContentType.FormData,
     },
