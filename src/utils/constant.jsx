@@ -92,6 +92,19 @@ export const startLeft = 20;
 export const Rates = [0.2, 0.5, 1.0, 1.5, 2.0];
 export const autoScrollFrom = 10000;
 
+//EXPORT OPTION
+export const exportOptions = ["Format", "mp4", "avi"];
+
+//SIZE OPTIONS
+export const sizeOptions = ["16:9", "1:1", "4:5", "9:16", "21:9"];
+export const ratioSizes = {
+  "16:9": "1280x720",
+  "1:1": "424x424",
+  "4:5": "720x900",
+  "9:16": "720x1280",
+  "21:9": "1920x823",
+};
+
 //ENGINE EVENT
 export const ENGINE_EVENTS = {
   PLAY: "play",

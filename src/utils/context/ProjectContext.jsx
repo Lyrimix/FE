@@ -11,6 +11,8 @@ export const ProjectProvider = ({ children }) => {
   const [cloudinaryUrl, setCloudinaryUrl] = useState(null);
   const videoRef = useRef(null);
   const timelineState = useRef(null);
+  const [projectRatio, setProjectRatio] = useState("16:9");
+  const [mergedVideo, setMergedVideo] = useState(null);
 
   return (
     <ProjectContext.Provider
@@ -29,6 +31,10 @@ export const ProjectProvider = ({ children }) => {
         setCloudinaryUrl,
         videoRef,
         timelineState,
+        projectRatio,
+        setProjectRatio,
+        mergedVideo,
+        setMergedVideo,
       }}
     >
       {children}

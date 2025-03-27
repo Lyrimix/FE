@@ -48,7 +48,7 @@ export const VideoSection = () => {
         </div>
       ) : (
         <div className="w-100 d-flex justify-content-center h-75">
-          <div className="w-50">
+          <div className="w-100 d-flex justify-content-center align-items-center">
             <VideoMerger
               key={mergedFiles.map((file) => file.url).join("-")}
               files={mergedFiles}

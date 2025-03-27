@@ -32,6 +32,7 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     cloudinaryUrl,
     videoRef,
     timelineState,
+    projectRatio,
   } = useProjectContext();
 
   const [hoveredAction, setHoveredAction] = useState(null);
@@ -75,7 +76,8 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     const updatedProject = updateProjectBackgrounds(
       projectInfo,
       ranges,
-      cloudinaryUrl
+      cloudinaryUrl,
+      projectRatio
     );
 
     setProjectInfo(updatedProject);
@@ -83,7 +85,7 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     updateProject(updatedProject).catch((error) =>
       console.error("Error updating project:", error)
     );
-  }, [ranges, editorData]);
+  }, [ranges, editorData, projectRatio]);
 
   const handleChange = (newData) => {
     if (!newData || newData.length === 0) {
