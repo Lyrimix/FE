@@ -56,6 +56,7 @@ export const EXPANDED_ITEMS = {
     "Create lyric automatically",
     "Edit lyric manually",
     "Hidden Lyrics",
+    "Custom lyrics",
     "Upload lyric file",
   ],
 };
@@ -70,6 +71,7 @@ export const TABS = {
   TEXT: "Text",
   OPTIONS: "options",
   EDITLYRIC: "Edit lyric",
+  CUSTOMLYRIC: "Custom lyrics",
   EDITLYRICMANUALLY: "Edit lyric manually",
   CREATELYRICAUTOMATICALLY: "Create lyric automatically",
   DIALOGUE: "Dialogue:",
@@ -121,3 +123,54 @@ export const EVENT_BUS_EVENTS = {
   TIME_UPDATED: "timeUpdated",
   SET_TIME_BY_TICK: "setTimeByTick",
 };
+export const ASS_FONTS = [
+  "Arial",
+  "Arial Black",
+  "Times New Roman",
+  "Verdana",
+  "Forte",
+  "Tahoma",
+  "Trebuchet MS",
+  "Courier New",
+  "Comic Sans MS",
+  "Georgia",
+  "Impact",
+  "Lucida Console",
+  "Lucida Sans Unicode",
+  "Palatino Linotype",
+  "Symbol",
+  "Century Gothic",
+  "Book Antiqua",
+  "Franklin Gothic Medium",
+  "MS Gothic",
+  "MS Mincho",
+  "Meiryo",
+  "Garamond",
+];
+
+export const ALIGNMENT_MAPPING = {
+  BL: 1,
+  BC: 2,
+  BR: 3,
+  CL: 4,
+  CC: 5,
+  CR: 6,
+  TL: 7,
+  TC: 8,
+  TR: 9,
+};
+
+export const POSITIONS = ["TL", "TC", "TR", "CL", "CC", "CR", "BL", "BC", "BR"];
+
+export const TABS_CUSTOMS = [
+  { id: "font", label: "Font" },
+  { id: "color", label: "Color" },
+  { id: "align", label: "Align" },
+];
+
+export const BUTTONS = [
+  { label: "B", state: "bold", styleClass: "bold" },
+  { label: "I", state: "italic", styleClass: "italic" },
+  { label: "U", state: "underline", styleClass: "underline" },
+  { label: "S", state: "strikeOut", styleClass: "strikeout" },
+];

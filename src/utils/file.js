@@ -122,3 +122,56 @@ export const processVideoWithLyrics = async (
   const response = await apiFunction(formData);
   return convertBase64ToBlob(response.data.result);
 };
+
+
+export function bgrToRgb(bgr) {
+  bgr = bgr.replace("&H", "").toUpperCase();
+
+  if (bgr.length !== 8) {
+    throw new Error("Invalid BGR color format!");
+  }
+
+  const alpha = bgr.substring(0, 2);
+  const b = bgr.substring(2, 4);
+  const g = bgr.substring(4, 6);
+  const r = bgr.substring(6, 8);
+
+  const rgb = `#${r}${g}${b}`.toUpperCase();
+  let opacity = parseInt(alpha, 16) / 255;
+  if (opacity === 0) {
+    opacity = 0.1;
+  }
+
+  return { rgb, opacity: parseFloat(opacity.toFixed(2)) };
+}
+
+
+
+export function convertHexToASS(input, alpha = "00") {
+  if (typeof input === "object" && input !== null && input.rgb) {
+    const { rgb, opacity } = input;
+    alpha =
+      opacity !== undefined
+        ? Math.round((1 - opacity) * 255)
+            .toString(16)
+            .padStart(2, "0")
+        : alpha;
+    input = rgb;
+  }
+
+  if (typeof input !== "string" || !input) {
+    console.error("hexColor is not a valid string:", input);
+    return "&H00000000";
+  }
+
+  if (!input.startsWith("#") || input.length !== 7) {
+    console.error("Invalid hex color format:", input);
+    return "&H00000000";
+  }
+
+  const r = input.substring(1, 3);
+  const g = input.substring(3, 5);
+  const b = input.substring(5, 7);
+
+  return `&H${alpha}${b}${g}${r}`.toUpperCase();
+}

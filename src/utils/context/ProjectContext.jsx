@@ -13,6 +13,7 @@ export const ProjectProvider = ({ children }) => {
   const timelineState = useRef(null);
   const [projectRatio, setProjectRatio] = useState("16:9");
   const [mergedVideo, setMergedVideo] = useState(null);
+  const [alignAttribute, setAlignAttribute] = useState(null);
 
   return (
     <ProjectContext.Provider
@@ -35,6 +36,8 @@ export const ProjectProvider = ({ children }) => {
         setProjectRatio,
         mergedVideo,
         setMergedVideo,
+        alignAttribute,
+        setAlignAttribute,
       }}
     >
       {children}
