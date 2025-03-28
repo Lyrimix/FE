@@ -5,6 +5,8 @@ import {
   intergrateLyricToVideo,
   getLyricById,
   updateLyricByProjectId,
+  uploadToCloudinary,
+  updateProject,
 } from "../../apis/ProjectApi";
 import SidebarOptions from "./SidebarOptions";
 import EditLyric from "./EditLyric";
@@ -53,6 +55,9 @@ const Sidebar = () => {
         const response = await intergrateLyricToVideo(formData);
         const videoBlob = await fetchVideoBlob(response.data.videoUrl);
         setVideoBlob(URL.createObjectURL(videoBlob));
+        const cloudinaryUrl = await uploadToCloudinary(videoBlob);
+        projectInfo.asset = cloudinaryUrl;
+        updateProject(projectInfo);
       }
 
       if (item === TABS.EDITLYRICMANUALLY) {
@@ -85,6 +90,9 @@ const Sidebar = () => {
       const response = await updateLyricByProjectId(formData);
       const videoBlob = convertBase64ToBlob(response.data.result);
       setVideoBlob(URL.createObjectURL(videoBlob));
+      const cloudinaryUrl = await uploadToCloudinary(videoBlob);
+      projectInfo.asset = cloudinaryUrl;
+      updateProject(projectInfo);
     } catch (error) {
       console.error("Error updating lyric:", error);
     }

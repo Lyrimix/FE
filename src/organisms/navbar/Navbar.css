@@ -16,11 +16,10 @@
   align-items: center;
 }
 
-
 .content-name {
-  flex: 0.3; 
+  flex: 0.3;
 }
 
 .user-options {
-  flex: 0.7; 
+  flex: 0.7;
 }
