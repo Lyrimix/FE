@@ -55,6 +55,7 @@ export const EXPANDED_ITEMS = {
   Lyric: [
     "Create lyric automatically",
     "Edit lyric manually",
+    "Hidden Lyrics",
     "Upload lyric file",
   ],
 };
@@ -68,10 +69,12 @@ export const TABS = {
   EFFECT: "Effect",
   TEXT: "Text",
   OPTIONS: "options",
-  EDITLYRIC: "editLyric",
+  EDITLYRIC: "Edit lyric",
   EDITLYRICMANUALLY: "Edit lyric manually",
   CREATELYRICAUTOMATICALLY: "Create lyric automatically",
   DIALOGUE: "Dialogue:",
+  HIDDENLYRICS: "Hidden Lyrics",
+  SHOWLYRICS: "Show Lyrics",
 };
 
 export const BACKGROUND_IMAGES = [

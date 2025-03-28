@@ -8,6 +8,7 @@ const SidebarOptions = ({
   toggle,
   selectedTab,
   handleOptionClick,
+  showHideLabel,
   handleSampleImageClick,
 }) => {
   return (
@@ -50,7 +51,7 @@ const SidebarOptions = ({
                 className="w-100"
                 onClick={() => handleOptionClick(item)}
               >
-                {item}
+                {item === TABS.HIDDENLYRICS ? showHideLabel : item}
               </Button>
             ))}
           </div>

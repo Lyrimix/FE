@@ -100,7 +100,15 @@ export const updateLyricByProjectId = async (formData) => {
 };
 
 export const addExistLyricForVideo = async (formData) => {
-  return axios.post(`${API_URL}/lyrics/addSrtToVideo`, formData, {
+  return axios.post(`${API_URL}/lyrics/addAssToVideo`, formData, {
+    headers: {
+      "Content-Type": ContentType.FormData,
+    },
+  });
+};
+
+export const showHideLyrics = async (projectId, formData) => {
+  return axios.patch(`${API_URL}/lyrics/${projectId}`, formData, {
     headers: {
       "Content-Type": ContentType.FormData,
     },
