@@ -2,13 +2,12 @@ import { useState, useEffect } from "react";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 import { getVideoDuration, extractVideoName } from "../../../utils/file";
 import { useVideoContext } from "../../../utils/context/VideoContext";
-import { ENGINE_EVENTS } from "../../../utils/constant";
-import { generateCloudinaryUrl } from "../../../utils/cloudinaryUtils";
+import { CLOUD_NAME, ENGINE_EVENTS } from "../../../utils/constant";
 import {
   uploadToCloudinary,
   addExistLyricForVideo,
-  updateProject,
   getLyricById,
+  updateProject,
 } from "../../../apis/ProjectApi";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useLoadingStore } from "../../../store/useLoadingStore";
