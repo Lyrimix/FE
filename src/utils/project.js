@@ -1,6 +1,6 @@
 import { ratioSizes } from "./constant";
 
-export const updateProjectBackgrounds = (projectInfo, ranges, cloudinaryUrl = "", projectRatio = "") => {
+export const updateProjectBackgrounds = (projectInfo, ranges, cloudinaryUrl = "", projectRatio = "",setTrimmedDuration) => {
   const updatedVideos = projectInfo.videos.map((bg, index) => {
     const startTime = ranges[index]?.[0] || 0;
     const endTime = ranges[index]?.[1] || 0;
@@ -18,7 +18,6 @@ export const updateProjectBackgrounds = (projectInfo, ranges, cloudinaryUrl = ""
     updatedVideos.length > 0
       ? Math.max(...updatedVideos.map((video) => video.endTime))
       : 0;
-  console.log("project range:",projectLength)
   return {
     ...projectInfo,
     videos: updatedVideos,

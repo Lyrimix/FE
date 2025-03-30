@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Timeline } from "@xzdarcy/react-timeline-editor";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
-import { deleteBackGround, updateProject } from "../../../apis/ProjectApi";
+import { deleteBackGround } from "../../../apis/ProjectApi";
 import { ActionItem } from "./ActionItem";
 import { ROW_HEIGHT, MIN_SCALE_COUNT, SCALE } from "../../../utils/constant";
 import {
@@ -24,6 +24,12 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     setRanges,
     fileLength,
     projectVideo,
+    originalDuration,
+    trimmedDuration,
+    setOriginalDuration,
+    setTrimmedDuration,
+    setTempEnd,
+    setAfterEnd,
   } = useVideoContext();
   const [editorData, setEditorData] = useState([]);
   const {
@@ -38,11 +44,10 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   } = useProjectContext();
   const [hoveredAction, setHoveredAction] = useState(null);
   const [effects, setEffects] = useState([]);
-  const autoScrollWhenPlay = useRef(true);
+  const [storedStart, setStoredStart] = useState(null);
+  const storedStartRef = useRef(null);
 
-  useEffect(() => {
-    console.log("Updated originalStartAndEndTime:", originalStartAndEndTime);
-  }, [originalStartAndEndTime]);
+  const autoScrollWhenPlay = useRef(true);
 
   useEffect(() => {
     if (!projectVideo) {
@@ -85,13 +90,54 @@ export const EditSection = ({ maxDuration = 1000 }) => {
 
     const durations = updatedProject.videos.map((video) => video.duration);
     setVideosDuration(durations);
-    console.log("updatedProject:", updatedProject);
     setProjectInfo(updatedProject);
-
-    updateProject(updatedProject).catch((error) =>
-      console.error("Error updating project:", error)
-    );
   }, [ranges, editorData]);
+
+  useEffect(() => {
+    if (storedStartRef.current !== null) {
+      setStoredStart(storedStartRef.current);
+      storedStartRef.current = null;
+    }
+  }, [editorData]);
+
+  const getSortedActions = (actions) => {
+    return [...actions].sort((a, b) => a.start - b.start);
+  };
+
+  const normalizeActions = (sortedActions) => {
+    if (sortedActions.length === 0) return [];
+
+    storedStartRef.current = sortedActions[0].start;
+    setOriginalDuration(
+      originalStartAndEndTime[originalStartAndEndTime.length - 1][1]
+    );
+
+    sortedActions[0].start = 0;
+    sortedActions[0].end =
+      sortedActions[0].start + (sortedActions[0].end - sortedActions[0].start);
+
+    for (let i = 1; i < sortedActions.length; i++) {
+      const duration = sortedActions[i].end - sortedActions[i].start;
+      setTempEnd(sortedActions[i].start);
+
+      sortedActions[i].start = sortedActions[i - 1].end;
+      sortedActions[i].end = sortedActions[i].start + duration;
+
+      setAfterEnd(sortedActions[i].start);
+    }
+
+    return sortedActions;
+  };
+
+  const calculateUpdatedRanges = (sortedActions) =>
+    sortedActions.reduce((updatedRanges, action, index) => {
+      const start =
+        index === 0 ? storedStartRef.current : updatedRanges[index - 1][1];
+
+      const end = start + (action.end - action.start);
+      updatedRanges.push([start, end]);
+      return updatedRanges;
+    }, []);
 
   const handleChange = (newData) => {
     if (!newData || newData.length === 0) {
@@ -104,24 +150,16 @@ export const EditSection = ({ maxDuration = 1000 }) => {
       return;
     }
 
-    const sortedActions = [...updatedData[0].actions].sort(
-      (a, b) => a.start - b.start
-    );
+    const sortedActions = getSortedActions(updatedData[0].actions);
+    const normalizedActions = normalizeActions(sortedActions);
 
-    for (let i = 1; i < sortedActions.length; i++) {
-      const duration = sortedActions[i].end - sortedActions[i].start;
-      sortedActions[i].start = sortedActions[i - 1].end;
-      sortedActions[i].end = sortedActions[i].start + duration;
-    }
+    const updatedRanges = calculateUpdatedRanges(normalizedActions);
 
-    updatedData[0].actions = sortedActions;
+    setTrimmedDuration(normalizedActions[normalizedActions.length - 1].end);
+
+    updatedData[0].actions = normalizedActions;
 
     setEditorData(updatedData);
-
-    const updatedRanges = sortedActions.map((action) => [
-      action.start,
-      action.end,
-    ]);
 
     setRanges(updatedRanges);
   };

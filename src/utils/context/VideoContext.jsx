@@ -13,6 +13,10 @@ export const VideoProvider = ({ children }) => {
   const [fileLength, setFileLength] = useState([]);
   const [projectVideo, setProjectVideo] = useState(null);
   const [selectedBackground, setSelectedBackground] = useState(null);
+  const [originalDuration, setOriginalDuration] = useState(0);
+  const [trimmedDuration, setTrimmedDuration] = useState(0);
+  const [tempEnd, setTempEnd] = useState(0);
+  const [afterEnd, setAfterEnd] = useState(0);
 
   const handleChange = (index, newRange) => {
     if (!Array.isArray(newRange)) {
@@ -60,6 +64,14 @@ export const VideoProvider = ({ children }) => {
         setProjectVideo,
         selectedBackground,
         setSelectedBackground,
+        originalDuration,
+        setOriginalDuration,
+        trimmedDuration,
+        setTrimmedDuration,
+        tempEnd,
+        setTempEnd,
+        afterEnd,
+        setAfterEnd,
       }}
     >
       {children}

@@ -28,7 +28,7 @@ export const MOCK_EFFECT = {
   },
 };
 //CLOUDINARY
-export const CLOUD_NAME = "db6fvvwri";
+export const CLOUD_NAME = "dvsullht6";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
@@ -75,6 +75,7 @@ export const TABS = {
   CREATELYRICAUTOMATICALLY: "Create lyric automatically",
   DIALOGUE: "Dialogue:",
   HIDDENLYRICS: "Hidden Lyrics",
+  CUSTOMLYRIC: "Custom lyrics",
   SHOWLYRICS: "Show Lyrics",
 };
 

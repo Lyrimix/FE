@@ -81,7 +81,6 @@ export const useFileUpload = () => {
       const backgroundResponse = await addBackGroundToProject(formData);
       const projectVideoIds = backgroundResponse.data.result.map((item) => item.asset).reverse();
       setProjectVideosId(projectVideoIds)
-      console.log("projectVideoIds:",projectVideoIds)
       if (!backgroundResponse.data?.result) {
         throw new Error("Invalid background upload response");
       }

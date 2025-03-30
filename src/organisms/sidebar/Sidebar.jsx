@@ -16,6 +16,7 @@ import { SIDEBAR_ITEMS, TABS } from "../../utils/constant";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { useLoadingStore } from "../../store/useLoadingStore";
 import { fetchVideoBlob, convertBase64ToBlob } from "../../utils/file";
+import CustomLyrics from "./CustomLyrics";
 
 const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
@@ -23,9 +24,11 @@ const Sidebar = () => {
   const [isEditLyricOpen, setIsEditLyricOpen] = useState(false);
   const { selectedFiles, setSelectedBackground, projectVideo } =
     useVideoContext();
+  const [isCustomLyricOpen, setIsCustomLyricOpen] = useState(false);
   const [offcanvasType, setOffcanvasType] = useState(null);
   const { videoFile, setVideoBlob, projectInfo, setCloudinaryUrl } =
     useProjectContext();
+  const [customLyrics, setCustomLyrics] = useState(null);
   const [lyricEdit, setLyricEdit] = useState(null);
   const [lyric, setLyric] = useState(null);
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
@@ -67,6 +70,18 @@ const Sidebar = () => {
         default:
           console.warn("Unhandled option:", item);
       }
+      if (item === TABS.CUSTOMLYRIC) {
+        setIsSidebarOptionsOpen(false);
+        setIsCustomLyricOpen(true);
+
+        try {
+          const response = await getLyricById(projectInfo.id);
+          setLyricEdit(response.data || "");
+        } catch (error) {
+          console.error("Error while getting lyrics", error);
+          setLyricEdit("");
+        }
+      }
     } catch (error) {
       console.error("Error in handleOptionClick:", error);
     }
@@ -93,7 +108,6 @@ const Sidebar = () => {
 
   const openLyricEditor = async () => {
     setOffcanvasType(TABS.EDITLYRIC);
-    console.log("OffcanvasType:", offcanvasType);
     try {
       const response = await getLyricById(projectInfo.id);
       setLyric(response.data);
@@ -196,6 +210,14 @@ const Sidebar = () => {
         toggle={() => setIsEditLyricOpen(false)}
         lyric={lyricEdit || ""}
         setLyricEdit={setLyricEdit}
+        handleSaveLyric={handleSaveLyric}
+      />
+
+      <CustomLyrics
+        isOpen={isCustomLyricOpen}
+        toggle={() => setIsCustomLyricOpen(false)}
+        lyric={lyricEdit || ""}
+        setCustomLyrics={setCustomLyrics}
         handleSaveLyric={handleSaveLyric}
       />
     </div>

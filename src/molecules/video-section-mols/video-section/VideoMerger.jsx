@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { createFFmpeg } from "@ffmpeg/ffmpeg";
 import { getVideoDuration } from "../../../utils/file";
 import { useVideoContext } from "../../../utils/context/VideoContext";
@@ -14,7 +14,7 @@ import { useLoadingStore } from "../../../store/useLoadingStore";
 import { fetchVideoBlob, processVideoWithLyrics } from "../../../utils/file";
 import { concatVideoUsingCloudinary } from "../../../apis/ProjectApi";
 import { ratioSizes } from "../../../utils/constant";
-import { CLOUD_NAME } from "../../../utils/constant";
+import { generateCloudinaryUrl } from "../../../utils/cloudinaryUtils";
 
 const ffmpeg = createFFmpeg({ log: false });
 
@@ -26,9 +26,13 @@ const VideoMerger = ({ files = [] }) => {
   const {
     setFileLength,
     ranges,
+    setRanges,
     setProjectVideo,
-    projectVideo,
     selectedBackground,
+    originalDuration,
+    trimmedDuration,
+    tempEnd,
+    afterEnd,
   } = useVideoContext();
   const {
     setVideoFile,
@@ -47,6 +51,8 @@ const VideoMerger = ({ files = [] }) => {
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);
   const [isFirstUpload, setIsFirstUpload] = useState(true);
+  const prevRangesRef = useRef(ranges); // Lưu ranges trước đó
+  const mergeRef = useRef(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -144,6 +150,63 @@ const VideoMerger = ({ files = [] }) => {
       await ffmpeg.load();
     }
   };
+
+  const handleFirstUpload = (files, ranges, setProjectVideosId) => {
+    const originalUrls = files.map((file) => file);
+    setOriginalStartAndEndTime(ranges);
+    setProjectVideosId(originalUrls);
+  };
+
+  const validateRange = (ranges, index) => {
+    if (!ranges[index]) {
+      console.error(`ERROR: Missing range for video index ${index}`);
+      return false;
+    }
+    const [originalStart, originalEnd] = ranges[index];
+    if (originalEnd - originalStart <= 0) {
+      console.error(
+        `ERROR: Invalid range [${originalStart}s - ${originalEnd}s] for video index ${index}`
+      );
+      return false;
+    }
+    return true;
+  };
+
+  const calculateTrimmedUrl = (file, index, rangesReverse) => {
+    if (!file) {
+      console.error(`ERROR: Invalid file for index ${index}`);
+      return null;
+    }
+
+    if (!validateRange(rangesReverse, index)) {
+      return null;
+    }
+
+    const [videoStart, videoEnd] = originalStartAndEndTime[index];
+    const [originalStart, originalEnd] = rangesReverse[index];
+
+    let duration = originalEnd - originalStart;
+    let so = 0;
+
+    if (index === 0) {
+      so = originalStart;
+    } else {
+      if (originalStart !== videoStart) {
+        so = parseFloat(Math.max(originalStart - videoStart, 0).toFixed(3));
+      } else if (tempEnd > afterEnd) {
+        so = parseFloat(
+          Math.max(originalDuration - trimmedDuration, 0).toFixed(3)
+        );
+      }
+    }
+
+    if (so < 0) so = 0;
+    const eo = so + duration;
+    const videoName = file.split("/").pop();
+
+    return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/so_${so},eo_${eo}/${videoName}`;
+  };
+
   const trimAndWriteVideosToFS = async (
     files,
     ranges,
@@ -151,67 +214,22 @@ const VideoMerger = ({ files = [] }) => {
     setProjectVideosId
   ) => {
     if (isFirstUpload) {
-      const originalUrls = files.map((file) => file);
-      console.log("ranges:", ranges);
-      setOriginalStartAndEndTime(ranges);
-      setProjectVideosId(originalUrls);
+      handleFirstUpload(files, ranges, setProjectVideosId);
       return;
     }
     const rangesReverse = [...ranges];
 
     const trimmedUrls = files
-      .map((file, index) => {
-        if (!rangesReverse[index]) {
-          console.error(`ERROR: Missing range for video index ${index}`);
-          return null;
-        }
-
-        let videoStart = originalStartAndEndTime[index][0];
-        let videoEnd = originalStartAndEndTime[index][1];
-        let originalStart = rangesReverse[index][0];
-        let originalEnd = rangesReverse[index][1];
-        console.log("original end:", originalEnd);
-
-        let duration = originalEnd - originalStart;
-        console.log("duration:", duration);
-        if (duration <= 0) {
-          console.error(
-            `ERROR: Invalid range [${originalStart}s - ${originalEnd}s] for video index ${index}`
-          );
-          return null;
-        }
-
-        const videoUrl = file;
-        if (!videoUrl) {
-          console.error(`ERROR: Invalid file for index ${index}`);
-          return null;
-        }
-
-        const videoName = videoUrl.split("/").pop();
-        console.log("original start:", originalStart);
-        let so = index === 0 ? originalStart : originalStart - videoStart;
-        if (so < 0) so = 0; // 🔹 FIX: Đảm bảo so không bị âm
-        const eo = so + duration;
-        const trimmedUrl = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/so_${so},eo_${eo}/${videoName}`;
-
-        // console.log(`Trimmed Video URL: ${trimmedUrl}`);
-        return trimmedUrl;
-      })
+      .map((file, index) => calculateTrimmedUrl(file, index, rangesReverse))
       .filter(Boolean);
 
-    console.log("trimmed:", trimmedUrls);
     setProjectVideosId(trimmedUrls);
   };
 
   const mergeVideos = async (videoIds) => {
-    console.log("videoIds:", videoIds);
-
     const mergedVideoUrl = await concatVideoUsingCloudinary(videoIds);
-    console.log("Merged video URL:", mergedVideoUrl);
-    console.log("projectInfo:", projectInfo);
     const updatedVideos = [...projectInfo.videos].reverse();
     setCloudinaryUrl(mergedVideoUrl);
-    console.log("ratio:", ratioSizes[projectRatio] || projectRatio);
     updateProject({
       ...projectInfo,
       videos: updatedVideos,
@@ -240,13 +258,40 @@ const VideoMerger = ({ files = [] }) => {
     return parts[parts.length - 1].split(".")[0];
   };
 
+  const normalizeRanges = (ranges) => {
+    let newRanges = [];
+    let startTime = 0;
+
+    for (let i = 0; i < ranges.length; i++) {
+      let duration = ranges[i][1] - ranges[i][0];
+      let newStart = startTime;
+      let newEnd = newStart + duration;
+
+      newRanges.push([newStart, newEnd]);
+
+      startTime = newEnd;
+    }
+
+    return newRanges;
+  };
+
+  const updateRangesIfNeeded = useCallback((updatedRanges) => {
+    const newUpdatedRanges = normalizeRanges(updatedRanges);
+
+    if (
+      JSON.stringify(newUpdatedRanges) === JSON.stringify(prevRangesRef.current)
+    ) {
+      return;
+    }
+
+    prevRangesRef.current = newUpdatedRanges;
+    setRanges(newUpdatedRanges);
+  }, []);
+
   const handleMergedVideo = async (blob) => {
     setProjectVideo(blob);
     const url = URL.createObjectURL(blob);
-    console.log("url:", url);
     setMergedVideo(url);
-    // setProjectVideo(url);
-
     const uploadUrl = await uploadToCloudinary(blob);
     if (uploadUrl) {
       setVideoName(extractVideoName(uploadUrl));
@@ -290,7 +335,9 @@ const VideoMerger = ({ files = [] }) => {
 
   useEffect(() => {
     const mergeWhenReady = async () => {
+      if (mergeRef.current) return;
       if (projectVideosID && projectVideosID.length > 0) {
+        mergeRef.current = true;
         setIsLoading(true);
         try {
           const blob = await mergeVideos(projectVideosID);
@@ -299,13 +346,13 @@ const VideoMerger = ({ files = [] }) => {
           console.error("Error merging videos:", error);
         } finally {
           setIsLoading(false);
+          mergeRef.current = false;
         }
       }
     };
 
     mergeWhenReady();
   }, [projectVideosID]);
-
   useEffect(() => {
     if (!files.length || !ranges.length) return;
 
@@ -328,6 +375,7 @@ const VideoMerger = ({ files = [] }) => {
             false,
             setProjectVideosId
           );
+          updateRangesIfNeeded(ranges);
         }
       } catch (error) {
         console.error("Video processing failed:", error);
@@ -363,7 +411,6 @@ const VideoMerger = ({ files = [] }) => {
           ...prev,
         }));
         setIsLoading(true);
-        console.log("transformedVideo:", transformedVideo);
         const videoBlob = await fetchVideoBlob(transformedVideo);
         setVideoFile(
           new File([videoBlob], "mergedVideo.mp4", { type: "video/mp4" })
@@ -413,9 +460,6 @@ const VideoMerger = ({ files = [] }) => {
             className="w-100 h-100 rounded-3 object-fit-cover"
             onLoadedData={() => setIsRendered(true)}
           />
-          {!isInRange && (
-            <div className="position-absolute top-0 start-0 w-100 h-100 bg-black opacity-100" />
-          )}
         </>
       )}
     </div>

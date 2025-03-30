@@ -109,7 +109,7 @@ export const concatVideoUsingCloudinary = (videoIds) => {
     throw new Error("At least two video IDs are required");
   }
 
-  const cloudinaryBaseUrl = "https://res.cloudinary.com/db6fvvwri/video/upload";
+  const cloudinaryBaseUrl = "https://res.cloudinary.com/dvsullht6/video/upload";
   const commonTransform = "c_fill,w_640,h_360";
   const defaultStart = 0;
   const defaultEnd = 102;
@@ -125,11 +125,7 @@ export const concatVideoUsingCloudinary = (videoIds) => {
     return singleVideoUrl;
   }
 
-  // console.log("Original videoIds:", videoIds);
-
   const cleanedVideoIds = videoIds.map((url) => url.replace(/\/v\d+\//, "/"));
-
-  // console.log("Cleaned videoIds (removed v1):", cleanedVideoIds);
 
   const updatedVideoIds = cleanedVideoIds.map((url) => {
     const hasStartEnd = /so_\d+/.test(url) && /eo_\d+/.test(url);
@@ -141,8 +137,6 @@ export const concatVideoUsingCloudinary = (videoIds) => {
     }
     return url;
   });
-
-  // console.log("Updated videoIds:", updatedVideoIds);
 
   const extractCloudinaryVideoData = (url) => {
     const match = url.match(/\/upload\/([^/]+)\/([^/.]+)(?:\.[a-z]+)?$/);
@@ -158,15 +152,11 @@ export const concatVideoUsingCloudinary = (videoIds) => {
     .map(extractCloudinaryVideoData)
     .filter((data) => data && data.videoId);
 
-  // console.log("video list:", videoList);
-
   if (videoList.length < 2) {
     throw new Error("At least two valid video IDs are required");
   }
 
-  let baseVideo = `${cloudinaryBaseUrl}/${commonTransform},${videoList[0].transformations}/fl_splice,l_video:${videoList[1].videoId},${videoList[1].transformations},${commonTransform}/fl_layer_apply/${videoList[0].videoId}.mp4`;
-
-  return baseVideo;
+  return `${cloudinaryBaseUrl}/${commonTransform},${videoList[0].transformations}/fl_splice,l_video:${videoList[1].videoId},${videoList[1].transformations},${commonTransform}/fl_layer_apply/${videoList[0].videoId}.mp4`;
 };
 
 export const getLyricById = async (projectId) => {

@@ -7,7 +7,8 @@ eventBus.on(EVENT_BUS_EVENTS.TIME_UPDATED, (time) => {
   globalTime = time;
 });
 
-import { addExistLyricForVideo, getLyricById } from "../apis/ProjectApi";
+
+
 export const extractVideoName = (url) => {
   const parts = url.split("/");
   return parts[parts.length - 1];
@@ -44,16 +45,16 @@ export const clampActionsToFileLength = (newData, fileLength) => {
       let endTime = action.end;
       const maxDuration = fileLength[index] || Infinity;
 
-      // if (endTime > maxDuration) {
-      //   alert(
-      //     `End time ${endTime} exceeds file length ${maxDuration}. Clamping to max.`
-      //   );
-      //   return {
-      //     ...action,
-      //     end: startTime + maxDuration,
-      //     maxEnd: maxDuration,
-      //   };
-      // }
+      if (endTime > maxDuration) {
+        alert(
+          `End time ${endTime} exceeds file length ${maxDuration}. Clamping to max.`
+        );
+        return {
+          ...action,
+          end: startTime + maxDuration,
+          maxEnd: maxDuration,
+        };
+      }
       return action;
     }),
   }));
