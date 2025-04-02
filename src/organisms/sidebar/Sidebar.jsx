@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SidebarGroup from "../../Molecules/sidebar-mols/SidebarGroup";
+import SidebarGroup from "../../molecules/sidebar-mols/SidebarGroup";
 import { useVideoContext } from "../../utils/context/VideoContext";
 import {
   intergrateLyricToVideo,
@@ -40,6 +40,7 @@ const Sidebar = () => {
   };
 
   const handleSampleImageClick = (img) => {
+    setIsSidebarOptionsOpen(false);
     if (!selectedFiles.length) {
       alert("No files have been selected");
       return;
@@ -55,10 +56,12 @@ const Sidebar = () => {
     try {
       switch (item) {
         case TABS.CREATELYRICAUTOMATICALLY:
+          setIsSidebarOptionsOpen(false);
           await processAutomaticLyrics();
           break;
 
         case TABS.EDITLYRICMANUALLY:
+          setIsSidebarOptionsOpen(false);
           setIsEditLyricOpen(true);
           await openLyricEditor();
           break;
@@ -194,6 +197,7 @@ const Sidebar = () => {
         items={SIDEBAR_ITEMS}
         selectedTab={selectedTab}
         setSelectedTab={onToggle}
+        isSidebarOptionsOpen={isSidebarOptionsOpen}
       />
 
       <SidebarOptions

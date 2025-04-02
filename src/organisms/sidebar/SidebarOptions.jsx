@@ -2,7 +2,8 @@ import React from "react";
 import { Offcanvas, OffcanvasHeader, OffcanvasBody, Button } from "reactstrap";
 import { FiUpload } from "react-icons/fi";
 import { BACKGROUND_IMAGES, EXPANDED_ITEMS, TABS } from "../../utils/constant";
-
+import "./SidebarOptions.css";
+import { FiX } from "react-icons/fi";
 const SidebarOptions = ({
   isOpen,
   toggle,
@@ -17,20 +18,23 @@ const SidebarOptions = ({
       toggle={toggle}
       backdrop={false}
       direction="start"
-      className="custom-offcanvas"
+      style={{ width: "200px", left: "90px" }}
     >
-      <OffcanvasHeader toggle={toggle} className="bg-dark text-white">
+      <OffcanvasHeader className="bg-black text-white custom-border-bottom">
         Options
+        <button className="custom-close-btn" onClick={toggle}>
+          <FiX />
+        </button>
       </OffcanvasHeader>
-      <OffcanvasBody className="bg-light">
+      <OffcanvasBody className="bg-black canvas-body">
         {selectedTab === TABS.BACKGROUND ? (
           <div className="d-flex flex-column align-items-center">
-            <button className="btn btn-secondary w-50 mb-3 d-flex align-items-center justify-content-center gap-2">
+            <button className="bg-dark btn btn-secondary w-100 mb-3 d-flex align-items-center justify-content-center gap-2">
               <FiUpload /> Upload
             </button>
-            <div className="row g-2">
+            <div className="">
               {BACKGROUND_IMAGES.map((src, index) => (
-                <div key={index} className="col-6">
+                <div key={index} className="mb-3">
                   <img
                     src={src}
                     crossOrigin="anonymous"
@@ -48,7 +52,7 @@ const SidebarOptions = ({
               <Button
                 key={index}
                 color="dark"
-                className="w-100"
+                className="w-100 border border-light mb-1"
                 onClick={() => handleOptionClick(item)}
               >
                 {item === TABS.HIDDENLYRICS ? showHideLabel : item}

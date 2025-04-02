@@ -1,3 +1,20 @@
-.custom-offcanvas {
-  width: 360px !important;
+.custom-border-bottom {
+  border-bottom: 1px solid #17a2b8;
+}
+.canvas-body {
+  background-color: transparent;
+}
+.custom-close-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+}
+
+.custom-close-btn:hover {
+  color: red;
 }

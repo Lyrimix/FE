@@ -109,7 +109,7 @@ export const concatVideoUsingCloudinary = (videoIds) => {
     throw new Error("At least two video IDs are required");
   }
 
-  const cloudinaryBaseUrl = "https://res.cloudinary.com/dvsullht6/video/upload";
+  const cloudinaryBaseUrl = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload`;
   const commonTransform = "c_fill,w_640,h_360";
   const defaultStart = 0;
   const defaultEnd = 102;

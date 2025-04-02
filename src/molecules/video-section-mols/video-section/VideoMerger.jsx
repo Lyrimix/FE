@@ -47,6 +47,7 @@ const VideoMerger = ({ files = [] }) => {
     originalStartAndEndTime,
     setOriginalStartAndEndTime,
     setProjectVideosId,
+    setIsSidebarOptionsOpen,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);
