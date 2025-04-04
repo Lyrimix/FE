@@ -177,3 +177,28 @@ export const BUTTONS = [
   { label: "U", state: "underline", styleClass: "underline" },
   { label: "S", state: "strikeOut", styleClass: "strikeout" },
 ];
+
+export const EFFECT_VIDEOS = [
+  {
+    effect: "FADE",
+    type: "fade",
+    video:
+      "https://res.cloudinary.com/dnuyd3qxz/video/upload/v1743677471/t8snx6hbbcgwhrhd4gq5.mp4",
+  },
+  {
+    effect: "DISSOLVE",
+    type: "dissolve",
+    video:
+      "https://res.cloudinary.com/dnuyd3qxz/video/upload/v1743677471/el6wge69ud7pcni4hgmu.mp4",
+  },
+];
+
+export const SLIDER_VALUE = 2;
+
+export function cleanVideoId(url) {
+  return url.replace(/\/v\d+\//, "/");
+}
+
+export function hasStartAndEnd(url) {
+  return /so_\d+/.test(url) && /eo_\d+/.test(url);
+}

@@ -4,6 +4,8 @@ import {
   CLOUD_NAME,
   UPLOAD_PRESET,
   ContentType,
+  cleanVideoId,
+  hasStartAndEnd,
 } from "../utils/constant";
 import { AutoDismissToast } from "../molecules/auto-dismiss-toast-mols/AutoDismissToast";
 
@@ -117,18 +119,16 @@ export const concatVideoUsingCloudinary = (videoIds) => {
   if (videoIds.length === 1) {
     console.warn("Only one video provided, adding default so_0, eo_100");
 
-    const singleVideoUrl = videoIds[0].replace(
+    return (singleVideoUrl = videoIds[0].replace(
       "/upload/",
       `/upload/so_${defaultStart},eo_${defaultEnd}/`
-    );
-
-    return singleVideoUrl;
+    ));
   }
 
-  const cleanedVideoIds = videoIds.map((url) => url.replace(/\/v\d+\//, "/"));
+  const cleanedVideoIds = videoIds.map(cleanVideoId);
 
   const updatedVideoIds = cleanedVideoIds.map((url) => {
-    const hasStartEnd = /so_\d+/.test(url) && /eo_\d+/.test(url);
+    const hasStartEnd = videoIds.filter((url) => hasStartAndEnd(url));
     if (!hasStartEnd) {
       return url.replace(
         "/upload/",
@@ -148,9 +148,13 @@ export const concatVideoUsingCloudinary = (videoIds) => {
     return { transformations, videoId };
   };
 
-  const videoList = updatedVideoIds
-    .map(extractCloudinaryVideoData)
-    .filter((data) => data && data.videoId);
+  const videoList = updatedVideoIds.reduce((accumulator, currentId) => {
+    const data = extractCloudinaryVideoData(currentId);
+    if (data && data.videoId) {
+      accumulator.push(data);
+    }
+    return accumulator;
+  }, []);
 
   if (videoList.length < 2) {
     throw new Error("At least two valid video IDs are required");
@@ -187,6 +191,14 @@ export const showHideLyrics = async (projectId, formData) => {
   return axios.patch(`${API_URL}/lyrics/${projectId}`, formData, {
     headers: {
       "Content-Type": ContentType.FormData,
+    },
+  });
+};
+
+export const applyTransition = async (formData) => {
+  return axios.post(`${API_URL}/video/applyTransition`, formData, {
+    headers: {
+      "Content-Type": ContentType.Json,
     },
   });
 };
