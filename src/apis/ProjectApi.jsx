@@ -4,8 +4,6 @@ import {
   CLOUD_NAME,
   UPLOAD_PRESET,
   ContentType,
-  cleanVideoId,
-  hasStartAndEnd,
 } from "../utils/constant";
 import { AutoDismissToast } from "../molecules/auto-dismiss-toast-mols/AutoDismissToast";
 
@@ -119,16 +117,16 @@ export const concatVideoUsingCloudinary = (videoIds) => {
   if (videoIds.length === 1) {
     console.warn("Only one video provided, adding default so_0, eo_100");
 
-    return (singleVideoUrl = videoIds[0].replace(
+    return videoIds[0].replace(
       "/upload/",
       `/upload/so_${defaultStart},eo_${defaultEnd}/`
-    ));
+    );
   }
 
   const cleanedVideoIds = videoIds.map(cleanVideoId);
 
   const updatedVideoIds = cleanedVideoIds.map((url) => {
-    const hasStartEnd = videoIds.filter((url) => hasStartAndEnd(url));
+    const hasStartEnd = /so_\d+/.test(url) && /eo_\d+/.test(url);
     if (!hasStartEnd) {
       return url.replace(
         "/upload/",
@@ -194,11 +192,27 @@ export const showHideLyrics = async (projectId, formData) => {
     },
   });
 };
-
 export const applyTransition = async (formData) => {
   return axios.post(`${API_URL}/video/applyTransition`, formData, {
     headers: {
       "Content-Type": ContentType.Json,
     },
   });
+};
+
+export const getAccessToken = async (code) => {
+  return axios.post(`${API_URL}/youtube/getAccessToken`, { code });
+};
+
+export const uploadYoutube = async (accessToken, projectId) => {
+  return axios.post(
+    `${API_URL}/youtube/upload?projectId=${projectId}`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
 };
