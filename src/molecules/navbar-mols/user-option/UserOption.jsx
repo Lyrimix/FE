@@ -5,12 +5,13 @@ import { ExportOptions } from "../../export-option-mols/ExportOptions";
 import { sizeOptions } from "../../../utils/constant";
 import { FiUpload, FiSave } from "react-icons/fi";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
+import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useSaveContext } from "../../../utils/context/SaveContext";
 import { ExportForm } from "../../export-form-mols/ExportForm";
 
 export const UserOption = () => {
   const [isExport, setIsExport] = useState(false);
-  const { setIsDemoCutting } = useProjectContext();
+  const { setIsDemoCutting, setIsFirstTimeCut } = useProjectContext();
   const { uploadFiles } = useFileUpload();
   const fileInputRef = useRef(null);
   const { hasClickedSaveRef, prevEditorDataRef } = useSaveContext();
