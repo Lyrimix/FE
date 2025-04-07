@@ -1,16 +1,20 @@
 import { ratioSizes } from "./constant";
+import { COPY_SUFFIX } from "./constant";
 
-export const updateProjectBackgrounds = (projectInfo, ranges, cloudinaryUrl = "", projectRatio = "",setTrimmedDuration) => {
+export const updateProjectBackgrounds = (projectInfo, ranges, cloudinaryUrl = "", projectRatio = "",projectVideosID = []) => {
+  
   const updatedVideos = projectInfo.videos.map((bg, index) => {
     const startTime = ranges[index]?.[0] || 0;
     const endTime = ranges[index]?.[1] || 0;
     const duration = endTime - startTime;
+    const asset = projectVideosID.length > 0 ? projectVideosID[index] : null 
 
     return {
       ...bg,
       startTime,
       endTime,
       duration,
+      ...(asset && { asset }),
     };
   });
 
@@ -18,15 +22,15 @@ export const updateProjectBackgrounds = (projectInfo, ranges, cloudinaryUrl = ""
     updatedVideos.length > 0
       ? Math.max(...updatedVideos.map((video) => video.endTime))
       : 0;
+    
   return {
     ...projectInfo,
     videos: updatedVideos,
     length: projectLength,
     ...(cloudinaryUrl && { asset: cloudinaryUrl }), 
-    ...(projectRatio && { size: ratioSizes[projectRatio] || projectRatio }) 
+    ...(projectRatio ? { size: ratioSizes[projectRatio] || projectRatio } :   { size: "1280x720"}) 
   };
 };
-
 
 export const generateTimelineData = (selectedFiles, fileLength, maxDuration) => {
   let accumulatedStart = 0;
@@ -36,26 +40,38 @@ export const generateTimelineData = (selectedFiles, fileLength, maxDuration) => 
       file,
       duration: fileLength[index] || maxDuration,
     }))
-    .sort((a, b) => a.duration - b.duration);
+  ;
 
-  const timelineData = [
+  const actions = sortedFiles.flatMap(({ file, duration }, index) => {
+    const start = accumulatedStart;
+    const end = start + duration;
+    
+    accumulatedStart = end;
+
+    return [
+      {
+        id: `action${index}${COPY_SUFFIX}`,
+        start,  
+        end,
+        flexible: false,
+        effectId: `effect${index}${COPY_SUFFIX}`,
+        movable: false,
+      },
+      {
+        id: `action${index}`,
+        start,
+        end,
+        effectId: `effect${index}`,
+        movable: false,
+      },
+   
+    ];
+  });
+
+  return [
     {
       id: "singleRow",
-      actions: sortedFiles.map(({ file, duration }, index) => {
-        const start = accumulatedStart;
-        const end = start + duration;
-        accumulatedStart = end;
-
-        return {
-          id: `action${index}`,
-          start,
-          end,
-          effectId: `effect${index}`,
-          movable: false,
-        };
-      }),
+      actions: actions, 
     },
   ];
-
-  return timelineData;
 };

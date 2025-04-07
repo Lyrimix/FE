@@ -13,7 +13,7 @@ export const ExportOptions = ({ options }) => {
     <div>
       <SelectField
         options={options}
-        className="input-field"
+        className="input-field h-100"
         onChange={handleChange}
       />
     </div>

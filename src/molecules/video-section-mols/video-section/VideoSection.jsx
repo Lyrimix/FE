@@ -3,10 +3,12 @@ import { FaPlus, FaGoogleDrive, FaDropbox } from "react-icons/fa";
 import { useFileUpload } from "../../../hooks/useFileUpload";
 import VideoMerger from "./VideoMerger";
 import "./VideoSection.css";
+import { useProjectContext } from "../../../utils/context/ProjectContext";
 
 export const VideoSection = () => {
   const { selectedFiles, uploadFiles } = useFileUpload();
   const [mergedFiles, setMergedFiles] = useState(selectedFiles);
+  const { setVideoThumbnail } = useProjectContext();
 
   const triggerFileInput = () => {
     document.getElementById("video-section__file-input").click();
@@ -24,7 +26,7 @@ export const VideoSection = () => {
         accept="video/mp4"
         multiple
         className="d-none"
-        onChange={uploadFiles}
+        onChange={() => uploadFiles(event, setVideoThumbnail)}
       />
 
       {!selectedFiles.length ? (

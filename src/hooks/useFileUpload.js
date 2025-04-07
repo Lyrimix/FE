@@ -5,7 +5,7 @@ import { useVideoContext } from "../utils/context/VideoContext";
 import { API_URL, ContentType } from "../utils/constant";
 import { getVideoDuration } from "../utils/file";
 import { useLoadingStore } from "../store/useLoadingStore";
-
+import { generateVideoThumbnail } from "../utils/file";
 
 export const useFileUpload = () => {
   const { selectedFiles, setSelectedFiles, previewUrls, setPreviewUrls } =
@@ -16,7 +16,7 @@ export const useFileUpload = () => {
     useProjectContext();
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
 
-  const uploadFiles = async (event) => {
+  const uploadFiles = async (event,setVideoThumbnail) => {
     const files = Array.from(event.target.files);
     if (files.length === 0) {
       console.error("No file selected");
@@ -72,15 +72,34 @@ export const useFileUpload = () => {
       const formData = new FormData();
       let totalLength = 0;
 
+      const videoThumb = [];
+
       for (const file of validFiles) {
         const fileLength = await getVideoDuration(file);
         totalLength += fileLength;
         formData.append("files", file);
+
+        try {
+          const thumbnailBob =  await generateVideoThumbnail(file)
+          const thumbnailUrl = URL.createObjectURL(thumbnailBob);
+          setVideoThumbnail((prev) =>
+          [
+            ...prev,
+            {
+              fileName: file.name,
+              thumbnailUrl,
+            },
+          ]
+        );
+        
+        } catch(error) {
+          console.error("Error creating video thumbnails:", error);
+        }
       }
       formData.append("projectId", projectId);
 
       const backgroundResponse = await addBackGroundToProject(formData);
-      const projectVideoIds = backgroundResponse.data.result.map((item) => item.asset).reverse();
+      const projectVideoIds = backgroundResponse.data.result.map((item) => item.asset);
       setProjectVideosId(projectVideoIds)
       if (!backgroundResponse.data?.result) {
         throw new Error("Invalid background upload response");

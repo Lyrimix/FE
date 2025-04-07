@@ -1,7 +1,7 @@
 import "./Navbar.css";
-import { ProjectInfo } from "../../Molecules/Navbar-Mols/project-info/ProjectInfo";
-import { PROJECT_NAME } from "../../utils/constant";
 import { UserOption } from "../../molecules/navbar-mols/user-option/UserOption";
+import { PROJECT_NAME } from "../../utils/constant";
+import { ProjectInfo } from "../../molecules/navbar-mols/project-info/ProjectInfo";
 
 export const Navbar = () => {
   return (
