@@ -5,16 +5,21 @@ import { Input, FormGroup, Label } from "reactstrap";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { exportProject } from "../../apis/ProjectApi";
 import { exportOptions } from "../../utils/constant";
+import { useLoadingStore } from "../../store/useLoadingStore";
 import "./ExportForm.css";
 
 export const ExportForm = () => {
-  const { projectInfo } = useProjectContext();
+  const { projectInfo, cloudinaryUrl } = useProjectContext();
+  const setIsLoading = useLoadingStore((state) => state.setIsLoading);
 
   const handleExportProject = async () => {
     try {
+      setIsLoading(true);
       await exportProject(projectInfo.id, ".mov");
     } catch (error) {
       console.error("Error sending files to the server:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

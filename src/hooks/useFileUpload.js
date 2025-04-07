@@ -6,10 +6,13 @@ import { API_URL, ContentType } from "../utils/constant";
 import { getVideoDuration } from "../utils/file";
 import { useLoadingStore } from "../store/useLoadingStore";
 
+
 export const useFileUpload = () => {
   const { selectedFiles, setSelectedFiles, previewUrls, setPreviewUrls } =
     useVideoContext();
-  const { projectInfo, setProjectInfo, projectLength, setProjectLength } =
+  const { projectInfo, setProjectInfo, projectLength, setProjectLength
+  ,projectVideosID,setProjectVideosId
+  } =
     useProjectContext();
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
 
@@ -76,7 +79,8 @@ export const useFileUpload = () => {
       formData.append("projectId", projectId);
 
       const backgroundResponse = await addBackGroundToProject(formData);
-
+      const projectVideoIds = backgroundResponse.data.result.map((item) => item.asset).reverse();
+      setProjectVideosId(projectVideoIds)
       if (!backgroundResponse.data?.result) {
         throw new Error("Invalid background upload response");
       }

@@ -1,11 +1,11 @@
 import "./UserOption.css";
-import { FiUpload } from "react-icons/fi";
 import { useRef, useState } from "react";
 import { ExportForm } from "../../export-form-mols/ExportForm";
 import { useFileUpload } from "../../../hooks/useFileUpload";
 import { ExportOptions } from "../../export-option-mols/ExportOptions";
 import { sizeOptions } from "../../../utils/constant";
-
+import { FiUpload, FiSave } from "react-icons/fi";
+import { updateProject } from "../../../apis/ProjectApi";
 export const UserOption = () => {
   const [isExport, setIsExport] = useState(false);
   const { uploadFiles } = useFileUpload();
@@ -17,6 +17,11 @@ export const UserOption = () => {
 
   const handleExportClick = () => {
     setIsExport(!isExport);
+  };
+  const handleUpdateClick = () => {
+    updateProject(projectInfo)
+      .then(() => console.log("Project updated successfully"))
+      .catch((error) => console.error("Error updating project:", error));
   };
 
   return (
@@ -40,6 +45,13 @@ export const UserOption = () => {
           >
             <FiUpload />
             Upload
+          </button>
+          <button
+            className="user-option__btn d-flex align-items-center gap-2"
+            onClick={handleUpdateClick}
+          >
+            <FiSave />
+            Save
           </button>
           <button
             className="user-option__btn d-flex align-items-center gap-2"

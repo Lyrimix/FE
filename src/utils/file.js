@@ -7,10 +7,16 @@ eventBus.on(EVENT_BUS_EVENTS.TIME_UPDATED, (time) => {
   globalTime = time;
 });
 
-import { addExistLyricForVideo, getLyricById } from "../apis/ProjectApi";
+
+
 export const extractVideoName = (url) => {
   const parts = url.split("/");
   return parts[parts.length - 1];
+};
+
+export const extractCloudinaryVideoId = (uploadUrl) => {
+  const parts = uploadUrl.split("/");
+  return parts[parts.length - 1].split(".")[0]; // Lấy phần cuối URL và bỏ phần mở rộng .mp4
 };
 
 export const getVideoDuration = (file) => {

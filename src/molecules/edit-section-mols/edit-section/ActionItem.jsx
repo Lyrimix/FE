@@ -15,14 +15,6 @@ export const ActionItem = ({
       onMouseEnter={() => setHoveredAction(action.id)}
       onMouseLeave={() => setHoveredAction(null)}
     >
-      <img
-        src={
-          "https://res.cloudinary.com/duli95mss/image/upload/v1739947631/cld-sample-5.jpg"
-        }
-        crossOrigin="anonymous"
-        className="w-100 h-100 object-fit-cover mb-5"
-        alt="Thumbnail"
-      />
       {hoveredAction === action.id && (
         <IconButton
           icon={<FaTrash size={22} />}
