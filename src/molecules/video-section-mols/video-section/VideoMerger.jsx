@@ -183,29 +183,31 @@ const VideoMerger = ({ files = [] }) => {
       return null;
     }
 
-    const [videoStart, videoEnd] = originalStartAndEndTime[index];
-    const [originalStart, originalEnd] = rangesReverse[index];
+    const [startTimeVideo, endTimeVideo] = originalStartAndEndTime[index];
+    const [rangeStart, rangeEnd] = rangesReverse[index];
 
-    let duration = originalEnd - originalStart;
-    let so = 0;
+    let segmentDuration = rangeEnd - rangeStart;
+    let startOffset = 0;
 
     if (index === 0) {
-      so = originalStart;
+      startOffset = rangeStart;
     } else {
-      if (originalStart !== videoStart) {
-        so = parseFloat(Math.max(originalStart - videoStart, 0).toFixed(3));
+      if (rangeStart !== startTimeVideo) {
+        startOffset = parseFloat(
+          Math.max(rangeStart - startTimeVideo, 0).toFixed(3)
+        );
       } else if (tempEnd > afterEnd) {
-        so = parseFloat(
+        startOffset = parseFloat(
           Math.max(originalDuration - trimmedDuration, 0).toFixed(3)
         );
       }
     }
 
-    if (so < 0) so = 0;
-    const eo = so + duration;
+    if (startOffset < 0) startOffset = 0;
+    const endOffset = startOffset + segmentDuration;
     const videoName = file.split("/").pop();
 
-    return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/so_${so},eo_${eo}/${videoName}`;
+    return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/so_${startOffset},eo_${endOffset}/${videoName}`;
   };
 
   const trimAndWriteVideosToFS = async (
@@ -260,20 +262,15 @@ const VideoMerger = ({ files = [] }) => {
   };
 
   const normalizeRanges = (ranges) => {
-    let newRanges = [];
-    let startTime = 0;
-
-    for (let i = 0; i < ranges.length; i++) {
-      let duration = ranges[i][1] - ranges[i][0];
-      let newStart = startTime;
-      let newEnd = newStart + duration;
+    return ranges.reduce((newRanges, [start, end], index) => {
+      const duration = end - start;
+      const newStart =
+        newRanges.length > 0 ? newRanges[newRanges.length - 1][1] : 0;
+      const newEnd = newStart + duration;
 
       newRanges.push([newStart, newEnd]);
-
-      startTime = newEnd;
-    }
-
-    return newRanges;
+      return newRanges;
+    }, []);
   };
 
   const updateRangesIfNeeded = useCallback((updatedRanges) => {

@@ -59,6 +59,7 @@ export const useFileUpload = () => {
           length: projectLength,
           asset: null,
           videos: [],
+          size:response.data.result.size,
         });
       } catch (error) {
         console.error("Project creation failed:", error);

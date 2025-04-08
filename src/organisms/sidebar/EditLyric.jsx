@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Offcanvas, OffcanvasHeader, OffcanvasBody, Button } from "reactstrap";
 import "./EditLyric.css";
 import { TABS } from "../../utils/constant";
+import { useProjectContext } from "../../utils/context/ProjectContext";
 
 const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
   const [lyricEdit, setLyricEdit] = useState([]);
