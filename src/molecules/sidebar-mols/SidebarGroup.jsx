@@ -1,9 +1,16 @@
 import React from "react";
 import SidebarItem from "../../atoms/items/SidebarItem";
-
-const SidebarGroup = ({ items, selectedTab, setSelectedTab }) => {
+import "./SidebarGroup.css";
+const SidebarGroup = ({
+  items,
+  selectedTab,
+  setSelectedTab,
+  isSidebarOptionsOpen,
+}) => {
   return (
-    <div className="sidebar__group mt-5">
+    <div
+      className={`sidebar-group ${isSidebarOptionsOpen ? "with-border" : ""}`}
+    >
       {items.map((item, index) => (
         <SidebarItem
           key={index}

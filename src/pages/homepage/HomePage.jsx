@@ -7,10 +7,10 @@ import "./HomePage.css";
 
 export const HomePage = () => {
   return (
-    <div className="d-flex flex-column vh-100 bg-white">
-      <Navbar className="w-100 bg-light"></Navbar>
+    <div className="d-flex flex-column vh-100">
+      <Navbar className="w-100"></Navbar>
       <div className="d-flex flex-grow-1 overflow-hidden">
-        <Sidebar className="home-page__sidebar bg-dark text-white"></Sidebar>
+        <Sidebar className="home-page__sidebar text-white"></Sidebar>
         <MainContent className="flex-grow-1 p-3 ms-5 overflow-auto"></MainContent>
       </div>
     </div>
