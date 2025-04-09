@@ -202,3 +202,11 @@ export function cleanVideoId(url) {
 export function hasStartAndEnd(url) {
   return /so_\d+/.test(url) && /eo_\d+/.test(url);
 }
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
+export const AUTH_URL = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/youtube.upload`;
+
+export const TOKEN = {
+  ACCESS_TOKEN: "accessToken",
+  CODE: "code",
+};

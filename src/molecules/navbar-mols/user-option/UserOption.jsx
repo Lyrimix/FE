@@ -6,10 +6,14 @@ import { ExportOptions } from "../../export-option-mols/ExportOptions";
 import { sizeOptions } from "../../../utils/constant";
 import { FiUpload, FiSave } from "react-icons/fi";
 import { updateProject } from "../../../apis/ProjectApi";
+import UploadButton from "../../export-youtube-option-mols/UploadButton";
+import { useProjectContext } from "../../../utils/context/ProjectContext";
+
 export const UserOption = () => {
   const [isExport, setIsExport] = useState(false);
   const { uploadFiles } = useFileUpload();
   const fileInputRef = useRef(null);
+  const { projectInfo } = useProjectContext();
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
@@ -60,6 +64,7 @@ export const UserOption = () => {
             <FiUpload />
             Export
           </button>
+          <UploadButton />
           <button className="user-option__authenticaion">Sign In</button>
           <button className="user-option__authenticaion">Sign Up</button>
         </div>
