@@ -188,6 +188,7 @@ export const showHideLyrics = async (projectId, formData) => {
     },
   });
 };
+
 export const applyTransition = async (formData) => {
   return axios.post(`${API_URL}/video/applyTransition`, formData, {
     headers: {
@@ -207,7 +208,7 @@ export const uploadYoutube = async (accessToken, projectId) => {
     {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
+        "Content-Type": ContentType.Json,
       },
     }
   );

@@ -16,6 +16,7 @@ import { exportProject } from "../../apis/ProjectApi";
 import { exportOptions } from "../../utils/constant";
 import { useLoadingStore } from "../../store/useLoadingStore";
 import "./ExportForm.css";
+import UploadButton from "../export-youtube-option-mols/UploadButton";
 
 export const ExportForm = ({ isOpen, toggle }) => {
   const { projectInfo, videoThumbnail } = useProjectContext();
@@ -66,9 +67,7 @@ export const ExportForm = ({ isOpen, toggle }) => {
         >
           Export
         </Button>
-        <Button className="bg-custom-secondary text-dark">
-          Share to YouTube
-        </Button>
+        <UploadButton />
       </ModalFooter>
     </Modal>
   );

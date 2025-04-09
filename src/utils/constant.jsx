@@ -28,7 +28,7 @@ export const MOCK_EFFECT = {
   },
 };
 //CLOUDINARY
-export const CLOUD_NAME = "dvsullht6";
+export const CLOUD_NAME = "dm8flim64";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
@@ -75,26 +75,15 @@ export const TABS = {
   CREATELYRICAUTOMATICALLY: "Create lyric automatically",
   DIALOGUE: "Dialogue:",
   HIDDENLYRICS: "Hidden Lyrics",
-  CUSTOMLYRIC: "Custom lyrics",
   SHOWLYRICS: "Show Lyrics",
 };
 
 export const BACKGROUND_IMAGES = [
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-5.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-4.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-3.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-2.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/dessert-on-a-plate.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/woman-on-a-football-field.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/upscale-face-1.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/coffee.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/cup-on-a-table.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/man-portrait.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/chair.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/chair-and-coffee-table.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/man-on-a-escalator.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/man-on-a-street.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample-2.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample-3.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample-4.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample-5.jpg",
 ];
 
 export const ContentType = {
@@ -199,13 +188,13 @@ export const EFFECT_VIDEOS = [
     effect: "FADE",
     type: "fade",
     video:
-      "https://res.cloudinary.com/dnuyd3qxz/video/upload/v1743677471/t8snx6hbbcgwhrhd4gq5.mp4",
+      "https://res.cloudinary.com/dm8flim64/video/upload/v1744601794/yicuydqc8cx0wmpdyl7h.mp4",
   },
   {
     effect: "DISSOLVE",
     type: "dissolve",
     video:
-      "https://res.cloudinary.com/dnuyd3qxz/video/upload/v1743677471/el6wge69ud7pcni4hgmu.mp4",
+      "https://res.cloudinary.com/dm8flim64/video/upload/v1744601794/lsdb6x6tr1pt9tpubp5e.mp4",
   },
 ];
 
@@ -221,8 +210,8 @@ export function hasStartAndEnd(url) {
 const CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 const REDIRECT_URI = import.meta.env.VITE_GOOGLE_REDIRECT_URI;
 export const AUTH_URL = `https://accounts.google.com/o/oauth2/auth?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=code&scope=https://www.googleapis.com/auth/youtube.upload`;
-
 export const TOKEN = {
   ACCESS_TOKEN: "accessToken",
   CODE: "code",
+  TOKEN_RECEIVE: "TOKEN_RECEIVED",
 };

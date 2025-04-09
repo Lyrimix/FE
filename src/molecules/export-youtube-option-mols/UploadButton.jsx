@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { getAccessToken, uploadYoutube } from "../../apis/ProjectApi";
+import { useState } from "react";
+import { uploadYoutube } from "../../apis/ProjectApi";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { AUTH_URL, TOKEN } from "../../utils/constant";
 import "./UploadButton.css";
@@ -8,38 +8,36 @@ const UploadButton = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { projectInfo } = useProjectContext();
 
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get(TOKEN.CODE);
+  // open popup login
+  const openLoginPopup = () => {
+    return window.open(
+      AUTH_URL,
+      "Google Login",
+      "width=600,height=600,left=200,top=200"
+    );
+  };
 
-    if (code) {
-      getAccessToken(code)
-        .then((token) => {
-          const accessToken = token.data.access_token;
-          localStorage.setItem(TOKEN.ACCESS_TOKEN, accessToken);
-
-          window.close();
-          window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname
-          );
-        })
-        .catch((error) => {
-          console.error("Error getting access token:", error);
-        });
+  // Check token and call Upload
+  const startTokenCheckTimer = (popup) => {
+    if (!window.tokenCheckTimer) {
+      window.tokenCheckTimer = setInterval(() => {
+        const newToken = localStorage.getItem(TOKEN.ACCESS_TOKEN);
+        if (newToken) {
+          clearInterval(window.tokenCheckTimer);
+          window.tokenCheckTimer = null;
+          popup?.close();
+          handleUpload();
+        }
+      }, 1000);
     }
-  }, []);
+  };
 
   const handleUpload = async () => {
     const accessToken = localStorage.getItem(TOKEN.ACCESS_TOKEN);
-
+    // not logged in yet
     if (!accessToken) {
-      const popup = window.open(
-        AUTH_URL,
-        "Google Login",
-        "width=600,height=600,left=200,top=200"
-      );
+      const popup = openLoginPopup();
+      startTokenCheckTimer(popup);
       return;
     }
 
@@ -52,10 +50,17 @@ const UploadButton = () => {
 
     try {
       const uploadResponse = await uploadYoutube(accessToken, projectInfo.id);
-      alert("Video uploaded successfully!");
+      const videoId = uploadResponse.data.videoId;
+      window.open(`https://studio.youtube.com/video/${videoId}/edit`, "_blank");
     } catch (error) {
-      console.error("Error uploading video", error);
-      alert("Upload failed!");
+      if (error.response && error.response.status === 401) {
+        alert("Your session has expired. Please log in again.");
+        localStorage.removeItem(TOKEN.ACCESS_TOKEN);
+        const popup = openLoginPopup();
+        startTokenCheckTimer(popup);
+      } else {
+        alert("Upload failed!");
+      }
     } finally {
       setIsUploading(false);
     }
@@ -65,9 +70,9 @@ const UploadButton = () => {
     <button
       onClick={handleUpload}
       disabled={isUploading}
-      className="upload-button"
+      className="btn bg-custom-secondary w-20 text-dark"
     >
-      {isUploading ? "Uploading..." : " YouTube"}
+      {isUploading ? "Uploading..." : "Upload to YouTube"}
     </button>
   );
 };
