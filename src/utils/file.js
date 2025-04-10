@@ -7,8 +7,6 @@ eventBus.on(EVENT_BUS_EVENTS.TIME_UPDATED, (time) => {
   globalTime = time;
 });
 
-
-
 export const extractVideoName = (url) => {
   const parts = url.split("/");
   return parts[parts.length - 1];
@@ -16,7 +14,7 @@ export const extractVideoName = (url) => {
 
 export const extractCloudinaryVideoId = (uploadUrl) => {
   const parts = uploadUrl.split("/");
-  return parts[parts.length - 1].split(".")[0]; 
+  return parts[parts.length - 1].split(".")[0];
 };
 
 export const getVideoDuration = (file) => {
@@ -41,6 +39,17 @@ export const clampActionsToFileLength = (newData, fileLength) => {
   return newData.map((item) => ({
     ...item,
     actions: item.actions.map((action, index) => {
+      const { start: startTime, end: endTime } = action;
+      const maxDuration = fileLength[index] || Infinity;
+
+      if (endTime > maxDuration) {
+        return {
+          ...action,
+          end: startTime + maxDuration,
+          maxEnd: maxDuration,
+        };
+      }
+
       return action;
     }),
   }));
@@ -115,7 +124,6 @@ export const processVideoWithLyrics = async (
   return convertBase64ToBlob(response.data.result);
 };
 
-
 export function bgrToRgb(bgr) {
   bgr = bgr.replace("&H", "").toUpperCase();
 
@@ -136,8 +144,6 @@ export function bgrToRgb(bgr) {
 
   return { rgb, opacity: parseFloat(opacity.toFixed(2)) };
 }
-
-
 
 export function convertHexToASS(input, alpha = "00") {
   if (typeof input === "object" && input !== null && input.rgb) {
@@ -168,7 +174,6 @@ export function convertHexToASS(input, alpha = "00") {
   return `&H${alpha}${b}${g}${r}`.toUpperCase();
 }
 
-
 export const generateVideoThumbnail = (file) => {
   return new Promise((resolve, reject) => {
     const video = document.createElement("video");
@@ -181,7 +186,7 @@ export const generateVideoThumbnail = (file) => {
     video.playsInline = true;
 
     video.onloadedmetadata = () => {
-      video.currentTime = Math.min(1, video.duration / 2); 
+      video.currentTime = Math.min(1, video.duration / 2);
     };
 
     video.onseeked = () => {

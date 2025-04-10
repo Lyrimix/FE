@@ -9,8 +9,9 @@ import {
   uploadToCloudinary,
   updateProject,
   applyTransition,
+  removeEffect,
 } from "../../apis/ProjectApi";
-import SidebarOptions from "./SidebarOptions";
+import SidebarOptions from "../../organisms/sidebar/SidebarOptions";
 import EditLyric from "../../organisms/sidebar/EditLyric";
 import "./Sidebar.css";
 import { SIDEBAR_ITEMS, TABS } from "../../utils/constant";
@@ -25,8 +26,12 @@ const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
   const [isSidebarOptionsOpen, setIsSidebarOptionsOpen] = useState(false);
   const [isEditLyricOpen, setIsEditLyricOpen] = useState(false);
-  const { selectedFiles, setSelectedBackground, projectVideo } =
-    useVideoContext();
+  const {
+    selectedFiles,
+    setSelectedBackground,
+    projectVideo,
+    setProjectVideo,
+  } = useVideoContext();
   const { hasClickedSaveRef, prevEditorDataRef } = useSaveContext();
 
   const [isCustomLyricOpen, setIsCustomLyricOpen] = useState(false);
@@ -243,7 +248,15 @@ const Sidebar = () => {
   let isFirstTimeApply = true;
 
   const handleEffectClick = async (selectedEffect, sliderValue) => {
-    if (!selectedEffect) return resetToOriginal();
+    if (!selectedEffect) {
+      setIsLoading(true);
+      const formData = new FormData();
+      formData.append("projectId", projectInfo.id);
+      const response = await removeEffect(formData);
+      await handleTransitionResponse(response);
+      setIsLoading(false);
+      return;
+    }
 
     if (!isValidVideoCount(projectInfo?.videos)) {
       alert("At least 2 videos are required to apply a transition.");
@@ -271,10 +284,6 @@ const Sidebar = () => {
     }
   };
 
-  const resetToOriginal = () => {
-    setVideoBlob(URL.createObjectURL(originalProject));
-  };
-
   const isValidVideoCount = (videos) =>
     Array.isArray(videos) && videos.length >= 2;
 
@@ -294,26 +303,13 @@ const Sidebar = () => {
   };
 
   const handleTransitionResponse = async (response) => {
-    const contentType = response?.headers?.["content-type"];
-    const data = response?.data;
-
-    if (contentType?.includes("application/json") && data?.result) {
-      const blob = convertBase64ToBlob(validateBase64(data.result));
-      setVideoBlob(URL.createObjectURL(blob));
-    } else if (contentType?.includes("video") || data instanceof Blob) {
-      const blob =
-        data instanceof Blob ? data : new Blob([data], { type: contentType });
-      setVideoBlob(URL.createObjectURL(blob));
-    } else {
-      throw new Error("Unsupported response format from server.");
-    }
-  };
-
-  const validateBase64 = (base64) => {
-    const cleaned = base64.replace(/\s/g, "");
-    const isValid = /^([A-Za-z0-9+/=]+)$/.test(cleaned);
-    if (!isValid) throw new Error("Invalid base64 format.");
-    return cleaned;
+    const videoBlob = convertBase64ToBlob(response.data.result);
+    setProjectVideo(videoBlob);
+    setVideoBlob(URL.createObjectURL(videoBlob));
+    const cloudinaryUrl = await uploadToCloudinary(videoBlob);
+    projectInfo.asset = cloudinaryUrl;
+    updateProject(projectInfo);
+    handleUpdateClick();
   };
 
   return (
