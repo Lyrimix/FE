@@ -1,14 +1,32 @@
 import React, { useState } from "react";
 import { Offcanvas, OffcanvasHeader, OffcanvasBody } from "reactstrap";
 import { useLoadingStore } from "../../store/useLoadingStore";
-import { duration, Slider } from "@mui/material";
+import { Slider } from "@mui/material";
 import VideoPreview from "../../utils/VideoPreview";
-import { EFFECT_VIDEOS, SLIDER_VALUE } from "../../utils/constant";
+import { EFFECT_GROUPS, SLIDER_VALUE } from "../../utils/constant";
+
 import "./EffectVideo.css";
 
-const EffectVideo = ({ isOpen, toggle, handleEffectClick }) => {
+const EffectVideo = ({
+  isOpen,
+  toggle,
+  handleEffectClick,
+  selectedType,
+  setSelectedType,
+  handleUpdateClick,
+}) => {
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
   const [sliderValue, setSliderValue] = useState(SLIDER_VALUE);
+
+  const handleClick = (type) => {
+    if (selectedType === type) {
+      setSelectedType(null);
+      handleEffectClick(null, sliderValue);
+    } else {
+      setSelectedType(type);
+      handleEffectClick(type, sliderValue);
+    }
+  };
 
   return (
     <Offcanvas
@@ -24,24 +42,37 @@ const EffectVideo = ({ isOpen, toggle, handleEffectClick }) => {
       <OffcanvasBody className="bg-black">
         <div className="container w-100 p-0" style={{ overflowY: "auto" }}>
           <div className="p-3">
-            <div className="text-light p-2 rounded fw-bold">
-              Crossfade Transitions
-            </div>
             <div className="row g-2">
-              {EFFECT_VIDEOS.map(({ video, type }, index) => (
-                <div key={index} className="col-6">
-                  <VideoPreview
-                    src={video}
-                    onClick={() => handleEffectClick(type, sliderValue)}
-                  />
-                  <p className="mt-2 text-light text-capitalize text-center">
-                    {type}
-                  </p>
+              {EFFECT_GROUPS.map((group, groupIndex) => (
+                <div key={groupIndex} className="mb-2">
+                  <h5 className="group-name text-light mb-3">{group.name}</h5>
+                  <div className="row g-2">
+                    {group.effects.map(
+                      ({ video, type_request, type }, index) => (
+                        <div key={index} className="col-3">
+                          <VideoPreview
+                            src={video}
+                            onClick={() => handleClick(type_request)}
+                            isSelected={selectedType === type_request}
+                            onDeselect={() => {
+                              setSelectedType(null);
+                              handleEffectClick(null, sliderValue);
+                            }}
+                          />
+                          <p className="effect-label mt-2 text-light text-capitalize text-center text-sm">
+                            {type.replace(/[-_]/g, " ")}
+                          </p>
+                        </div>
+                      )
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
 
-            <div className="text-light p-2 rounded fw-bold">Duration</div>
+            <div className="duration_lable text-light p-2 rounded fw-bold text-sm">
+              DURATION
+            </div>
             <div className="container-slider">
               <Slider
                 value={sliderValue}

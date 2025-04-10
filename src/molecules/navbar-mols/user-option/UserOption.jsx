@@ -5,7 +5,6 @@ import { ExportOptions } from "../../export-option-mols/ExportOptions";
 import { sizeOptions } from "../../../utils/constant";
 import { FiUpload, FiSave } from "react-icons/fi";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
-import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useSaveContext } from "../../../utils/context/SaveContext";
 import { ExportForm } from "../../export-form-mols/ExportForm";
 
