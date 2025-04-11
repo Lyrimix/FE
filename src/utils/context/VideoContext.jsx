@@ -9,7 +9,6 @@ export const VideoProvider = ({ children }) => {
   const [previewUrls, setPreviewUrls] = useState([]);
   const [ranges, setRanges] = useState([[0, initialDuration]]);
   const [duration, setDuration] = useState(initialDuration);
-  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const [fileLength, setFileLength] = useState([]);
   const [projectVideo, setProjectVideo] = useState(null);
   const [selectedBackground, setSelectedBackground] = useState(null);
@@ -57,8 +56,6 @@ export const VideoProvider = ({ children }) => {
         duration,
         setDuration,
         handleChange,
-        currentVideoIndex,
-        setCurrentVideoIndex,
         handleRangeChange,
         fileLength,
         setFileLength,

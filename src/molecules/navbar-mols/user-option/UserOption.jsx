@@ -65,8 +65,7 @@ export const UserOption = () => {
             <FiUpload />
             Export
           </button>
-          <button className="user-option__authenticaion">Sign In</button>
-          <button className="user-option__authenticaion">Sign Up</button>
+          <UploadButton />
         </div>
       </div>
       {isExport && (

@@ -53,6 +53,8 @@ export const generateTimelineData = (selectedFiles, fileLength, maxDuration) => 
         id: `action${index}${COPY_SUFFIX}`,
         start,  
         end,
+        minStart:-10000,
+        maxEnd:10000,
         flexible: false,
         effectId: `effect${index}${COPY_SUFFIX}`,
         movable: false,
@@ -60,6 +62,9 @@ export const generateTimelineData = (selectedFiles, fileLength, maxDuration) => 
       {
         id: `action${index}`,
         start,
+        minStart:-10000,
+        maxEnd:10000,
+        maxEnd:10000,
         end,
         effectId: `effect${index}`,
         movable: false,

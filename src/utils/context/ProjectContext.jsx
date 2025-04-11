@@ -4,7 +4,6 @@ const ProjectContext = createContext();
 
 export const ProjectProvider = ({ children }) => {
   const [projectInfo, setProjectInfo] = useState({});
-  const [previewImage, setPreviewImage] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
   const [videoBlob, setVideoBlob] = useState(null);
   const [projectLength, setProjectLength] = useState(0);
@@ -20,14 +19,13 @@ export const ProjectProvider = ({ children }) => {
   const [isDemoCutting, setIsDemoCutting] = useState(true);
   const [isFirstTimeCut, setIsFirstTimeCut] = useState(true);
   const [videoThumbnail, setVideoThumbnail] = useState([]);
+  const [prevSoEo, setPrevSoEo] = useState([]);
 
   return (
     <ProjectContext.Provider
       value={{
         projectInfo,
         setProjectInfo,
-        previewImage,
-        setPreviewImage,
         videoFile,
         setVideoFile,
         videoBlob,
@@ -56,6 +54,8 @@ export const ProjectProvider = ({ children }) => {
         setIsFirstTimeCut,
         videoThumbnail,
         setVideoThumbnail,
+        prevSoEo,
+        setPrevSoEo,
       }}
     >
       {children}

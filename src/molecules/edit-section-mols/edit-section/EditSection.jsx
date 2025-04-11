@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Timeline } from "@xzdarcy/react-timeline-editor";
 import { useVideoContext } from "../../../utils/context/VideoContext";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
@@ -22,6 +22,7 @@ import TimelinePlayer from "../../../organisms/player/Player";
 import "./EditSection.css";
 import { useSaveContext } from "../../../utils/context/SaveContext";
 import { updateProject } from "../../../apis/ProjectApi";
+import { extractSoAndEoFromUrl } from "../../../utils/cloudinaryUtils";
 
 export const EditSection = ({ maxDuration = 1000 }) => {
   const {
@@ -36,6 +37,7 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     setTempEnd,
     setAfterEnd,
     setPrevRanges,
+    currentRange,
     setCurrentRange,
   } = useVideoContext();
   const [editorData, setEditorData] = useState([]);
@@ -45,7 +47,6 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     cloudinaryUrl,
     videoRef,
     timelineState,
-    projectRatio,
     originalStartAndEndTime,
     setVideosDuration,
     isDemoCutting,
@@ -53,6 +54,9 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     videoThumbnail,
     setIsFirstTimeCut,
     projectVideosID,
+    setProjectVideosId,
+    prevSoEo,
+    setPrevSoEo,
   } = useProjectContext();
   const [hoveredAction, setHoveredAction] = useState(null);
   const [effects, setEffects] = useState([]);
@@ -60,13 +64,16 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   const storedStartRef = useRef(null);
   const autoScrollWhenPlay = useRef(true);
   const hasLoggedRanges = useRef(false);
-
   const {
     hasClickedSaveRef,
     prevEditorDataRef,
     shouldUpdateProject,
     setShouldUpdateProject,
   } = useSaveContext();
+  const prevSoEoRef = useRef([]);
+  const [selectedActionId, setSelectedActionId] = useState(null);
+  const prevShouldHideRef = useRef();
+
   useEffect(() => {
     if (!projectVideo) {
       return;
@@ -148,10 +155,10 @@ export const EditSection = ({ maxDuration = 1000 }) => {
         "",
         projectVideosID
       );
-
       const durations = updatedProject.videos.map((video) => video.duration);
       setVideosDuration(durations);
-
+      setPrevSoEo(extractSoAndEoFromUrl(projectVideosID));
+      prevSoEoRef.current = extractSoAndEoFromUrl(projectVideosID);
       setProjectInfo(updatedProject);
       updateProject(updatedProject)
         .then(() => console.log("Project updated successfully"))
@@ -318,32 +325,99 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     }
   };
 
-  const renderActionItem = ({
-    action,
-    hoveredAction,
-    setHoveredAction,
-    handleDelete,
-    videoThumbnail,
-  }) => {
-    if (!videoThumbnail || videoThumbnail.length !== 2) return null;
+  const renderActionItem = useCallback(
+    ({ action, handleDelete, videoThumbnail, isSelected, shouldHide }) => {
+      if (!videoThumbnail || videoThumbnail.length !== 2) return null;
 
-    const match = action.id.match(/action(\d)/);
-    const originalIndex = match ? parseInt(match[1], 10) : null;
+      const match = action.id.match(/action(\d)/);
+      const originalIndex = match ? parseInt(match[1], 10) : null;
 
-    if (originalIndex === null || !videoThumbnail[originalIndex]) return null;
+      if (originalIndex === null || !videoThumbnail[originalIndex]) return null;
 
-    const thumbnailItem = videoThumbnail[originalIndex];
-    if (!thumbnailItem.thumbnailUrl) return null;
+      const thumbnailItem = videoThumbnail[originalIndex];
+      if (!thumbnailItem.thumbnailUrl) return null;
+      return (
+        <ActionItem
+          style={{
+            position: "absolute",
+            backgroundColor: isSelected ? "#ffdd88" : "#ccc",
+            border: isSelected ? "2px solid orange" : "1px solid transparent",
+            transition: "all 0.2s ease",
+          }}
+          action={action}
+          handleDelete={handleDelete}
+          thumbnail={thumbnailItem.thumbnailUrl}
+        />
+      );
+    },
+    [SCALE]
+  );
 
-    return (
-      <ActionItem
-        action={action}
-        hoveredAction={hoveredAction}
-        setHoveredAction={setHoveredAction}
-        handleDelete={handleDelete}
-        thumbnail={thumbnailItem.thumbnailUrl}
-      />
-    );
+  const updateSoInUrl = (url, newSo) => {
+    return url.replace(/so_(\d+(\.\d+)?),eo_/, `so_${newSo},eo_`);
+  };
+
+  const updateEoInUrl = (url, newEo) => {
+    return url.replace(/eo_(\d+(\.\d+)?)/, `eo_${newEo}`);
+  };
+  const getBaseId = (id) => id.replace("-copy", "");
+
+  const getActionRender = (action, index) => {
+    const baseActionId = getBaseId(action.id);
+    const baseSelectedId = selectedActionId
+      ? getBaseId(selectedActionId)
+      : null;
+    const shouldHide =
+      baseSelectedId !== null && baseActionId !== baseSelectedId;
+
+    return renderActionItem({
+      action,
+      handleDelete,
+      videoThumbnail,
+      isSelected: baseSelectedId !== null && baseActionId === baseSelectedId,
+      shouldHide,
+    });
+  };
+  const handleActionResizing = ({ action, start, end, dir }) => {
+    const isFirstAction = action.id === editorData[0].actions[1]?.id;
+
+    if (dir === "left" && isFirstAction) {
+      return handleResizeLeft({ action, start });
+    } else if (dir === "right" && isFirstAction) {
+      return handleResizeRight({ action });
+    }
+  };
+
+  const handleResizeLeft = ({ action, start }) => {
+    if (start < 0 && prevSoEo[0][0] !== 0 && shouldUpdateProject) {
+      action.start = 0;
+      const newSo = prevSoEo[0][0] - ranges[0][0];
+      const updatedUrl = updateSoInUrl(projectVideosID[0], newSo);
+
+      const newProjectVideosId = [...projectVideosID];
+      newProjectVideosId[0] = updatedUrl;
+      setProjectVideosId(newProjectVideosId);
+    } else if (start < 0 && prevSoEo[0][0] === 0) {
+      return false;
+    }
+  };
+
+  const handleResizeRight = ({ action }) => {
+    if (shouldUpdateProject) {
+      const newEo = prevSoEo[0][1] + (ranges[0][1] - currentRange[0][1]);
+      action.end = newEo;
+
+      const updatedUrl = updateEoInUrl(projectVideosID[0], newEo);
+      const newProjectVideosId = [...projectVideosID];
+      newProjectVideosId[0] = updatedUrl;
+      setProjectVideosId(newProjectVideosId);
+    } else if (
+      shouldUpdateProject &&
+      prevSoEoRef.current[0][1] >
+        originalStartAndEndTime[0][1] - originalStartAndEndTime[0][0]
+    ) {
+      return false;
+    }
   };
 
   return (
@@ -366,15 +440,14 @@ export const EditSection = ({ maxDuration = 1000 }) => {
           minScaleCount={MIN_SCALE_COUNT}
           rowHeight={ROW_HEIGHT}
           onChange={handleChange}
-          getActionRender={(action, index) =>
-            renderActionItem({
-              action,
-              hoveredAction,
-              setHoveredAction,
-              handleDelete,
-              videoThumbnail,
-            })
-          }
+          getActionRender={getActionRender}
+          onActionResizeStart={({ action }) => {
+            setSelectedActionId(action.id);
+          }}
+          onActionResizing={handleActionResizing}
+          onActionResizeEnd={() => {
+            setSelectedActionId(null);
+          }}
         />
       </div>
     </div>
