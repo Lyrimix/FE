@@ -191,6 +191,7 @@ const Sidebar = () => {
     if (updatedLyric === lyricEdit[0]) return;
 
     try {
+      setIsLoading(true);
       const formData = new FormData();
       formData.append("text", updatedLyric);
       formData.append("projectId", projectInfo.id);
@@ -204,6 +205,8 @@ const Sidebar = () => {
       updateProject(projectInfo);
     } catch (error) {
       console.error("Error updating lyric:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

@@ -1,6 +1,6 @@
 import "./MainContent.css";
-import { VideoSection } from "../../Molecules/video-section-mols/video-section/VideoSection";
-import { EditSection } from "../../Molecules/edit-section-mols/edit-section/EditSection";
+import { VideoSection } from "../../molecules/video-section-mols/video-section/VideoSection";
+import { EditSection } from "../../molecules/edit-section-mols/edit-section/EditSection";
 
 export const MainContent = () => {
   return (

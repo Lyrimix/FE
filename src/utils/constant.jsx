@@ -28,7 +28,7 @@ export const MOCK_EFFECT = {
   },
 };
 //CLOUDINARY
-export const CLOUD_NAME = "dnuyd3qxz";
+export const CLOUD_NAME = "dvsullht6";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
@@ -80,10 +80,21 @@ export const TABS = {
 };
 
 export const BACKGROUND_IMAGES = [
-  "https://res.cloudinary.com/dnuyd3qxz/image/upload/v1743391876/ol90v1eox2qmxn5fcinz.jpg",
-  "https://res.cloudinary.com/dnuyd3qxz/image/upload/v1743392711/qev2lzlskistz3vfzijb.jpg",
-  "https://res.cloudinary.com/dnuyd3qxz/image/upload/v1743392711/sh8rkzisyccinel4cpx6.webp",
-  "https://res.cloudinary.com/dnuyd3qxz/image/upload/v1743392711/rylrwb4l7edxblq2uj1j.webp",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-5.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-4.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-3.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-2.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/dessert-on-a-plate.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/woman-on-a-football-field.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/upscale-face-1.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/coffee.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/cup-on-a-table.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/man-portrait.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/chair.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/chair-and-coffee-table.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/man-on-a-escalator.jpg",
+  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/man-on-a-street.jpg",
 ];
 
 export const ContentType = {
@@ -126,6 +137,11 @@ export const EVENT_BUS_EVENTS = {
   TIME_UPDATED: "timeUpdated",
   SET_TIME_BY_TICK: "setTimeByTick",
 };
+
+//ACTION
+export const COPY_SUFFIX = "-copy";
+
+//FONTS
 export const ASS_FONTS = [
   "Arial",
   "Arial Black",

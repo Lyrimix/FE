@@ -17,6 +17,9 @@ export const ProjectProvider = ({ children }) => {
   const [projectVideosID, setProjectVideosId] = useState([]);
   const [videosDuration, setVideosDuration] = useState([]);
   const [originalStartAndEndTime, setOriginalStartAndEndTime] = useState([]);
+  const [isDemoCutting, setIsDemoCutting] = useState(true);
+  const [isFirstTimeCut, setIsFirstTimeCut] = useState(true);
+  const [videoThumbnail, setVideoThumbnail] = useState([]);
 
   return (
     <ProjectContext.Provider
@@ -47,6 +50,12 @@ export const ProjectProvider = ({ children }) => {
         setVideosDuration,
         originalStartAndEndTime,
         setOriginalStartAndEndTime,
+        isDemoCutting,
+        setIsDemoCutting,
+        isFirstTimeCut,
+        setIsFirstTimeCut,
+        videoThumbnail,
+        setVideoThumbnail,
       }}
     >
       {children}

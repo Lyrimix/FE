@@ -123,7 +123,7 @@ export const concatVideoUsingCloudinary = (videoIds) => {
     );
   }
 
-  const cleanedVideoIds = videoIds.map(cleanVideoId);
+  const cleanedVideoIds = videoIds.map((url) => url.replace(/\/v\d+\//, "/"));
 
   const updatedVideoIds = cleanedVideoIds.map((url) => {
     const hasStartEnd = /so_\d+/.test(url) && /eo_\d+/.test(url);
@@ -146,13 +146,9 @@ export const concatVideoUsingCloudinary = (videoIds) => {
     return { transformations, videoId };
   };
 
-  const videoList = updatedVideoIds.reduce((accumulator, currentId) => {
-    const data = extractCloudinaryVideoData(currentId);
-    if (data && data.videoId) {
-      accumulator.push(data);
-    }
-    return accumulator;
-  }, []);
+  const videoList = updatedVideoIds
+    .map(extractCloudinaryVideoData)
+    .filter((data) => data && data.videoId);
 
   if (videoList.length < 2) {
     throw new Error("At least two valid video IDs are required");

@@ -16,7 +16,7 @@ export const extractVideoName = (url) => {
 
 export const extractCloudinaryVideoId = (uploadUrl) => {
   const parts = uploadUrl.split("/");
-  return parts[parts.length - 1].split(".")[0]; // Lấy phần cuối URL và bỏ phần mở rộng .mp4
+  return parts[parts.length - 1].split(".")[0]; 
 };
 
 export const getVideoDuration = (file) => {
@@ -181,3 +181,39 @@ export function convertHexToASS(input, alpha = "00") {
 
   return `&H${alpha}${b}${g}${r}`.toUpperCase();
 }
+
+
+export const generateVideoThumbnail = (file) => {
+  return new Promise((resolve, reject) => {
+    const video = document.createElement("video");
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    video.preload = "metadata";
+    video.src = URL.createObjectURL(file);
+    video.muted = true;
+    video.playsInline = true;
+
+    video.onloadedmetadata = () => {
+      video.currentTime = Math.min(1, video.duration / 2); 
+    };
+
+    video.onseeked = () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      canvas.toBlob((blob) => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Snapshot failed"));
+        }
+      }, "image/jpeg");
+    };
+
+    video.onerror = (e) => {
+      reject(new Error("Video load error"));
+    };
+  });
+};

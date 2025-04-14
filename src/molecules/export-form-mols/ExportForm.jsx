@@ -1,15 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
+import {
+  Input,
+  FormGroup,
+  Label,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+} from "reactstrap";
 import { ThumbnailPreview } from "../../atoms/medias/ThumbnailPreview";
 import { ExportOptions } from "../export-option-mols/ExportOptions";
-import { Input, FormGroup, Label } from "reactstrap";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { exportProject } from "../../apis/ProjectApi";
 import { exportOptions } from "../../utils/constant";
 import { useLoadingStore } from "../../store/useLoadingStore";
 import "./ExportForm.css";
 
-export const ExportForm = () => {
-  const { projectInfo, cloudinaryUrl } = useProjectContext();
+export const ExportForm = ({ isOpen, toggle }) => {
+  const { projectInfo, videoThumbnail } = useProjectContext();
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
 
   const handleExportProject = async () => {
@@ -24,29 +33,43 @@ export const ExportForm = () => {
   };
 
   return (
-    <div className="container p-4 border rounded bg-white">
-      <h3 className="fs-6 mb-3">Cover image and video</h3>
-      <div className="mb-3">
-        <ThumbnailPreview
-          src="https://via.placeholder.com/300x150"
-          alt="Video thumbnail"
-          className="img-fluid rounded"
-        />
-      </div>
-      <FormGroup className="mb-3">
-        <Label for="nameInput">Name</Label>
-        <Input id="nameInput" name="name" placeholder="Name" type="text" />
-      </FormGroup>
-      <ExportOptions options={exportOptions} className="mb-3" />
-      <button
-        className="btn bg-custom-primary w-100 mb-2 text-dark"
-        onClick={handleExportProject}
-      >
-        Export
-      </button>
-      <button className="btn bg-custom-secondary w-100 text-dark">
-        Share to YouTube
-      </button>
-    </div>
+    <Modal
+      isOpen={isOpen}
+      toggle={toggle}
+      size="md"
+      centered
+      scrollable
+      className="custom-modal"
+    >
+      <ModalHeader toggle={toggle}>Export Project</ModalHeader>
+      <ModalBody>
+        <h3 className="fs-6 mb-3">Cover image and video</h3>
+        <div className="mb-3 d-flex justify-content-center">
+          <div style={{ width: "200px" }}>
+            <ThumbnailPreview
+              src={videoThumbnail[0]?.thumbnailUrl}
+              alt="Video thumbnail"
+              className="img-fluid rounded"
+            />
+          </div>
+        </div>
+
+        <FormGroup className="mb-3">
+          <Input id="nameInput" name="name" placeholder="Name" type="text" />
+        </FormGroup>
+        <ExportOptions options={exportOptions} className="mb-3" />
+      </ModalBody>
+      <ModalFooter>
+        <Button
+          className="bg-custom-primary text-dark"
+          onClick={handleExportProject}
+        >
+          Export
+        </Button>
+        <Button className="bg-custom-secondary text-dark">
+          Share to YouTube
+        </Button>
+      </ModalFooter>
+    </Modal>
   );
 };

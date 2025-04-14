@@ -13,8 +13,8 @@ import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useLoadingStore } from "../../../store/useLoadingStore";
 import { fetchVideoBlob, processVideoWithLyrics } from "../../../utils/file";
 import { concatVideoUsingCloudinary } from "../../../apis/ProjectApi";
-import { ratioSizes } from "../../../utils/constant";
 import { generateCloudinaryUrl } from "../../../utils/cloudinaryUtils";
+import { useSaveContext } from "../../../utils/context/SaveContext";
 
 const ffmpeg = createFFmpeg({ log: false });
 
@@ -29,10 +29,7 @@ const VideoMerger = ({ files = [] }) => {
     setRanges,
     setProjectVideo,
     selectedBackground,
-    originalDuration,
-    trimmedDuration,
-    tempEnd,
-    afterEnd,
+    currentRange,
   } = useVideoContext();
   const {
     setVideoFile,
@@ -47,13 +44,29 @@ const VideoMerger = ({ files = [] }) => {
     originalStartAndEndTime,
     setOriginalStartAndEndTime,
     setProjectVideosId,
-    setIsSidebarOptionsOpen,
+    isDemoCutting,
+    isFirstTimeCut,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);
-  const [isFirstUpload, setIsFirstUpload] = useState(true);
-  const prevRangesRef = useRef(ranges); // Lưu ranges trước đó
+  const prevRangesRef = useRef(ranges);
   const mergeRef = useRef(false);
+  const previousRanges = useRef([]);
+  const [prevRangeList, setPrevRangeList] = useState([]);
+  const prevCurrentRangeRef = useRef([]);
+  const pendingUpdateRef = useRef(false);
+  const isFirstUploadRef = useRef(true);
+  const firstTrimmedUrlsRef = useRef(null);
+  const trimCountRef = useRef(0);
+  const { setShouldUpdateProject } = useSaveContext();
+
+  useEffect(() => {
+    if (!pendingUpdateRef.current) {
+      return;
+    }
+    prevCurrentRangeRef.current = [...currentRange];
+    pendingUpdateRef.current = false;
+  }, [currentRange]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -152,61 +165,60 @@ const VideoMerger = ({ files = [] }) => {
     }
   };
 
-  const handleFirstUpload = (files, ranges, setProjectVideosId) => {
-    const originalUrls = files.map((file) => file);
-    setOriginalStartAndEndTime(ranges);
-    setProjectVideosId(originalUrls);
+  const shouldSkipTrim = (isFirstUpload) => {
+    if (isFirstUpload) {
+      trimCountRef.current = 0;
+      return true;
+    }
+    if (trimCountRef.current === 1) {
+      trimCountRef.current = 0;
+      return true;
+    }
+    trimCountRef.current++;
+    return false;
   };
 
-  const validateRange = (ranges, index) => {
-    if (!ranges[index]) {
-      console.error(`ERROR: Missing range for video index ${index}`);
-      return false;
-    }
-    const [originalStart, originalEnd] = ranges[index];
-    if (originalEnd - originalStart <= 0) {
-      console.error(
-        `ERROR: Invalid range [${originalStart}s - ${originalEnd}s] for video index ${index}`
-      );
-      return false;
-    }
-    return true;
+  const updatePrevRanges = (index, startOffset, endOffset) => {
+    previousRanges.current[index] = [startOffset, endOffset];
+    setPrevRangeList((prevState) => {
+      const newList = [...prevState];
+      newList[index] = [startOffset, endOffset];
+      return newList;
+    });
   };
 
-  const calculateTrimmedUrl = (file, index, rangesReverse) => {
-    if (!file) {
-      console.error(`ERROR: Invalid file for index ${index}`);
-      return null;
-    }
+  const calculateTrimmedRange = (
+    index,
+    initialStartTime,
+    initialEndTime,
+    newStartTime,
+    newEndTime
+  ) => {
+    let startOffset, endOffset;
 
-    if (!validateRange(rangesReverse, index)) {
-      return null;
-    }
-
-    const [startTimeVideo, endTimeVideo] = originalStartAndEndTime[index];
-    const [rangeStart, rangeEnd] = rangesReverse[index];
-
-    let segmentDuration = rangeEnd - rangeStart;
-    let startOffset = 0;
-
-    if (index === 0) {
-      startOffset = rangeStart;
-    } else {
-      if (rangeStart !== startTimeVideo) {
-        startOffset = parseFloat(
-          Math.max(rangeStart - startTimeVideo, 0).toFixed(3)
-        );
-      } else if (tempEnd > afterEnd) {
-        startOffset = parseFloat(
-          Math.max(originalDuration - trimmedDuration, 0).toFixed(3)
-        );
+    if (isFirstTimeCut) {
+      if (index === 0) {
+        startOffset = newStartTime;
+        endOffset = newEndTime;
+      } else {
+        startOffset = parseFloat((newStartTime - initialStartTime).toFixed(3));
+        endOffset =
+          startOffset + parseFloat((newEndTime - newStartTime).toFixed(3));
       }
+    } else {
+      const [prevStartOffset, prevEndOffset] = prevRangeList[index];
+      const [prevStartTime, prevEndTime] = prevCurrentRangeRef.current[index];
+
+      startOffset = prevStartOffset + (newStartTime - prevStartTime);
+      endOffset = prevEndOffset - (prevEndTime - newEndTime);
     }
 
-    if (startOffset < 0) startOffset = 0;
-    const endOffset = startOffset + segmentDuration;
-    const videoName = file.split("/").pop();
+    updatePrevRanges(index, startOffset, endOffset);
+    return [startOffset, endOffset];
+  };
 
+  const generateTrimmedUrl = (videoUrl, startOffset, endOffset) => {
+    const videoName = videoUrl.split("/").pop();
     return `https://res.cloudinary.com/${CLOUD_NAME}/video/upload/so_${startOffset},eo_${endOffset}/${videoName}`;
   };
 
@@ -217,13 +229,38 @@ const VideoMerger = ({ files = [] }) => {
     setProjectVideosId
   ) => {
     if (isFirstUpload) {
-      handleFirstUpload(files, ranges, setProjectVideosId);
+      setOriginalStartAndEndTime(ranges);
+      setProjectVideosId(files);
+      trimCountRef.current = 0;
       return;
     }
-    const rangesReverse = [...ranges];
+
+    if (shouldSkipTrim(isFirstUpload) || firstTrimmedUrlsRef.current) {
+      return;
+    }
 
     const trimmedUrls = files
-      .map((file, index) => calculateTrimmedUrl(file, index, rangesReverse))
+      .map((file, index) => {
+        const range = currentRange[index];
+        if (!range) {
+          console.error(`ERROR: Missing range for video index ${index}`);
+          return null;
+        }
+
+        const [originalStart, originalEnd] = originalStartAndEndTime[index];
+        const [updatedStart, updatedEnd] = currentRange[index];
+
+        const [startOffset, endOffset] = calculateTrimmedRange(
+          index,
+          originalStart,
+          originalEnd,
+          updatedStart,
+          updatedEnd
+        );
+
+        pendingUpdateRef.current = true;
+        return generateTrimmedUrl(file, startOffset, endOffset);
+      })
       .filter(Boolean);
 
     setProjectVideosId(trimmedUrls);
@@ -231,14 +268,8 @@ const VideoMerger = ({ files = [] }) => {
 
   const mergeVideos = async (videoIds) => {
     const mergedVideoUrl = await concatVideoUsingCloudinary(videoIds);
-    const updatedVideos = [...projectInfo.videos].reverse();
     setCloudinaryUrl(mergedVideoUrl);
-    updateProject({
-      ...projectInfo,
-      videos: updatedVideos,
-      asset: mergedVideoUrl,
-      size: ratioSizes[projectRatio] || projectRatio,
-    });
+    setShouldUpdateProject(true);
 
     try {
       const response = await fetch(mergedVideoUrl);
@@ -248,6 +279,7 @@ const VideoMerger = ({ files = [] }) => {
       const videoFile = new File([videoBlob], "merged.mp4", {
         type: "video/mp4",
       });
+
       setVideoFile(videoFile);
       return videoFile;
     } catch (error) {
@@ -262,29 +294,21 @@ const VideoMerger = ({ files = [] }) => {
   };
 
   const normalizeRanges = (ranges) => {
-    return ranges.reduce((newRanges, [start, end], index) => {
-      const duration = end - start;
-      const newStart =
-        newRanges.length > 0 ? newRanges[newRanges.length - 1][1] : 0;
-      const newEnd = newStart + duration;
+    let newRanges = [];
+    let startTime = 0;
+
+    for (let i = 0; i < ranges.length; i++) {
+      let duration = ranges[i][1] - ranges[i][0];
+      let newStart = startTime;
+      let newEnd = newStart + duration;
 
       newRanges.push([newStart, newEnd]);
-      return newRanges;
-    }, []);
-  };
 
-  const updateRangesIfNeeded = useCallback((updatedRanges) => {
-    const newUpdatedRanges = normalizeRanges(updatedRanges);
-
-    if (
-      JSON.stringify(newUpdatedRanges) === JSON.stringify(prevRangesRef.current)
-    ) {
-      return;
+      startTime = newEnd;
     }
 
-    prevRangesRef.current = newUpdatedRanges;
-    setRanges(newUpdatedRanges);
-  }, []);
+    return newRanges;
+  };
 
   const handleMergedVideo = async (blob) => {
     setProjectVideo(blob);
@@ -348,7 +372,6 @@ const VideoMerger = ({ files = [] }) => {
         }
       }
     };
-
     mergeWhenReady();
   }, [projectVideosID]);
   useEffect(() => {
@@ -356,31 +379,28 @@ const VideoMerger = ({ files = [] }) => {
 
     const processVideos = async () => {
       try {
-        await ensureFFmpegLoaded();
-
-        if (isFirstUpload) {
+        if (isFirstUploadRef.current) {
           await trimAndWriteVideosToFS(
             projectVideosID,
             ranges,
             true,
             setProjectVideosId
           );
-          setIsFirstUpload(false);
-        } else {
+          isFirstUploadRef.current = false;
+          return;
+        } else if (!isDemoCutting) {
+          await ensureFFmpegLoaded();
           await trimAndWriteVideosToFS(
             projectVideosID,
             ranges,
             false,
             setProjectVideosId
           );
-          updateRangesIfNeeded(ranges);
         }
       } catch (error) {
         console.error("Video processing failed:", error);
-      } finally {
       }
     };
-
     processVideos();
   }, [files, ranges]);
 

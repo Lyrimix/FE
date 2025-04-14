@@ -17,6 +17,8 @@ export const VideoProvider = ({ children }) => {
   const [trimmedDuration, setTrimmedDuration] = useState(0);
   const [tempEnd, setTempEnd] = useState(0);
   const [afterEnd, setAfterEnd] = useState(0);
+  const [prevRanges, setPrevRanges] = useState([]);
+  const [currentRange, setCurrentRange] = useState([]);
 
   const handleChange = (index, newRange) => {
     if (!Array.isArray(newRange)) {
@@ -72,6 +74,10 @@ export const VideoProvider = ({ children }) => {
         setTempEnd,
         afterEnd,
         setAfterEnd,
+        prevRanges,
+        setPrevRanges,
+        currentRange,
+        setCurrentRange,
       }}
     >
       {children}

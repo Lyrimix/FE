@@ -5,3 +5,8 @@
 .bg-custom-secondary {
   background-color: #e8f0ff !important;
 }
+
+.custom-modal {
+  max-height: 90vh;
+  overflow-y: auto;
+}
