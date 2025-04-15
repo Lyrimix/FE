@@ -1,21 +1,28 @@
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { VideoProvider } from "./utils/context/VideoContext";
 import { ProjectProvider } from "./utils/context/ProjectContext";
 import "./App.css";
 import { HomePage } from "./pages/homepage/HomePage";
 import { GlobalLoadingModal } from "./organisms/global-loading/GlobalLoadingModal";
 import { SaveProvider } from "./utils/context/SaveContext";
+import OauthCallback from "./pages/OAuthCallback";
 
 function App() {
   return (
     <div className="App">
-      <SaveProvider>
-        <ProjectProvider>
-          <VideoProvider>
-            <HomePage className="home-page"></HomePage>
-            <GlobalLoadingModal />
-          </VideoProvider>
-        </ProjectProvider>
-      </SaveProvider>
+      <ProjectProvider>
+        <VideoProvider>
+          <SaveProvider>
+            <Router>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/oauth-callback" element={<OauthCallback />} />
+              </Routes>
+              <GlobalLoadingModal />
+            </Router>
+          </SaveProvider>
+        </VideoProvider>
+      </ProjectProvider>
     </div>
   );
 }

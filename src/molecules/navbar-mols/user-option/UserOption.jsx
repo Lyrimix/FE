@@ -4,7 +4,6 @@ import { useFileUpload } from "../../../hooks/useFileUpload";
 import { ExportOptions } from "../../export-option-mols/ExportOptions";
 import { sizeOptions } from "../../../utils/constant";
 import { FiUpload, FiSave } from "react-icons/fi";
-import UploadButton from "../../export-youtube-option-mols/UploadButton";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useSaveContext } from "../../../utils/context/SaveContext";
 import { ExportForm } from "../../export-form-mols/ExportForm";
@@ -66,7 +65,6 @@ export const UserOption = () => {
             <FiUpload />
             Export
           </button>
-          <UploadButton />
           <button className="user-option__authenticaion">Sign In</button>
           <button className="user-option__authenticaion">Sign Up</button>
         </div>
