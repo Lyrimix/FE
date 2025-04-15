@@ -19,10 +19,10 @@ import {
   generateEffectsFromFiles,
 } from "../../../utils/file";
 import TimelinePlayer from "../../../organisms/player/Player";
-import "./EditSection.css";
 import { useSaveContext } from "../../../utils/context/SaveContext";
 import { updateProject } from "../../../apis/ProjectApi";
 import { extractSoAndEoFromUrl } from "../../../utils/cloudinaryUtils";
+import "./EditSection.css";
 
 export const EditSection = ({ maxDuration = 1000 }) => {
   const {
@@ -57,6 +57,11 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     setProjectVideosId,
     prevSoEo,
     setPrevSoEo,
+    currentCutTime,
+    setCurrentCutTime,
+    setOriginalCutTimeRef,
+    originalStartEndOffset,
+    setOriginalStartEndOffset,
   } = useProjectContext();
   const [hoveredAction, setHoveredAction] = useState(null);
   const [effects, setEffects] = useState([]);
@@ -74,6 +79,14 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   const [selectedActionId, setSelectedActionId] = useState(null);
   const RESIZE_DIRECTION_LEFT = "left";
   const RESIZE_DIRECTION_RIGHT = "right";
+  const [tooltip, setTooltip] = useState({
+    visible: false,
+    value: 0,
+    x: 0,
+    y: 0,
+  });
+  const TOOLTIP_OFFSET_X = 10;
+  const TOOLTIP_OFFSET_Y = -20;
 
   useEffect(() => {
     if (!projectVideo) {
@@ -155,8 +168,15 @@ export const EditSection = ({ maxDuration = 1000 }) => {
       );
       const durations = updatedProject.videos.map((video) => video.duration);
       setVideosDuration(durations);
-      setPrevSoEo(extractSoAndEoFromUrl(projectVideosID));
-      prevSoEoRef.current = extractSoAndEoFromUrl(projectVideosID);
+      const extractedSoEo = extractSoAndEoFromUrl(projectVideosID);
+      setPrevSoEo(extractedSoEo);
+      prevSoEoRef.current = extractedSoEo;
+      if (setOriginalCutTimeRef.current === null) {
+        setCurrentCutTime(extractedSoEo);
+        setOriginalCutTimeRef.current = extractedSoEo;
+        setOriginalStartEndOffset(extractedSoEo);
+      }
+
       setProjectInfo(updatedProject);
       updateProject(updatedProject)
         .then(() => console.log("Project updated successfully"))
@@ -358,7 +378,7 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   const updateEoInUrl = (url, newEo) => {
     return url.replace(/eo_(\d+(\.\d+)?)/, `eo_${newEo}`);
   };
-  const getBaseId = (id) => id.replace("-copy", "");
+  const getBaseId = (id) => id.replace(COPY_SUFFIX, "");
 
   const getActionRender = (action, index) => {
     const baseActionId = getBaseId(action.id);
@@ -376,8 +396,52 @@ export const EditSection = ({ maxDuration = 1000 }) => {
       shouldHide,
     });
   };
+
+  const updateCurrentCutTime = (index, start, end) => {
+    const rangeStart = ranges[index]?.[0];
+    const so = prevSoEo[index]?.[0];
+
+    if (rangeStart == null || so == null) return;
+
+    const realStart = parseFloat((so + (start - rangeStart)).toFixed(5));
+    const realEnd = parseFloat((so + (end - rangeStart)).toFixed(5));
+
+    setCurrentCutTime((prev) => {
+      const updated = [...(prev || [])];
+      updated[index] = [realStart, realEnd];
+      return updated;
+    });
+  };
+
   const handleActionResizing = ({ action, start, end, dir }) => {
     const isFirstAction = action.id === editorData[0].actions[1]?.id;
+    const match = action.id.match(/action(\d+)/);
+    const index = match ? parseInt(match[1], 10) : 0;
+    const rangeStart = ranges[index]?.[0];
+    const [so, eo] = prevSoEo[index] || [];
+    const [originalSo, originalEo] = originalStartEndOffset[index] || [];
+
+    if (rangeStart == null || so == null) return;
+    const realStart = parseFloat((so + (start - rangeStart)).toFixed(5));
+    const realEnd = parseFloat((so + (end - rangeStart)).toFixed(5));
+
+    const tooltipValue = dir === RESIZE_DIRECTION_LEFT ? realStart : realEnd;
+
+    if (
+      (dir === RESIZE_DIRECTION_LEFT && realStart < originalSo) ||
+      (dir === RESIZE_DIRECTION_RIGHT && realEnd > originalEo)
+    ) {
+      return false;
+    }
+
+    setTooltip({
+      visible: true,
+      value: tooltipValue,
+      x: event?.clientX || 0,
+      y: event?.clientY || 0,
+    });
+
+    updateCurrentCutTime(index, start, end);
 
     if (dir === RESIZE_DIRECTION_LEFT && isFirstAction) {
       return handleResizeLeft({ action, start });
@@ -428,6 +492,18 @@ export const EditSection = ({ maxDuration = 1000 }) => {
           />
         </div>
 
+        {tooltip.visible && (
+          <div
+            className="tooltips"
+            style={{
+              left: tooltip.x + TOOLTIP_OFFSET_X,
+              top: tooltip.y - TOOLTIP_OFFSET_Y,
+            }}
+          >
+            {tooltip.value.toFixed(2)}s
+          </div>
+        )}
+
         <Timeline
           key={videoThumbnail.map((v) => v.thumbnailUrl).join("-")}
           editorData={editorData}
@@ -444,6 +520,7 @@ export const EditSection = ({ maxDuration = 1000 }) => {
           }}
           onActionResizing={handleActionResizing}
           onActionResizeEnd={() => {
+            setTooltip((prev) => ({ ...prev, visible: false }));
             setSelectedActionId(null);
           }}
         />

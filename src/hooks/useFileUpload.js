@@ -6,7 +6,6 @@ import { API_URL, ContentType } from "../utils/constant";
 import { getVideoDuration } from "../utils/file";
 import { useLoadingStore } from "../store/useLoadingStore";
 import { generateVideoThumbnail } from "../utils/file";
-import { useSaveContext } from "../utils/context/SaveContext";
 
 export const useFileUpload = () => {
   const { selectedFiles, setSelectedFiles, previewUrls, setPreviewUrls } =
@@ -20,13 +19,6 @@ export const useFileUpload = () => {
     setIsDemoCutting,
   } = useProjectContext();
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
-  const { hasClickedSaveRef, prevEditorDataRef } = useSaveContext();
-
-  const handleUpdateClick = () => {
-    hasClickedSaveRef.current = true;
-    setIsDemoCutting(false);
-    prevEditorDataRef.current = {};
-  };
 
   const uploadFiles = async (event, setVideoThumbnail) => {
     const files = Array.from(event.target.files);
@@ -73,7 +65,6 @@ export const useFileUpload = () => {
           videos: [],
           size: response.data.result.size,
         });
-        handleUpdateClick();
       } catch (error) {
         console.error("Project creation failed:", error);
         return;

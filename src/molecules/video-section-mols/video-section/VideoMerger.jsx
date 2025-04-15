@@ -377,7 +377,6 @@ const VideoMerger = ({ files = [] }) => {
   }, [projectVideosID]);
   useEffect(() => {
     if (!files.length || !ranges.length) return;
-
     const processVideos = async () => {
       try {
         if (isFirstUploadRef.current) {

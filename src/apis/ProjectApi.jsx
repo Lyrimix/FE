@@ -106,7 +106,7 @@ export const uploadToCloudinary = async (file) => {
 
 export const concatVideoUsingCloudinary = (videoIds) => {
   if (!videoIds || videoIds.length === 0) {
-    throw new Error("At least two video IDs are required");
+    throw new Error("At least one video ID is required");
   }
 
   const cloudinaryBaseUrl = `https://res.cloudinary.com/${CLOUD_NAME}/video/upload`;
@@ -116,7 +116,6 @@ export const concatVideoUsingCloudinary = (videoIds) => {
 
   if (videoIds.length === 1) {
     console.warn("Only one video provided, adding default so_0, eo_100");
-
     return videoIds[0].replace(
       "/upload/",
       `/upload/so_${defaultStart},eo_${defaultEnd}/`
@@ -154,7 +153,13 @@ export const concatVideoUsingCloudinary = (videoIds) => {
     throw new Error("At least two valid video IDs are required");
   }
 
-  return `${cloudinaryBaseUrl}/${commonTransform},${videoList[0].transformations}/fl_splice,l_video:${videoList[1].videoId},${videoList[1].transformations},${commonTransform}/fl_layer_apply/${videoList[0].videoId}.mp4`;
+  let spliceUrl = `${cloudinaryBaseUrl}/${commonTransform},${videoList[0].transformations}`;
+  for (let i = 1; i < videoList.length; i++) {
+    spliceUrl += `/fl_splice,l_video:${videoList[i].videoId},${videoList[i].transformations},${commonTransform}`;
+  }
+  spliceUrl += `/fl_layer_apply/${videoList[0].videoId}.mp4`;
+
+  return spliceUrl;
 };
 
 export const getLyricById = async (projectId) => {
@@ -188,7 +193,6 @@ export const showHideLyrics = async (projectId, formData) => {
     },
   });
 };
-
 export const applyTransition = async (formData) => {
   return axios.post(`${API_URL}/video/applyTransition`, formData, {
     headers: {
@@ -212,4 +216,12 @@ export const uploadYoutube = async (accessToken, projectId) => {
       },
     }
   );
+};
+
+export const removeEffect = async (formData) => {
+  return axios.post(`${API_URL}/video/removeEffect`, formData, {
+    headers: {
+      "Content-Type": ContentType.FormData,
+    },
+  });
 };
