@@ -72,8 +72,6 @@ export const useFileUpload = () => {
       const formData = new FormData();
       let totalLength = 0;
 
-      const videoThumb = [];
-
       for (const file of validFiles) {
         const fileLength = await getVideoDuration(file);
         totalLength += fileLength;

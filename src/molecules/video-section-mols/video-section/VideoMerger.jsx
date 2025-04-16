@@ -46,6 +46,7 @@ const VideoMerger = ({ files = [] }) => {
     setProjectVideosId,
     isDemoCutting,
     isFirstTimeCut,
+    originalProject,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);
@@ -189,28 +190,28 @@ const VideoMerger = ({ files = [] }) => {
 
   const calculateTrimmedRange = (
     index,
-    initialStartTime,
-    initialEndTime,
-    newStartTime,
-    newEndTime
+    originalStart,
+    originalEnd,
+    updatedStart,
+    updatedEnd
   ) => {
     let startOffset, endOffset;
 
     if (isFirstTimeCut) {
       if (index === 0) {
-        startOffset = newStartTime;
-        endOffset = newEndTime;
+        startOffset = updatedStart;
+        endOffset = updatedEnd;
       } else {
-        startOffset = parseFloat((newStartTime - initialStartTime).toFixed(3));
+        startOffset = parseFloat((updatedStart - originalStart).toFixed(3));
         endOffset =
-          startOffset + parseFloat((newEndTime - newStartTime).toFixed(3));
+          startOffset + parseFloat((updatedEnd - updatedStart).toFixed(3));
       }
     } else {
-      const [prevStartOffset, prevEndOffset] = prevRangeList[index];
-      const [prevStartTime, prevEndTime] = prevCurrentRangeRef.current[index];
+      const [previousStartOffset, previousEndOffset] = prevRangeList[index];
+      const [previousStart, previousEnd] = prevCurrentRangeRef.current[index];
 
-      startOffset = prevStartOffset + (newStartTime - prevStartTime);
-      endOffset = prevEndOffset - (prevEndTime - newEndTime);
+      startOffset = previousStartOffset + (updatedStart - previousStart);
+      endOffset = previousEndOffset - (previousEnd - updatedEnd);
     }
 
     updatePrevRanges(index, startOffset, endOffset);
@@ -249,7 +250,6 @@ const VideoMerger = ({ files = [] }) => {
 
         const [originalStart, originalEnd] = originalStartAndEndTime[index];
         const [updatedStart, updatedEnd] = currentRange[index];
-
         const [startOffset, endOffset] = calculateTrimmedRange(
           index,
           originalStart,
@@ -279,7 +279,6 @@ const VideoMerger = ({ files = [] }) => {
       const videoFile = new File([videoBlob], "merged.mp4", {
         type: "video/mp4",
       });
-
       setVideoFile(videoFile);
       return videoFile;
     } catch (error) {
