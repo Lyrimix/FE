@@ -72,7 +72,8 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   } = useSaveContext();
   const prevSoEoRef = useRef([]);
   const [selectedActionId, setSelectedActionId] = useState(null);
-  const prevShouldHideRef = useRef();
+  const RESIZE_DIRECTION_LEFT = "left";
+  const RESIZE_DIRECTION_RIGHT = "right";
 
   useEffect(() => {
     if (!projectVideo) {
@@ -381,9 +382,9 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   const handleActionResizing = ({ action, start, end, dir }) => {
     const isFirstAction = action.id === editorData[0].actions[1]?.id;
 
-    if (dir === "left" && isFirstAction) {
+    if (dir === RESIZE_DIRECTION_LEFT && isFirstAction) {
       return handleResizeLeft({ action, start });
-    } else if (dir === "right" && isFirstAction) {
+    } else if (dir === RESIZE_DIRECTION_RIGHT && isFirstAction) {
       return handleResizeRight({ action });
     }
   };
