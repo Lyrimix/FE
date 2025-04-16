@@ -41,6 +41,17 @@ export const clampActionsToFileLength = (newData, fileLength) => {
   return newData.map((item) => ({
     ...item,
     actions: item.actions.map((action, index) => {
+      const startTime = action.start;
+      let endTime = action.end;
+      const maxDuration = fileLength[index] || Infinity;
+
+      if (endTime > maxDuration) {
+        return {
+          ...action,
+          end: startTime + maxDuration,
+          maxEnd: maxDuration,
+        };
+      }
       return action;
     }),
   }));

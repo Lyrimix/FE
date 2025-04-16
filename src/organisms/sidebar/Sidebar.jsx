@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useRef, useState } from "react";
 import SidebarGroup from "../../molecules/sidebar-mols/SidebarGroup";
 import { useVideoContext } from "../../utils/context/VideoContext";
 import {
@@ -19,6 +19,7 @@ import { useLoadingStore } from "../../store/useLoadingStore";
 import { fetchVideoBlob, convertBase64ToBlob } from "../../utils/file";
 import CustomLyrics from "./CustomLyrics";
 import EffectVideo from "../../organisms/sidebar/EffectVideo";
+import { useSaveContext } from "../../utils/context/SaveContext";
 
 const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
@@ -26,9 +27,17 @@ const Sidebar = () => {
   const [isEditLyricOpen, setIsEditLyricOpen] = useState(false);
   const { selectedFiles, setSelectedBackground, projectVideo } =
     useVideoContext();
+  const { hasClickedSaveRef, prevEditorDataRef } = useSaveContext();
+
   const [isCustomLyricOpen, setIsCustomLyricOpen] = useState(false);
   const [offcanvasType, setOffcanvasType] = useState(null);
-  const { videoFile, setVideoBlob, projectInfo } = useProjectContext();
+  const {
+    videoFile,
+    setVideoBlob,
+    projectInfo,
+    originalProject,
+    setIsDemoCutting,
+  } = useProjectContext();
   const [customLyrics, setCustomLyrics] = useState(null);
   const [effectVideo, setIsEffectVideo] = useState(null);
   const [isEffectVideoOpen, setIsEffectVideoOpen] = useState(false);
@@ -38,6 +47,8 @@ const Sidebar = () => {
   const [showHideLabel, setShowHideLabel] = useState(TABS.HIDDENLYRICS);
   const [selectedEffect, setSelectedEffect] = useState();
   const [sliderValue, setSliderValue] = useState(0);
+  const originalVideoUrlRef = useRef(null);
+  const [selectedType, setSelectedType] = useState(null);
 
   const onToggle = (tab) => {
     setSelectedTab(tab);
@@ -61,7 +72,11 @@ const Sidebar = () => {
     }
     setSelectedBackground(img);
   };
-
+  const handleUpdateClick = () => {
+    hasClickedSaveRef.current = true;
+    setIsDemoCutting(false);
+    prevEditorDataRef.current = {};
+  };
   const openEffectVideo = async () => {
     setOffcanvasType(TABS.EFFECT);
   };
@@ -210,34 +225,95 @@ const Sidebar = () => {
     }
   };
 
+  const retryApplyTransition = async (
+    requestBody,
+    retries = 1,
+    delay = 1000
+  ) => {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        return await applyTransition(requestBody);
+      } catch (error) {
+        if (attempt === retries) throw error;
+        await new Promise((res) => setTimeout(res, delay));
+      }
+    }
+  };
+
+  let isFirstTimeApply = true;
+
   const handleEffectClick = async (selectedEffect, sliderValue) => {
-    if (!projectInfo.videos || projectInfo.videos.length < 2) {
-      alert("Please ensure there are at least 2 videos to apply the effect.");
+    if (!selectedEffect) return resetToOriginal();
+
+    if (!isValidVideoCount(projectInfo?.videos)) {
+      alert("At least 2 videos are required to apply a transition.");
       return;
     }
 
-    setIsEffectVideoOpen(false);
-    setIsLoading(true);
-    setSelectedEffect(selectedEffect);
-    setSliderValue(sliderValue);
+    prepareEffectState(selectedEffect, sliderValue);
 
     try {
-      const requestBody = {
-        projectId: projectInfo.id,
-        transitionType: selectedEffect,
-        duration: sliderValue,
-      };
-      const response = await applyTransition(requestBody);
-      const videoBlob = convertBase64ToBlob(response.data.result);
-      setVideoBlob(URL.createObjectURL(videoBlob));
-      const cloudinaryUrl = await uploadToCloudinary(videoBlob);
-      projectInfo.asset = cloudinaryUrl;
-      updateProject(projectInfo);
+      if (isFirstTimeApply) {
+        await delay(500);
+        isFirstTimeApply = false;
+      }
+
+      const response = await sendTransitionRequest(
+        projectInfo.id,
+        selectedEffect,
+        sliderValue
+      );
+      await handleTransitionResponse(response);
     } catch (error) {
-      console.error("Error while add effect to video:", error);
+      console.error("Transition error:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const resetToOriginal = () => {
+    setVideoBlob(URL.createObjectURL(originalProject));
+  };
+
+  const isValidVideoCount = (videos) =>
+    Array.isArray(videos) && videos.length >= 2;
+
+  const prepareEffectState = (selectedEffect, sliderValue) => {
+    setIsEffectVideoOpen(true);
+    setIsLoading(true);
+    setSelectedEffect(selectedEffect);
+    setSelectedType(selectedEffect);
+    setSliderValue(sliderValue);
+  };
+
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+  const sendTransitionRequest = (projectId, type, duration) => {
+    const body = { projectId, transitionType: type, duration };
+    return retryApplyTransition(body, 1, 1000);
+  };
+
+  const handleTransitionResponse = async (response) => {
+    const contentType = response?.headers?.["content-type"];
+    const data = response?.data;
+
+    if (contentType?.includes("application/json") && data?.result) {
+      const blob = convertBase64ToBlob(validateBase64(data.result));
+      setVideoBlob(URL.createObjectURL(blob));
+    } else if (contentType?.includes("video") || data instanceof Blob) {
+      const blob =
+        data instanceof Blob ? data : new Blob([data], { type: contentType });
+      setVideoBlob(URL.createObjectURL(blob));
+    } else {
+      throw new Error("Unsupported response format from server.");
+    }
+  };
+
+  const validateBase64 = (base64) => {
+    const cleaned = base64.replace(/\s/g, "");
+    const isValid = /^([A-Za-z0-9+/=]+)$/.test(cleaned);
+    if (!isValid) throw new Error("Invalid base64 format.");
+    return cleaned;
   };
 
   return (
@@ -277,6 +353,9 @@ const Sidebar = () => {
         lyric={lyricEdit || ""}
         setIsEffectVideo={setIsEffectVideo}
         handleEffectClick={handleEffectClick}
+        selectedType={selectedType}
+        setSelectedType={setSelectedType}
+        hasClickedSaveRef={hasClickedSaveRef}
       />
     </div>
   );

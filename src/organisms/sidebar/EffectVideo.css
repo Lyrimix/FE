@@ -1,12 +1,12 @@
 .container-slider .MuiSlider-root {
     color: rgb(255, 255, 255);
-    width: 90%; 
-    height: 7px;
+    width: 50%; 
+    height: 4px;
   }
   
   .container-slider .MuiSlider-thumb {
-    width: 16px;  
-    height: 16px; 
+    width: 12px;  
+    height: 12px; 
     background-color: rgb(255, 255, 255);  
   }
   .container-slider .MuiSlider-valueLabel {
@@ -17,8 +17,18 @@
   }
   
   .container-slider .MuiSlider-valueLabelCircle {
-    width: 20px;  
-    height: 20px;
+    width: 16px;  
+    height: 16px;
     font-size: 12px;  
   }
-  
+
+  .effect-label{
+    font-size: 0.7rem;
+    opacity: 0.6;
+    text-align: center;
+    color: #ccc;
+  }
+
+.group-name, .duration_lable{
+  font-size: 0.8rem;
+}

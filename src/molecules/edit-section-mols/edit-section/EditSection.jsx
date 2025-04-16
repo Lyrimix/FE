@@ -115,29 +115,26 @@ export const EditSection = ({ maxDuration = 1000 }) => {
       });
     }
 
-    if (!isDemoCutting) {
-      if (
-        JSON.stringify(prevEditorDataRef.current) !== JSON.stringify(editorData)
-      ) {
-        prevEditorDataRef.current = editorData;
+    if (isDemoCutting) return;
 
-        prevEditorDataRef.current = editorData;
-        handleChange(editorData);
-      }
+    const hasEditorChanged =
+      JSON.stringify(prevEditorDataRef.current) !== JSON.stringify(editorData);
 
-      const updatedProject = updateProjectBackgrounds(
-        projectInfo,
-        ranges,
-        cloudinaryUrl
-      );
+    if (hasEditorChanged) {
+      prevEditorDataRef.current = editorData;
+      handleChange(editorData);
+    }
 
-      if (!hasLoggedRanges.current) {
-        setPrevRanges(ranges);
-        hasLoggedRanges.current = true;
-      }
+    const updatedProject = updateProjectBackgrounds(
+      projectInfo,
+      ranges,
+      cloudinaryUrl
+    );
+    setVideosDuration(updatedProject.videos.map((video) => video.duration));
 
-      const durations = updatedProject.videos.map((video) => video.duration);
-      setVideosDuration(durations);
+    if (!hasLoggedRanges.current) {
+      setPrevRanges(ranges);
+      hasLoggedRanges.current = true;
     }
   }, [ranges, editorData, isDemoCutting, cloudinaryUrl]);
 

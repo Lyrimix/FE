@@ -10,7 +10,7 @@ import { ExportForm } from "../../export-form-mols/ExportForm";
 
 export const UserOption = () => {
   const [isExport, setIsExport] = useState(false);
-  const { setIsDemoCutting } = useProjectContext();
+  const { setIsDemoCutting, setIsFirstTimeCut } = useProjectContext();
   const { uploadFiles } = useFileUpload();
   const fileInputRef = useRef(null);
   const { hasClickedSaveRef, prevEditorDataRef } = useSaveContext();

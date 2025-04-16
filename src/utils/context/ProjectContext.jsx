@@ -20,6 +20,7 @@ export const ProjectProvider = ({ children }) => {
   const [isFirstTimeCut, setIsFirstTimeCut] = useState(true);
   const [videoThumbnail, setVideoThumbnail] = useState([]);
   const [prevSoEo, setPrevSoEo] = useState([]);
+  const [originalProject, setOriginalProject] = useState(null);
 
   return (
     <ProjectContext.Provider
@@ -56,6 +57,8 @@ export const ProjectProvider = ({ children }) => {
         setVideoThumbnail,
         prevSoEo,
         setPrevSoEo,
+        originalProject,
+        setOriginalProject,
       }}
     >
       {children}

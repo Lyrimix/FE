@@ -6,17 +6,29 @@ import { API_URL, ContentType } from "../utils/constant";
 import { getVideoDuration } from "../utils/file";
 import { useLoadingStore } from "../store/useLoadingStore";
 import { generateVideoThumbnail } from "../utils/file";
+import { useSaveContext } from "../utils/context/SaveContext";
 
 export const useFileUpload = () => {
   const { selectedFiles, setSelectedFiles, previewUrls, setPreviewUrls } =
     useVideoContext();
-  const { projectInfo, setProjectInfo, projectLength, setProjectLength
-  ,projectVideosID,setProjectVideosId
-  } =
-    useProjectContext();
+  const {
+    projectInfo,
+    setProjectInfo,
+    projectLength,
+    setProjectLength,
+    setProjectVideosId,
+    setIsDemoCutting,
+  } = useProjectContext();
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
+  const { hasClickedSaveRef, prevEditorDataRef } = useSaveContext();
 
-  const uploadFiles = async (event,setVideoThumbnail) => {
+  const handleUpdateClick = () => {
+    hasClickedSaveRef.current = true;
+    setIsDemoCutting(false);
+    prevEditorDataRef.current = {};
+  };
+
+  const uploadFiles = async (event, setVideoThumbnail) => {
     const files = Array.from(event.target.files);
     if (files.length === 0) {
       console.error("No file selected");
@@ -59,8 +71,9 @@ export const useFileUpload = () => {
           length: projectLength,
           asset: null,
           videos: [],
-          size:response.data.result.size,
+          size: response.data.result.size,
         });
+        handleUpdateClick();
       } catch (error) {
         console.error("Project creation failed:", error);
         return;
@@ -78,27 +91,26 @@ export const useFileUpload = () => {
         formData.append("files", file);
 
         try {
-          const thumbnailBob =  await generateVideoThumbnail(file)
+          const thumbnailBob = await generateVideoThumbnail(file);
           const thumbnailUrl = URL.createObjectURL(thumbnailBob);
-          setVideoThumbnail((prev) =>
-          [
+          setVideoThumbnail((prev) => [
             ...prev,
             {
               fileName: file.name,
               thumbnailUrl,
             },
-          ]
-        );
-        
-        } catch(error) {
+          ]);
+        } catch (error) {
           console.error("Error creating video thumbnails:", error);
         }
       }
       formData.append("projectId", projectId);
 
       const backgroundResponse = await addBackGroundToProject(formData);
-      const projectVideoIds = backgroundResponse.data.result.map((item) => item.asset);
-      setProjectVideosId(projectVideoIds)
+      const projectVideoIds = backgroundResponse.data.result.map(
+        (item) => item.asset
+      );
+      setProjectVideosId(projectVideoIds);
       if (!backgroundResponse.data?.result) {
         throw new Error("Invalid background upload response");
       }

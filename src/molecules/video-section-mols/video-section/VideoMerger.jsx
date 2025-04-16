@@ -47,6 +47,7 @@ const VideoMerger = ({ files = [] }) => {
     isDemoCutting,
     isFirstTimeCut,
     originalProject,
+    setOriginalProject,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);
@@ -279,6 +280,7 @@ const VideoMerger = ({ files = [] }) => {
       const videoFile = new File([videoBlob], "merged.mp4", {
         type: "video/mp4",
       });
+      setOriginalProject(videoFile);
       setVideoFile(videoFile);
       return videoFile;
     } catch (error) {

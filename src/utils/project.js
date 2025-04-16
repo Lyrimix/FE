@@ -2,12 +2,13 @@ import { ratioSizes } from "./constant";
 import { COPY_SUFFIX } from "./constant";
 
 export const updateProjectBackgrounds = (projectInfo, ranges, cloudinaryUrl = "", projectRatio = "",projectVideosID = []) => {
+  const reversedIDs = [...projectVideosID]; 
   
   const updatedVideos = projectInfo.videos.map((bg, index) => {
     const startTime = ranges[index]?.[0] || 0;
     const endTime = ranges[index]?.[1] || 0;
     const duration = endTime - startTime;
-    const asset = projectVideosID.length > 0 ? projectVideosID[index] : null 
+    const asset = reversedIDs.length > 0 ? reversedIDs[index] : null 
 
     return {
       ...bg,
