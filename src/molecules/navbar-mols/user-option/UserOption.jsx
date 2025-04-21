@@ -65,7 +65,6 @@ export const UserOption = () => {
             <FiUpload />
             Export
           </button>
-          <UploadButton />
         </div>
       </div>
       {isExport && (
