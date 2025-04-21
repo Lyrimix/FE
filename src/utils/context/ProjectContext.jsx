@@ -22,6 +22,9 @@ export const ProjectProvider = ({ children }) => {
   const [prevSoEo, setPrevSoEo] = useState([]);
   const [originalProject, setOriginalProject] = useState(null);
 
+  const [currentCutTime, setCurrentCutTime] = useState(null);
+  const setOriginalCutTimeRef = useRef(null);
+  const [originalStartEndOffset, setOriginalStartEndOffset] = useState([]);
   return (
     <ProjectContext.Provider
       value={{
@@ -59,6 +62,11 @@ export const ProjectProvider = ({ children }) => {
         setPrevSoEo,
         originalProject,
         setOriginalProject,
+        currentCutTime,
+        setCurrentCutTime,
+        setOriginalCutTimeRef,
+        originalStartEndOffset,
+        setOriginalStartEndOffset,
       }}
     >
       {children}
