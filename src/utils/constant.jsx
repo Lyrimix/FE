@@ -580,3 +580,11 @@ export const TOKEN = {
   CODE: "code",
   TOKEN_RECEIVE: "TOKEN_RECEIVED",
 };
+
+export const INPUT = {
+  TIME_DEFAULT: "0:00:00.00",
+  DELETE: "Delete",
+  BACKSPACE: "Backspace",
+  ARROW_LEFT: "ArrowLeft",
+  ARROW_RIGHT: "ArrowRight",
+};

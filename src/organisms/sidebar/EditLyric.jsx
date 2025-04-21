@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { Offcanvas, OffcanvasHeader, OffcanvasBody, Button } from "reactstrap";
 import "./EditLyric.css";
-import { TABS } from "../../utils/constant";
-import { useProjectContext } from "../../utils/context/ProjectContext";
+import { INPUT, TABS } from "../../utils/constant";
+import { FaMinus } from "react-icons/fa";
+import TimeInput from "../../atoms/inputs/TimeInput";
 
-const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
+const EditLyric = ({
+  isOpen,
+  toggle,
+  lyric,
+  handleSaveLyric,
+  onRefreshLyric,
+}) => {
   const [lyricEdit, setLyricEdit] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
 
@@ -28,11 +35,15 @@ const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
 
     setLyricEdit(parseLyrics(lyric));
   }, [lyric]);
-
   const handleChange = (index, field, value) => {
     setLyricEdit((prev) =>
       prev.map((item, i) =>
-        i === index ? { ...item, [field]: value.trim() } : item
+        i === index
+          ? {
+              ...item,
+              [field]: value,
+            }
+          : item
       )
     );
   };
@@ -42,23 +53,53 @@ const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
   };
 
   const handleSave = () => {
+    // Separate header and footer
+    const lines = lyric[0].split(/\r?\n/);
+    const headerLines = lines.filter((line) => !line.startsWith(TABS.DIALOGUE));
+
+    // Build new all lyrics from state
     const formattedLyrics = lyricEdit.map((item) => {
       const parts = item.raw.split(",");
       parts[1] = item.start.trim();
       parts[2] = item.end.trim();
       parts.splice(9, parts.length - 9, item.text.trim());
-
       return parts.map((p, i) => (i >= 9 ? p.trimStart() : p)).join(",");
     });
 
-    const assContent = lyric[0]
-      .split(/\r?\n/)
-      .map((line) =>
-        line.startsWith(TABS.DIALOGUE) ? formattedLyrics.shift() : line
-      )
-      .join("\r\n");
+    // Combine all
+    const assContent = [...headerLines, ...formattedLyrics].join("\r\n");
 
     handleSaveLyric(assContent);
+  };
+
+  const handleAddLine = (index) => {
+    const currentLine = lyricEdit[index] || {};
+    const newStart = currentLine.end || INPUT.TIME_DEFAULT;
+    const newEnd = currentLine.end || INPUT.TIME_DEFAULT;
+    const newText = "";
+
+    const newRaw = `Dialogue: 0,${newStart},${newEnd},Default,,0,0,0,,"${newText}"`;
+
+    const newLine = {
+      raw: newRaw,
+      start: newStart,
+      end: newEnd,
+      text: newText,
+    };
+
+    setLyricEdit((prev) => {
+      const newLyrics = [...prev];
+      newLyrics.splice(index + 1, 0, newLine);
+      return newLyrics;
+    });
+  };
+
+  const handleDeleteLine = (index) => {
+    setLyricEdit((prev) => {
+      const newLyrics = [...prev];
+      newLyrics.splice(index, 1);
+      return newLyrics;
+    });
   };
 
   return (
@@ -85,18 +126,32 @@ const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
               } bg-black transition`}
             >
               <div className="d-flex gap-2">
-                <input
-                  type="text"
+                <TimeInput
                   value={line.start}
                   onChange={(e) => handleChange(index, "start", e.target.value)}
                   className="form-control text-info border-0 bg-transparent flex-grow-1 input-time"
                 />
-                <input
-                  type="text"
+
+                <TimeInput
                   value={line.end}
                   onChange={(e) => handleChange(index, "end", e.target.value)}
                   className="form-control text-info border-0 bg-transparent flex-grow-1 input-time"
                 />
+
+                <button
+                  className="bg-black text-white mb-2 ms-3"
+                  onClick={() => handleAddLine(index)}
+                  title="Add a new line"
+                >
+                  +
+                </button>
+                <button
+                  className="bg-black text-white mb-2 "
+                  onClick={() => handleDeleteLine(index)}
+                  title="Remove"
+                >
+                  <FaMinus size={10} />
+                </button>
               </div>
 
               <input
@@ -108,6 +163,9 @@ const EditLyric = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
             </div>
           ))}
         </div>
+        <Button color="light" className="mt-3 w-100" onClick={onRefreshLyric}>
+          Reload
+        </Button>
         <Button
           color="light"
           className="mt-3 w-100"

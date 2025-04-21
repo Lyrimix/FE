@@ -338,6 +338,7 @@ const Sidebar = () => {
         lyric={lyricEdit || ""}
         setLyricEdit={setLyricEdit}
         handleSaveLyric={handleSaveLyric}
+        onRefreshLyric={openLyricEditor}
       />
       <CustomLyrics
         isOpen={isCustomLyricOpen}
