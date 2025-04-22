@@ -28,11 +28,11 @@ export const MOCK_EFFECT = {
   },
 };
 //CLOUDINARY
-export const CLOUD_NAME = "dvsullht6";
+export const CLOUD_NAME = "dm8flim64";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
-export const API_URL = "http://localhost:8080/Lyrimix";
+export const API_URL = "http://localhost:8083/Lyrimix";
 
 //SAMPLE IMAGE
 export const SIDEBAR_ITEMS = [
@@ -588,3 +588,4 @@ export const INPUT = {
   ARROW_LEFT: "ArrowLeft",
   ARROW_RIGHT: "ArrowRight",
 };
+export const API_CREATE_PROJECT = `${API_URL}/project/createProject`;
