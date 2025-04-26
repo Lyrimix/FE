@@ -17,7 +17,7 @@ const TimeInput = ({ value, onChange, className }) => {
   const fixedFormat = INPUT.TIME_DEFAULT;
 
   // Positions of characters like ":" or "."
-  const maskChars = [1, 4, 7];
+  const maskChars = [2, 5, 8];
 
   // Handle keyboard events
   const handleKeyDown = (e) => {
@@ -33,7 +33,7 @@ const TimeInput = ({ value, onChange, className }) => {
       return;
     }
     // Check if current cursor position is 2 or 5, not input >5
-    if ((cursor === 2 || cursor === 5) && key > "5") {
+    if ((cursor === 3 || cursor === 6) && key > "5") {
       e.preventDefault();
       return;
     }

@@ -21,6 +21,7 @@ const TimelinePlayer = ({ timelineState, autoScrollWhenPlay }) => {
   useEffect(() => {
     if (!timelineState.current) return;
     const engine = timelineState.current;
+    setIsPlaying(true);
 
     engine.listener.on(ENGINE_EVENTS.PLAY, () => {
       setIsPlaying(true);

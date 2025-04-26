@@ -32,7 +32,7 @@ export const CLOUD_NAME = "dm8flim64";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
-export const API_URL = "http://localhost:8083/Lyrimix";
+export const API_URL = "http://localhost:8080/Lyrimix";
 
 //SAMPLE IMAGE
 export const SIDEBAR_ITEMS = [
@@ -79,21 +79,11 @@ export const TABS = {
 };
 
 export const BACKGROUND_IMAGES = [
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-5.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-4.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-3.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample-2.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/cld-sample.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/dessert-on-a-plate.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/woman-on-a-football-field.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/upscale-face-1.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/coffee.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/cup-on-a-table.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/man-portrait.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/chair.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/chair-and-coffee-table.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/man-on-a-escalator.jpg",
-  "https://res.cloudinary.com/dvsullht6/image/upload/v1739947631/samples/man-on-a-street.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample-2.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample-3.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample-4.jpg",
+  "https://res.cloudinary.com/dm8flim64/image/upload/v1742664263/cld-sample-5.jpg",
 ];
 
 export const ContentType = {
@@ -588,4 +578,3 @@ export const INPUT = {
   ARROW_LEFT: "ArrowLeft",
   ARROW_RIGHT: "ArrowRight",
 };
-export const API_CREATE_PROJECT = `${API_URL}/project/createProject`;

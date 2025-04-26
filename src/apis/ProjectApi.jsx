@@ -7,14 +7,13 @@ import {
 } from "../utils/constant";
 import { AutoDismissToast } from "../molecules/auto-dismiss-toast-mols/AutoDismissToast";
 
-export const addBackGroundToProject = async (formData) => {
-  return axios.post(`${API_URL}/video`, formData, {
+export const addVideosToProject = async (payload) => {
+  return axios.post(`${API_URL}/video`, payload, {
     headers: {
-      "Content-Type": ContentType.FormData,
+      "Content-Type": "application/json",
     },
   });
 };
-
 export const getProjectById = async (projectId) => {
   return axios.get(`${API_URL}/project?id=${projectId}`, {
     headers: {
@@ -224,4 +223,38 @@ export const removeEffect = async (formData) => {
       "Content-Type": ContentType.FormData,
     },
   });
+};
+
+export const uploadVideoToCloudinary = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+
+  try {
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to upload video");
+    }
+
+    const data = await response.json();
+
+    return data;
+  } catch (error) {
+    <AutoDismissToast message={("Error uploading to Cloudinary:", error)} />;
+    return null;
+  }
+};
+export const createProject = async () => {
+  return axios.post(
+    `${API_URL}/project/createProject`,
+    { name: "Nga's project" },
+    { headers: { "Content-Type": ContentType.Json } }
+  );
 };

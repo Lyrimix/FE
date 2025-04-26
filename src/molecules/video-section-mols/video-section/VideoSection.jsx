@@ -4,12 +4,85 @@ import { useFileUpload } from "../../../hooks/useFileUpload";
 import VideoMerger from "./VideoMerger";
 import "./VideoSection.css";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
+import VideoSorterModal from "./VideoSorter";
+import { useVideoContext } from "../../../utils/context/VideoContext";
+import { useLoadingStore } from "../../../store/useLoadingStore";
+import {
+  createNewProject,
+  prepareFormData,
+  updateProjectInfo,
+  prepareVideoRequestList,
+  addAllVideosToProject,
+  uploadToCloudinary,
+} from "../../../utils/project";
 
 export const VideoSection = () => {
-  const { selectedFiles, uploadFiles } = useFileUpload();
+  const { uploadFiles, isUploading } = useFileUpload();
+  const { selectedFiles, setSelectedFiles, previewUrls, setPreviewUrls } =
+    useVideoContext();
+  const {
+    projectInfo,
+    setProjectInfo,
+    projectLength,
+    setProjectLength,
+    projectVideosID,
+    setProjectVideosId,
+    videoThumbnail,
+    setVideoThumbnail,
+  } = useProjectContext();
   const [mergedFiles, setMergedFiles] = useState(selectedFiles);
-  const { setVideoThumbnail } = useProjectContext();
 
+  const setIsLoading = useLoadingStore((state) => state.setIsLoading);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const [sortedVideos, setSortedVideos] = useState([]);
+
+  const handleConfirmUpload = async (sortedVideos) => {
+    setSelectedFiles((prev) => [...prev, ...sortedVideos]);
+    setPreviewUrls(sortedVideos[sortedVideos.length - 1].url);
+    toggleModal();
+    setIsLoading(true);
+    const projectId =
+      projectInfo?.id ??
+      (await createNewProject(setProjectInfo, projectLength));
+    if (!projectId) {
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const files = sortedVideos.map((video) => video.file);
+      const cloudinaryUrls = await uploadToCloudinary(files);
+      const { totalLength } = await prepareFormData(sortedVideos, projectId);
+
+      const videoRequestList = prepareVideoRequestList(cloudinaryUrls);
+      const addedVideos = await addAllVideosToProject(
+        projectId,
+        videoRequestList,
+        setProjectVideosId
+      );
+
+      if (!addedVideos?.data?.result) {
+        throw new Error("Invalid background upload response");
+      }
+
+      const projectVideoIds = addedVideos.data.result.map((item) => item.asset);
+      setProjectVideosId(projectVideoIds);
+
+      updateProjectInfo(
+        addedVideos.data.result,
+        totalLength,
+        setProjectLength,
+        setProjectInfo
+      );
+    } catch (error) {
+      console.error("Background upload failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const toggleModal = () => setModalOpen((prev) => !prev);
   const triggerFileInput = () => {
     document.getElementById("video-section__file-input").click();
   };
@@ -26,8 +99,20 @@ export const VideoSection = () => {
         accept="video/mp4"
         multiple
         className="d-none"
-        onChange={() => uploadFiles(event, setVideoThumbnail)}
+        onChange={(event) =>
+          uploadFiles(event, setVideoThumbnail, setSortedVideos, setModalOpen)
+        }
       />
+      <div className="p-4">
+        <VideoSorterModal
+          isOpen={modalOpen}
+          toggle={toggleModal}
+          videos={sortedVideos}
+          setVideos={setSortedVideos}
+          videoThumbnail={videoThumbnail}
+          onConfirmUpload={handleConfirmUpload}
+        />
+      </div>
 
       {!selectedFiles.length ? (
         <div className="w-25 ms-5 d-flex flex-column align-items-center p-4 bg-white rounded-5  shadow text-center">

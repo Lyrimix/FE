@@ -12,19 +12,24 @@ import {
 import { ThumbnailPreview } from "../../atoms/medias/ThumbnailPreview";
 import { ExportOptions } from "../export-option-mols/ExportOptions";
 import { useProjectContext } from "../../utils/context/ProjectContext";
-import { exportProject } from "../../apis/ProjectApi";
+import { exportProject, updateProject } from "../../apis/ProjectApi";
 import { exportOptions } from "../../utils/constant";
 import { useLoadingStore } from "../../store/useLoadingStore";
 import "./ExportForm.css";
 import UploadButton from "../export-youtube-option-mols/UploadButton";
+import { useVideoContext } from "../../utils/context/VideoContext";
 
 export const ExportForm = ({ isOpen, toggle }) => {
   const { projectInfo, videoThumbnail } = useProjectContext();
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
+  const { projectVideo } = useVideoContext();
 
   const handleExportProject = async () => {
     try {
       setIsLoading(true);
+      const cloudinaryUrl = await uploadToCloudinary(projectVideo);
+      projectInfo.asset = cloudinaryUrl;
+      updateProject(projectInfo);
       await exportProject(projectInfo.id, ".mov");
     } catch (error) {
       console.error("Error sending files to the server:", error);

@@ -26,7 +26,6 @@ const VideoMerger = ({ files = [] }) => {
   const {
     setFileLength,
     ranges,
-    setRanges,
     setProjectVideo,
     selectedBackground,
     currentRange,
@@ -311,6 +310,8 @@ const VideoMerger = ({ files = [] }) => {
     return newRanges;
   };
 
+  useEffect(() => {}, [projectVideosID]);
+
   const handleMergedVideo = async (blob) => {
     setProjectVideo(blob);
     const url = URL.createObjectURL(blob);
@@ -346,11 +347,6 @@ const VideoMerger = ({ files = [] }) => {
       const mergedBlob = new Blob(videoBuffers, { type: "video/mp4" });
       setMergedVideo(URL.createObjectURL(mergedBlob));
       setProjectVideo(mergedBlob);
-      const uploadUrl = await uploadToCloudinary(mergedBlob);
-
-      if (uploadUrl) {
-        setVideoName(extractVideoName(uploadUrl));
-      }
     };
     getDurations();
     createBlobFromFiles();
@@ -438,9 +434,6 @@ const VideoMerger = ({ files = [] }) => {
         const responseLyric = await getLyricById(projectInfo.id);
         if (responseLyric.data.length === 0) {
           setMergedVideo(URL.createObjectURL(videoBlob));
-          const cloudinaryUrl = await uploadToCloudinary(transformedVideo);
-          projectInfo.asset = cloudinaryUrl;
-          updateProject(projectInfo);
           return;
         }
         const finalVideo = await processVideoWithLyrics(
@@ -449,9 +442,6 @@ const VideoMerger = ({ files = [] }) => {
           addExistLyricForVideo
         );
         setMergedVideo(URL.createObjectURL(finalVideo));
-        const cloudinaryUrl = await uploadToCloudinary(finalVideo);
-        projectInfo.asset = cloudinaryUrl;
-        updateProject(projectInfo);
       } catch (error) {
         console.error("Error loading video:", error);
       } finally {

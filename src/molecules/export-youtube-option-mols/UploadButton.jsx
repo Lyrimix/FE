@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { uploadYoutube } from "../../apis/ProjectApi";
+import { uploadYoutube, uploadToCloudinary } from "../../apis/ProjectApi";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { AUTH_URL, TOKEN } from "../../utils/constant";
 import "./UploadButton.css";
-
+import { useVideoContext } from "../../utils/context/VideoContext";
 const UploadButton = () => {
   const [isUploading, setIsUploading] = useState(false);
   const { projectInfo } = useProjectContext();
+  const { projectVideo } = useVideoContext();
 
   // open popup login
   const openLoginPopup = () => {
@@ -49,6 +50,9 @@ const UploadButton = () => {
     setIsUploading(true);
 
     try {
+      const cloudinaryUrl = await uploadToCloudinary(projectVideo);
+      projectInfo.asset = cloudinaryUrl;
+      updateProject(projectInfo);
       const uploadResponse = await uploadYoutube(accessToken, projectInfo.id);
       const videoId = uploadResponse.data.videoId;
       window.open(`https://studio.youtube.com/video/${videoId}/edit`, "_blank");

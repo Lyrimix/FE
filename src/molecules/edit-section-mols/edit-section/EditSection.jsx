@@ -24,7 +24,7 @@ import { updateProject } from "../../../apis/ProjectApi";
 import { extractSoAndEoFromUrl } from "../../../utils/cloudinaryUtils";
 import "./EditSection.css";
 
-export const EditSection = ({ maxDuration = 1000 }) => {
+export const EditSection = ({ maxDuration = 1000000 }) => {
   const {
     selectedFiles,
     setSelectedFiles,
@@ -75,6 +75,7 @@ export const EditSection = ({ maxDuration = 1000 }) => {
     shouldUpdateProject,
     setShouldUpdateProject,
   } = useSaveContext();
+  const pendingSetRanges = useRef(false);
   const prevSoEoRef = useRef([]);
   const [selectedActionId, setSelectedActionId] = useState(null);
   const RESIZE_DIRECTION_LEFT = "left";
@@ -87,6 +88,7 @@ export const EditSection = ({ maxDuration = 1000 }) => {
   });
   const TOOLTIP_OFFSET_X = 10;
   const TOOLTIP_OFFSET_Y = -20;
+  const prevShouldHideRef = useRef();
 
   useEffect(() => {
     if (!projectVideo) {
@@ -117,7 +119,6 @@ export const EditSection = ({ maxDuration = 1000 }) => {
         .map((action) => [action.start, action.end])
     );
   }, [selectedFiles, fileLength]);
-
   useEffect(() => {
     if (!projectInfo.id || ranges.length === 0) {
       return;
@@ -345,14 +346,16 @@ export const EditSection = ({ maxDuration = 1000 }) => {
 
   const renderActionItem = useCallback(
     ({ action, handleDelete, videoThumbnail, isSelected, shouldHide }) => {
-      if (!videoThumbnail || videoThumbnail.length !== 2) return null;
+      if (!videoThumbnail) return null;
 
       const match = action.id.match(/action(\d)/);
       const originalIndex = match ? parseInt(match[1], 10) : null;
 
       if (originalIndex === null || !videoThumbnail[originalIndex]) return null;
 
-      const thumbnailItem = videoThumbnail[originalIndex];
+      const thumbnailItem = videoThumbnail.find(
+        (v) => v.fileName === action.videoName
+      );
       if (!thumbnailItem.thumbnailUrl) return null;
       return (
         <ActionItem
@@ -481,6 +484,14 @@ export const EditSection = ({ maxDuration = 1000 }) => {
       return false;
     }
   };
+
+  useEffect(() => {
+    if (Array.isArray(pendingSetRanges.current)) {
+      setRanges(pendingSetRanges.current);
+      pendingSetRanges.current = false;
+      setShouldUpdateProject(true);
+    }
+  }, [editorData]);
 
   return (
     <div className="container-fluid p-0">

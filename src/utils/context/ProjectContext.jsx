@@ -67,8 +67,6 @@ export const ProjectProvider = ({ children }) => {
         setOriginalCutTimeRef,
         originalStartEndOffset,
         setOriginalStartEndOffset,
-        originalProject,
-        setOriginalProject,
       }}
     >
       {children}
