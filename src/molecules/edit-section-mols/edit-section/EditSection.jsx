@@ -20,7 +20,10 @@ import {
 } from "../../../utils/file";
 import TimelinePlayer from "../../../organisms/player/Player";
 import { useSaveContext } from "../../../utils/context/SaveContext";
-import { updateProject } from "../../../apis/ProjectApi";
+import {
+  updateProject,
+  removeBackgroundOfEachVideo,
+} from "../../../apis/ProjectApi";
 import { extractSoAndEoFromUrl } from "../../../utils/cloudinaryUtils";
 import "./EditSection.css";
 
@@ -62,6 +65,10 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
     setOriginalCutTimeRef,
     originalStartEndOffset,
     setOriginalStartEndOffset,
+    currentClickedVideo,
+    setCurrentClickedVideo,
+    videoUrlsWithBackground,
+    videosId,
   } = useProjectContext();
   const [hoveredAction, setHoveredAction] = useState(null);
   const [effects, setEffects] = useState([]);
@@ -165,7 +172,8 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
         ranges,
         cloudinaryUrl,
         "",
-        projectVideosID
+        projectVideosID,
+        videoUrlsWithBackground
       );
       const durations = updatedProject.videos.map((video) => video.duration);
       setVideosDuration(durations);
@@ -357,21 +365,58 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
         (v) => v.fileName === action.videoName
       );
       if (!thumbnailItem.thumbnailUrl) return null;
+
+      const isOriginal = !action.id.includes("-copy");
+      const isSameTrack =
+        getTrackIndexFromId(action.id) === currentClickedVideo;
+
+      const backgroundColor =
+        isOriginal && isSameTrack ? "red" : isSelected ? "#ffdd88" : "#ccc";
+
       return (
         <ActionItem
           style={{
             position: "absolute",
-            backgroundColor: isSelected ? "#ffdd88" : "#ccc",
+            backgroundColor,
             border: isSelected ? "2px solid orange" : "1px solid transparent",
             transition: "all 0.2s ease",
           }}
           action={action}
           handleDelete={handleDelete}
           thumbnail={thumbnailItem.thumbnailUrl}
+          onDoubleClick={async (clickedAction) => {
+            console.log("currentClickedVideo:", currentClickedVideo);
+            console.log(
+              "videoUrlsWithBackground[currentClickedVideo]",
+              videoUrlsWithBackground[currentClickedVideo]
+            );
+            console.log("videoUrlsWithBackground", videoUrlsWithBackground);
+            console.log(
+              "projectVideoIds:",
+              projectVideosID[currentClickedVideo]
+            );
+            const removeBackgroundResponse = await removeBackgroundOfEachVideo(
+              videoUrlsWithBackground[currentClickedVideo],
+              videosId[currentClickedVideo]
+            );
+
+            setProjectVideosId((prev) => {
+              const updated = [...prev];
+              updated[currentClickedVideo] =
+                removeBackgroundResponse.data.result.asset;
+              return updated;
+            });
+          }}
         />
       );
     },
-    [SCALE]
+    [
+      SCALE,
+      currentClickedVideo,
+      videoUrlsWithBackground,
+      projectVideosID,
+      videosId,
+    ]
   );
 
   const updateSoInUrl = (url, newSo) => {
@@ -461,7 +506,7 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
 
       const newProjectVideosId = [...projectVideosID];
       newProjectVideosId[0] = updatedUrl;
-      setProjectVideosId(newProjectVideosId);
+      // setProjectVideosId(newProjectVideosId);
     } else if (start < 0 && prevSoEo[0][0] === 0) {
       return false;
     }
@@ -475,7 +520,7 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
       const updatedUrl = updateEoInUrl(projectVideosID[0], newEo);
       const newProjectVideosId = [...projectVideosID];
       newProjectVideosId[0] = updatedUrl;
-      setProjectVideosId(newProjectVideosId);
+      // setProjectVideosId(newProjectVideosId);
     } else if (
       shouldUpdateProject &&
       prevSoEoRef.current[0][1] >
@@ -492,6 +537,20 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
       setShouldUpdateProject(true);
     }
   }, [editorData]);
+
+  const getTrackIndexFromId = (id) => {
+    const match = id.match(/action(\d+)/);
+    return match ? parseInt(match[1]) : null;
+  };
+
+  useEffect(() => {
+    console.log("currentClickedVideo:", currentClickedVideo);
+  }, [currentClickedVideo]);
+
+  const handleClickAction = (e, param) => {
+    const clickedAction = param.action;
+    setCurrentClickedVideo(getTrackIndexFromId(clickedAction.id));
+  };
 
   return (
     <div className="container-fluid p-0">
@@ -524,6 +583,7 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
           ref={timelineState}
           minScaleCount={MIN_SCALE_COUNT}
           rowHeight={ROW_HEIGHT}
+          onClickAction={handleClickAction}
           onChange={handleChange}
           getActionRender={getActionRender}
           onActionResizeStart={({ action }) => {

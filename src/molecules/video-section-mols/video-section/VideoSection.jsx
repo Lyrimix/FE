@@ -29,6 +29,7 @@ export const VideoSection = () => {
     setProjectVideosId,
     videoThumbnail,
     setVideoThumbnail,
+    setVideosId,
   } = useProjectContext();
   const [mergedFiles, setMergedFiles] = useState(selectedFiles);
 
@@ -53,6 +54,8 @@ export const VideoSection = () => {
       setIsLoading(true);
       const files = sortedVideos.map((video) => video.file);
       const cloudinaryUrls = await uploadToCloudinary(files);
+      console.log("uptoCloude");
+
       const { totalLength } = await prepareFormData(sortedVideos, projectId);
 
       const videoRequestList = prepareVideoRequestList(cloudinaryUrls);
@@ -61,7 +64,7 @@ export const VideoSection = () => {
         videoRequestList,
         setProjectVideosId
       );
-
+      setVideosId(addedVideos.data.result.map((video) => video.id));
       if (!addedVideos?.data?.result) {
         throw new Error("Invalid background upload response");
       }

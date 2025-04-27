@@ -21,6 +21,8 @@ import { fetchVideoBlob, convertBase64ToBlob } from "../../utils/file";
 import CustomLyrics from "./CustomLyrics";
 import EffectVideo from "../../organisms/sidebar/EffectVideo";
 import { useSaveContext } from "../../utils/context/SaveContext";
+import { addBackgroundToSingleVideo } from "../../apis/ProjectApi";
+import { useEffect } from "react";
 
 const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
@@ -42,6 +44,12 @@ const Sidebar = () => {
     projectInfo,
     originalProject,
     setIsDemoCutting,
+    setProjectVideosId,
+    projectVideosID,
+    videosId,
+    currentClickedVideo,
+    videoUrlsWithBackground,
+    setVideoUrlsWithBackground,
   } = useProjectContext();
   const [customLyrics, setCustomLyrics] = useState(null);
   const [effectVideo, setIsEffectVideo] = useState(null);
@@ -68,15 +76,49 @@ const Sidebar = () => {
       });
     }
   };
+  useEffect(() => {
+    console.log("videoUrlsWithBackground:", videoUrlsWithBackground);
+  }, [videoUrlsWithBackground]);
 
-  const handleSampleImageClick = (img) => {
+  const handleSampleImageClick = async (img) => {
     setIsSidebarOptionsOpen(false);
     if (!selectedFiles.length) {
       alert("No files have been selected");
       return;
     }
-    setSelectedBackground(img);
+    const adddedBackgroundVideoUrl = await addBackgroundToSingleVideo(
+      projectVideosID[currentClickedVideo],
+      img,
+      videosId[currentClickedVideo]
+    );
+
+    setProjectVideosId((prev) => {
+      const updated = [...prev];
+      updated[currentClickedVideo] = adddedBackgroundVideoUrl.data.result.asset;
+      return updated;
+    });
+
+    setVideoUrlsWithBackground((prev) => {
+      const updated = [...prev];
+
+      // Nếu mảng chưa đủ dài, bổ sung thêm phần tử null vào các index còn thiếu
+      if (updated.length <= currentClickedVideo) {
+        // Tạo thêm các phần tử null cho các vị trí chưa có
+        while (updated.length <= currentClickedVideo) {
+          updated.push(null);
+        }
+      }
+
+      // Cập nhật giá trị tại vị trí currentClickedVideo
+      updated[currentClickedVideo] =
+        adddedBackgroundVideoUrl.data.result.assetWithBackground;
+
+      console.log("updated:", updated);
+
+      return updated;
+    });
   };
+
   const handleUpdateClick = () => {
     hasClickedSaveRef.current = true;
     setIsDemoCutting(false);

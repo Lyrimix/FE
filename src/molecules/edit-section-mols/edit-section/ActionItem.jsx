@@ -10,11 +10,16 @@ export const ActionItem = ({
   handleDelete,
   thumbnail,
   style,
+  onDoubleClick,
 }) => {
   const isCopy = action.id.includes(COPY_SUFFIX);
 
   return (
-    <div style={style} className="position-relative w-100 h-100 rounded ">
+    <div
+      style={style}
+      className="position-relative w-100 h-100 rounded "
+      onDoubleClick={() => onDoubleClick && onDoubleClick(action)}
+    >
       <img
         src={thumbnail}
         crossOrigin="anonymous"

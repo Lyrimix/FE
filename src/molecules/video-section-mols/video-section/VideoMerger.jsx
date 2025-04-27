@@ -15,6 +15,7 @@ import { fetchVideoBlob, processVideoWithLyrics } from "../../../utils/file";
 import { concatVideoUsingCloudinary } from "../../../apis/ProjectApi";
 import { generateCloudinaryUrl } from "../../../utils/cloudinaryUtils";
 import { useSaveContext } from "../../../utils/context/SaveContext";
+import { updateVideoAssetWithBackground } from "../../../utils/project";
 
 const ffmpeg = createFFmpeg({ log: false });
 
@@ -45,8 +46,14 @@ const VideoMerger = ({ files = [] }) => {
     setProjectVideosId,
     isDemoCutting,
     isFirstTimeCut,
-    originalProject,
     setOriginalProject,
+    selectedAddBackGroundVideoIndex,
+    setSelectedAddBackGroundVideoIndex,
+    currentClickedVideo,
+    setCurrentClickedVideo,
+    videosId,
+    videoUrlsWithBackground,
+    setVideoUrlsWithBackground,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);
@@ -60,6 +67,20 @@ const VideoMerger = ({ files = [] }) => {
   const firstTrimmedUrlsRef = useRef(null);
   const trimCountRef = useRef(0);
   const { setShouldUpdateProject } = useSaveContext();
+  const [updatedSoAndEo, setUpdatedSoAndEo] = useState([]);
+  const soAndEoList = [];
+
+  // useEffect(() => {
+  //   console.log("projectVideosID:", projectVideosID);
+  // }, [projectVideosID]);
+
+  // useEffect(() => {
+  //   console.log("videosId:", videosId);
+  // }, [videosId]);
+
+  useEffect(() => {
+    console.log("updatedSoAndEo:", updatedSoAndEo);
+  }, [updatedSoAndEo]);
 
   useEffect(() => {
     if (!pendingUpdateRef.current) {
@@ -257,17 +278,23 @@ const VideoMerger = ({ files = [] }) => {
           updatedStart,
           updatedEnd
         );
+        soAndEoList.push([startOffset, endOffset]);
 
         pendingUpdateRef.current = true;
         return generateTrimmedUrl(file, startOffset, endOffset);
       })
       .filter(Boolean);
-
+    console.log("trimmedUrls:", trimmedUrls);
+    setUpdatedSoAndEo(soAndEoList);
     setProjectVideosId(trimmedUrls);
+    setVideoUrlsWithBackground((prev) => {
+      return updateVideoAssetWithBackground(prev, soAndEoList);
+    });
   };
 
   const mergeVideos = async (videoIds) => {
     const mergedVideoUrl = await concatVideoUsingCloudinary(videoIds);
+
     setCloudinaryUrl(mergedVideoUrl);
     setShouldUpdateProject(true);
 
@@ -310,13 +337,12 @@ const VideoMerger = ({ files = [] }) => {
     return newRanges;
   };
 
-  useEffect(() => {}, [projectVideosID]);
-
   const handleMergedVideo = async (blob) => {
     setProjectVideo(blob);
     const url = URL.createObjectURL(blob);
     setMergedVideo(url);
     const uploadUrl = await uploadToCloudinary(blob);
+    console.log("uptoCloude");
     if (uploadUrl) {
       setVideoName(extractVideoName(uploadUrl));
     }
@@ -347,6 +373,12 @@ const VideoMerger = ({ files = [] }) => {
       const mergedBlob = new Blob(videoBuffers, { type: "video/mp4" });
       setMergedVideo(URL.createObjectURL(mergedBlob));
       setProjectVideo(mergedBlob);
+      const uploadUrl = await uploadToCloudinary(mergedBlob);
+      console.log("uptoCloude");
+
+      if (uploadUrl) {
+        setVideoName(extractVideoName(uploadUrl));
+      }
     };
     getDurations();
     createBlobFromFiles();
@@ -371,6 +403,7 @@ const VideoMerger = ({ files = [] }) => {
     };
     mergeWhenReady();
   }, [projectVideosID]);
+
   useEffect(() => {
     if (!files.length || !ranges.length) return;
     const processVideos = async () => {
@@ -382,6 +415,7 @@ const VideoMerger = ({ files = [] }) => {
             true,
             setProjectVideosId
           );
+
           isFirstUploadRef.current = false;
           return;
         } else if (!isDemoCutting) {
@@ -419,7 +453,11 @@ const VideoMerger = ({ files = [] }) => {
       if (!mergedVideo || !selectedBackground) return;
 
       try {
-        const transformedVideo = generateCloudinaryUrl(videoName, background);
+        const transformedVideo = generateCloudinaryUrl(
+          projectVideosID,
+          background
+        );
+        console.log("transformedVideo:", transformedVideo);
         setCloudinaryUrl(transformedVideo);
         setProjectInfo((prev) => ({
           ...prev,
@@ -434,6 +472,9 @@ const VideoMerger = ({ files = [] }) => {
         const responseLyric = await getLyricById(projectInfo.id);
         if (responseLyric.data.length === 0) {
           setMergedVideo(URL.createObjectURL(videoBlob));
+          const cloudinaryUrl = await uploadToCloudinary(transformedVideo);
+          projectInfo.asset = cloudinaryUrl;
+          updateProject(projectInfo);
           return;
         }
         const finalVideo = await processVideoWithLyrics(
@@ -442,6 +483,9 @@ const VideoMerger = ({ files = [] }) => {
           addExistLyricForVideo
         );
         setMergedVideo(URL.createObjectURL(finalVideo));
+        const cloudinaryUrl = await uploadToCloudinary(finalVideo);
+        projectInfo.asset = cloudinaryUrl;
+        updateProject(projectInfo);
       } catch (error) {
         console.error("Error loading video:", error);
       } finally {

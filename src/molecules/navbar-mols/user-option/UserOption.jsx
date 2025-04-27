@@ -7,15 +7,24 @@ import { FiUpload, FiSave } from "react-icons/fi";
 import { useProjectContext } from "../../../utils/context/ProjectContext";
 import { useSaveContext } from "../../../utils/context/SaveContext";
 import { ExportForm } from "../../export-form-mols/ExportForm";
+import { generateCloudinaryUrlForSingleVideo } from "../../../utils/cloudinaryUtils";
+import { BACKGROUND_IMAGES } from "../../../utils/constant";
+import { addBackgroundToSingleVideo } from "../../../apis/ProjectApi";
 
 export const UserOption = () => {
   const [isExport, setIsExport] = useState(false);
-  const { setIsDemoCutting, setIsFirstTimeCut } = useProjectContext();
+  const {
+    setIsDemoCutting,
+    setSelectedAddBackGroundVideoIndex,
+    setProjectVideosId,
+    projectVideosID,
+    videosId,
+  } = useProjectContext();
   const { uploadFiles } = useFileUpload();
   const fileInputRef = useRef(null);
   const { hasClickedSaveRef, prevEditorDataRef } = useSaveContext();
 
-  const handleUploadClick = () => {
+  const handleUploadClick = async () => {
     fileInputRef.current?.click();
   };
 

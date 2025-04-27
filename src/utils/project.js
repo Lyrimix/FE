@@ -6,12 +6,45 @@ import {
   createProject,
 } from "../apis/ProjectApi";
 
+export const updateVideoAssetWithBackground = (videoUrlsWithBackground, updatedSoAndEo) => {
+  if (!videoUrlsWithBackground || !updatedSoAndEo) return [];
+
+  return videoUrlsWithBackground.map((url, index) => {
+    const soAndEo = updatedSoAndEo[index];
+    if (!soAndEo) return url; // Nếu không có update thì trả về url cũ
+
+    const [startOffset, endOffset] = soAndEo;
+
+    // Update so_ và eo_ bằng regex
+    let updatedUrl = url;
+
+    // Update so
+    if (updatedUrl.includes('so_')) {
+      updatedUrl = updatedUrl.replace(/so_[\d\.]+/, `so_${startOffset.toFixed(2)}`);
+    } else {
+      // Nếu không có thì thêm so_
+      updatedUrl = updatedUrl.replace('/upload/', `/upload/so_${startOffset.toFixed(2)},`);
+    }
+
+    // Update eo
+    if (updatedUrl.includes('eo_')) {
+      updatedUrl = updatedUrl.replace(/eo_[\d\.]+/, `eo_${endOffset.toFixed(2)}`);
+    } else {
+      // Nếu không có thì thêm eo_
+      updatedUrl = updatedUrl.replace('/upload/', `/upload/eo_${endOffset.toFixed(2)},`);
+    }
+
+    return updatedUrl;
+  });
+};
+
 export const updateProjectBackgrounds = (
   projectInfo,
   ranges,
   cloudinaryUrl = "",
   projectRatio = "",
-  projectVideosID = []
+  projectVideosID = [],
+  videoUrlsWithBackground = []
 ) => {
   const reversedIDs = [...projectVideosID];
 
@@ -20,13 +53,14 @@ export const updateProjectBackgrounds = (
     const endTime = ranges[index]?.[1] || 0;
     const duration = endTime - startTime;
     const asset = reversedIDs.length > 0 ? reversedIDs[index] : null;
-
+    const assetWithBackground = videoUrlsWithBackground[index]
     return {
       ...bg,
       startTime,
       endTime,
       duration,
       ...(asset && { asset }),
+      assetWithBackground
     };
   });
 

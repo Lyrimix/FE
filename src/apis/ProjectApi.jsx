@@ -251,10 +251,38 @@ export const uploadVideoToCloudinary = async (file) => {
     return null;
   }
 };
+
 export const createProject = async () => {
   return axios.post(
     `${API_URL}/project/createProject`,
     { name: "Nga's project" },
     { headers: { "Content-Type": ContentType.Json } }
   );
+};
+
+export const addBackgroundToSingleVideo = async (
+  videoPath,
+  backgroundPath,
+  videoId
+) => {
+  const formData = new FormData();
+  formData.append("videoPath", videoPath);
+  formData.append("backgroundPath", backgroundPath);
+  formData.append("videoId", videoId);
+  return axios.post(`${API_URL}/video/addBackground`, formData, {
+    headers: {
+      "Content-Type": ContentType.FormData,
+    },
+  });
+};
+
+export const removeBackgroundOfEachVideo = async (videoPath, videoId) => {
+  const formData = new FormData();
+  formData.append("videoPath", videoPath);
+  formData.append("videoId", videoId);
+  return axios.post(`${API_URL}/video/removeBackground`, formData, {
+    headers: {
+      "Content-Type": ContentType.FormData,
+    },
+  });
 };

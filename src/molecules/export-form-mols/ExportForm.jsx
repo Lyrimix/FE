@@ -18,6 +18,7 @@ import { useLoadingStore } from "../../store/useLoadingStore";
 import "./ExportForm.css";
 import UploadButton from "../export-youtube-option-mols/UploadButton";
 import { useVideoContext } from "../../utils/context/VideoContext";
+import { uploadToCloudinary } from "../../apis/ProjectApi";
 
 export const ExportForm = ({ isOpen, toggle }) => {
   const { projectInfo, videoThumbnail } = useProjectContext();
