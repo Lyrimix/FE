@@ -351,7 +351,7 @@ const Sidebar = () => {
     const cloudinaryUrl = await uploadToCloudinary(videoBlob);
     projectInfo.asset = cloudinaryUrl;
     updateProject(projectInfo);
-    handleUpdateClick();
+    //handleUpdateClick();
   };
 
   return (
