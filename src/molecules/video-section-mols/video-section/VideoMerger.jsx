@@ -254,10 +254,23 @@ const VideoMerger = ({ files = [] }) => {
       setOriginalStartAndEndTime(ranges);
       setProjectVideosId(files);
       trimCountRef.current = 0;
+
       return;
     }
 
     if (shouldSkipTrim(isFirstUpload) || firstTrimmedUrlsRef.current) {
+      console.log("is firstsssssssssss");
+      setVideoUrlsWithBackground((prev) => {
+        const updated = [...prev];
+
+        if (updated.length == 0) {
+          while (updated.length < projectVideosID.length) {
+            updated.push(null);
+          }
+        }
+
+        return updated;
+      });
       return;
     }
 

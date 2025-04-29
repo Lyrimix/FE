@@ -86,11 +86,20 @@ const Sidebar = () => {
       alert("No files have been selected");
       return;
     }
-    const adddedBackgroundVideoUrl = await addBackgroundToSingleVideo(
-      projectVideosID[currentClickedVideo],
-      img,
-      videosId[currentClickedVideo]
-    );
+    let adddedBackgroundVideoUrl;
+    if (videoUrlsWithBackground[currentClickedVideo] == null) {
+      adddedBackgroundVideoUrl = await addBackgroundToSingleVideo(
+        projectVideosID[currentClickedVideo],
+        img,
+        videosId[currentClickedVideo]
+      );
+    } else {
+      adddedBackgroundVideoUrl = await addBackgroundToSingleVideo(
+        videoUrlsWithBackground[currentClickedVideo],
+        img,
+        videosId[currentClickedVideo]
+      );
+    }
 
     setProjectVideosId((prev) => {
       const updated = [...prev];

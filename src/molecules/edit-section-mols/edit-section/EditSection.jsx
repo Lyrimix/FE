@@ -352,6 +352,14 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
     }
   };
 
+  useEffect(() => {
+    console.log("projectVideosID:", projectVideosID);
+  }, [projectVideosID]);
+
+  useEffect(() => {
+    console.log("videoUrlsWithBackground:", videoUrlsWithBackground);
+  }, [videoUrlsWithBackground]);
+
   const renderActionItem = useCallback(
     ({ action, handleDelete, videoThumbnail, isSelected, shouldHide }) => {
       if (!videoThumbnail) return null;
@@ -390,11 +398,13 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
               "videoUrlsWithBackground[currentClickedVideo]",
               videoUrlsWithBackground[currentClickedVideo]
             );
-            console.log("videoUrlsWithBackground", videoUrlsWithBackground);
-            console.log(
-              "projectVideoIds:",
-              projectVideosID[currentClickedVideo]
-            );
+            if (videoUrlsWithBackground[currentClickedVideo] == null) {
+            }
+            // console.log("videoUrlsWithBackground", videoUrlsWithBackground);
+            // console.log(
+            //   "projectVideoIds:",
+            //   projectVideosID[currentClickedVideo]
+            // );
             const removeBackgroundResponse = await removeBackgroundOfEachVideo(
               videoUrlsWithBackground[currentClickedVideo],
               videosId[currentClickedVideo]

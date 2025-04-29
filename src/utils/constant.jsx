@@ -84,16 +84,6 @@ export const BACKGROUND_IMAGES = [
   "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/cld-sample-3.jpg",
   "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/cld-sample-2.jpg",
   "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/cld-sample.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/dessert-on-a-plate.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/woman-on-a-football-field.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/upscale-face-1.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/coffee.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/cup-on-a-table.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/man-portrait.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/chair.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/chair-and-coffee-table.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/man-on-a-escalator.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/samples/man-on-a-street.jpg",
 ];
 
 export const ContentType = {
