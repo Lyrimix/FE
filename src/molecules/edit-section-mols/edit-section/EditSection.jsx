@@ -160,6 +160,11 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
   }, [ranges, editorData, isDemoCutting, cloudinaryUrl]);
 
   useEffect(() => {
+    console.log("changinggggg:", shouldUpdateProject);
+    console.log("isDemoCutting:", isDemoCutting);
+    console.log("projectInfo.id:", projectInfo.id);
+    console.log("ranges.length:", ranges.length);
+
     if (
       shouldUpdateProject &&
       cloudinaryUrl &&
@@ -175,6 +180,7 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
         projectVideosID,
         videoUrlsWithBackground
       );
+
       const durations = updatedProject.videos.map((video) => video.duration);
       setVideosDuration(durations);
       const extractedSoEo = extractSoAndEoFromUrl(projectVideosID);
@@ -187,8 +193,13 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
       }
 
       setProjectInfo(updatedProject);
+
       updateProject(updatedProject)
-        .then(() => console.log("Project updated successfully"))
+        .then(() =>
+          console.log(
+            "Project updated successfullyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+          )
+        )
         .catch((error) => console.error("Error updating project:", error))
         .finally(() => {
           setIsDemoCutting(true);
@@ -352,13 +363,13 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
     }
   };
 
-  useEffect(() => {
-    console.log("projectVideosID:", projectVideosID);
-  }, [projectVideosID]);
+  // useEffect(() => {
+  //   console.log("projectVideosID:", projectVideosID);
+  // }, [projectVideosID]);
 
-  useEffect(() => {
-    console.log("videoUrlsWithBackground:", videoUrlsWithBackground);
-  }, [videoUrlsWithBackground]);
+  // useEffect(() => {
+  //   console.log("videoUrlsWithBackground:", videoUrlsWithBackground);
+  // }, [videoUrlsWithBackground]);
 
   const renderActionItem = useCallback(
     ({ action, handleDelete, videoThumbnail, isSelected, shouldHide }) => {
@@ -393,11 +404,6 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
           handleDelete={handleDelete}
           thumbnail={thumbnailItem.thumbnailUrl}
           onDoubleClick={async (clickedAction) => {
-            console.log("currentClickedVideo:", currentClickedVideo);
-            console.log(
-              "videoUrlsWithBackground[currentClickedVideo]",
-              videoUrlsWithBackground[currentClickedVideo]
-            );
             if (videoUrlsWithBackground[currentClickedVideo] == null) {
             }
             // console.log("videoUrlsWithBackground", videoUrlsWithBackground);

@@ -14,9 +14,10 @@ export const updateVideoAssetWithBackground = (videoUrlsWithBackground, updatedS
     if (!soAndEo) return url; // Nếu không có update thì trả về url cũ
 
     const [startOffset, endOffset] = soAndEo;
-
+    if(url == null) return;
     // Update so_ và eo_ bằng regex
     let updatedUrl = url;
+    // console.log("updatedUrl:",updatedUrl)
 
     // Update so
     if (updatedUrl.includes('so_')) {

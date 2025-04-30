@@ -34,8 +34,8 @@ const Sidebar = () => {
     projectVideo,
     setProjectVideo,
   } = useVideoContext();
-  const { hasClickedSaveRef, prevEditorDataRef } = useSaveContext();
-
+  const { hasClickedSaveRef, prevEditorDataRef, setShouldUpdateProject } =
+    useSaveContext();
   const [isCustomLyricOpen, setIsCustomLyricOpen] = useState(false);
   const [offcanvasType, setOffcanvasType] = useState(null);
   const {
@@ -50,6 +50,8 @@ const Sidebar = () => {
     currentClickedVideo,
     videoUrlsWithBackground,
     setVideoUrlsWithBackground,
+    isEffect,
+    setIsEffect,
   } = useProjectContext();
   const [customLyrics, setCustomLyrics] = useState(null);
   const [effectVideo, setIsEffectVideo] = useState(null);
@@ -80,6 +82,10 @@ const Sidebar = () => {
     console.log("videoUrlsWithBackground:", videoUrlsWithBackground);
   }, [videoUrlsWithBackground]);
 
+  useEffect(() => {
+    console.log("isEffect:", isEffect);
+  }, [isEffect]);
+
   const handleSampleImageClick = async (img) => {
     setIsSidebarOptionsOpen(false);
     if (!selectedFiles.length) {
@@ -87,6 +93,7 @@ const Sidebar = () => {
       return;
     }
     let adddedBackgroundVideoUrl;
+
     if (videoUrlsWithBackground[currentClickedVideo] == null) {
       adddedBackgroundVideoUrl = await addBackgroundToSingleVideo(
         projectVideosID[currentClickedVideo],
@@ -106,7 +113,6 @@ const Sidebar = () => {
       updated[currentClickedVideo] = adddedBackgroundVideoUrl.data.result.asset;
       return updated;
     });
-
     setVideoUrlsWithBackground((prev) => {
       const updated = [...prev];
 
@@ -121,11 +127,16 @@ const Sidebar = () => {
       // Cập nhật giá trị tại vị trí currentClickedVideo
       updated[currentClickedVideo] =
         adddedBackgroundVideoUrl.data.result.assetWithBackground;
-
-      console.log("updated:", updated);
+      setSelectedBackground(updated[0]);
 
       return updated;
     });
+    setShouldUpdateProject((prev) => !prev);
+    setIsDemoCutting(false);
+
+    if (isEffect) {
+      await handleEffectClick(selectedEffect, sliderValue);
+    }
   };
 
   const handleUpdateClick = () => {
@@ -328,6 +339,7 @@ const Sidebar = () => {
         sliderValue
       );
       await handleTransitionResponse(response);
+      setIsEffect(true);
     } catch (error) {
       console.error("Transition error:", error);
     } finally {
@@ -357,10 +369,13 @@ const Sidebar = () => {
     const videoBlob = convertBase64ToBlob(response.data.result);
     setProjectVideo(videoBlob);
     setVideoBlob(URL.createObjectURL(videoBlob));
-    const cloudinaryUrl = await uploadToCloudinary(videoBlob);
-    projectInfo.asset = cloudinaryUrl;
-    updateProject(projectInfo);
-    //handleUpdateClick();
+    const newCloudinaryUrl = await uploadToCloudinary(videoBlob);
+    projectInfo.asset = newCloudinaryUrl;
+
+    updateProject(projectInfo).then(() =>
+      console.log("updatedInfo:", projectInfo)
+    );
+    // handleUpdateClick();
   };
 
   return (

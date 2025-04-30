@@ -32,6 +32,8 @@ export const ProjectProvider = ({ children }) => {
   const [videosId, setVideosId] = useState([]);
   const [videoUrlsWithBackground, setVideoUrlsWithBackground] = useState([]);
 
+  const [isEffect, setIsEffect] = useState(false);
+
   return (
     <ProjectContext.Provider
       value={{
@@ -82,6 +84,8 @@ export const ProjectProvider = ({ children }) => {
         setVideosId,
         videoUrlsWithBackground,
         setVideoUrlsWithBackground,
+        isEffect,
+        setIsEffect,
       }}
     >
       {children}

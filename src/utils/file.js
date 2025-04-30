@@ -59,10 +59,10 @@ export const generateEffectsFromFiles = (selectedFiles, videoRef) => {
         source: {
           enter: ({ action }) => {
             const stopAtEnd = () => {
-              if (videoRef.current.currentTime >= action.end) {
-                videoRef.current.pause();
-                videoRef.current.removeEventListener("timeupdate", stopAtEnd);
-              }
+              // if (videoRef.current.currentTime >= action.end) {
+              //   videoRef.current.pause();
+              //   videoRef.current.removeEventListener("timeupdate", stopAtEnd);
+              // }
             };
             if (videoRef.current) {
               videoRef.current.currentTime = action.start;
@@ -70,11 +70,11 @@ export const generateEffectsFromFiles = (selectedFiles, videoRef) => {
             }
           },
 
-          leave: () => {
-            if (videoRef.current && !videoRef.current.paused) {
-              videoRef.current.pause();
-            }
-          },
+          // leave: () => {
+          //   if (videoRef.current && !videoRef.current.paused) {
+          //     videoRef.current.pause();
+          //   }
+          // },
           update: ({ time }) => {
             if (videoRef.current && videoRef.current.paused) {
               videoRef.current.currentTime = time;

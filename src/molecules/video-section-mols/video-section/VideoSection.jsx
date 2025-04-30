@@ -54,7 +54,6 @@ export const VideoSection = () => {
       setIsLoading(true);
       const files = sortedVideos.map((video) => video.file);
       const cloudinaryUrls = await uploadToCloudinary(files);
-      console.log("uptoCloude");
 
       const { totalLength } = await prepareFormData(sortedVideos, projectId);
 
