@@ -534,6 +534,7 @@ const VideoMerger = ({ files = [] }) => {
           // setMergedVideo(URL.createObjectURL(videoBlob));
           // projectInfo.asset = cloudinaryUrl;
           // updateProject(projectInfo);
+          console.log("no lyriccccccccccccccccccccc");
           return;
         }
 

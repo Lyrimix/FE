@@ -68,6 +68,7 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
     currentClickedVideo,
     setCurrentClickedVideo,
     videoUrlsWithBackground,
+    setVideoUrlsWithBackground,
     videosId,
   } = useProjectContext();
   const [hoveredAction, setHoveredAction] = useState(null);
@@ -366,6 +367,9 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
   // useEffect(() => {
   //   console.log("projectVideosID:", projectVideosID);
   // }, [projectVideosID]);
+  useEffect(() => {
+    console.log("projectInfo:", projectInfo);
+  }, [projectInfo]);
 
   // useEffect(() => {
   //   console.log("videoUrlsWithBackground:", videoUrlsWithBackground);
@@ -415,7 +419,25 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
               videoUrlsWithBackground[currentClickedVideo],
               videosId[currentClickedVideo]
             );
+            const asset = removeBackgroundResponse.data.result.asset;
+            setVideoUrlsWithBackground((prev) => {
+              const updated = [...prev];
+              updated[currentClickedVideo] = null;
+              return updated;
+            });
+            setProjectInfo((prev) => {
+              const updatedVideos = [...prev.videos];
+              updatedVideos[currentClickedVideo] = {
+                ...updatedVideos[currentClickedVideo],
+                asset: asset,
+                assetWithBackground: null,
+              };
 
+              return {
+                ...prev,
+                videos: updatedVideos,
+              };
+            });
             setProjectVideosId((prev) => {
               const updated = [...prev];
               updated[currentClickedVideo] =

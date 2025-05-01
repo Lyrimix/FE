@@ -135,7 +135,7 @@ const Sidebar = () => {
     setIsDemoCutting(false);
 
     if (isEffect) {
-      await handleEffectClick(selectedEffect, sliderValue);
+      await handleEffectClick(selectedEffect, sliderValue, true);
     }
   };
 
@@ -309,13 +309,14 @@ const Sidebar = () => {
 
   let isFirstTimeApply = true;
 
-  const handleEffectClick = async (selectedEffect, sliderValue) => {
+  const handleEffectClick = async (selectedEffect, sliderValue, isCallBack) => {
     if (!selectedEffect) {
       setIsLoading(true);
       const formData = new FormData();
       formData.append("projectId", projectInfo.id);
       const response = await removeEffect(formData);
-      await handleTransitionResponse(response);
+      setIsEffect(false);
+      await handleTransitionResponse(response, false);
       setIsLoading(false);
       return;
     }
@@ -338,7 +339,7 @@ const Sidebar = () => {
         selectedEffect,
         sliderValue
       );
-      await handleTransitionResponse(response);
+      await handleTransitionResponse(response, isCallBack);
       setIsEffect(true);
     } catch (error) {
       console.error("Transition error:", error);
@@ -365,16 +366,16 @@ const Sidebar = () => {
     return retryApplyTransition(body, 1, 1000);
   };
 
-  const handleTransitionResponse = async (response) => {
+  const handleTransitionResponse = async (response, isCallBack) => {
     const videoBlob = convertBase64ToBlob(response.data.result);
     setProjectVideo(videoBlob);
     setVideoBlob(URL.createObjectURL(videoBlob));
     const newCloudinaryUrl = await uploadToCloudinary(videoBlob);
     projectInfo.asset = newCloudinaryUrl;
-
     updateProject(projectInfo).then(() =>
       console.log("updatedInfo:", projectInfo)
     );
+
     // handleUpdateClick();
   };
 
