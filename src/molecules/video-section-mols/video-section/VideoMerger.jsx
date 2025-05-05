@@ -28,6 +28,7 @@ const VideoMerger = ({ files = [] }) => {
     setProjectVideo,
     selectedBackground,
     currentRange,
+    setIsShowRemoveBgButton,
   } = useVideoContext();
   const {
     setVideoFile,
@@ -45,14 +46,12 @@ const VideoMerger = ({ files = [] }) => {
     isDemoCutting,
     isFirstTimeCut,
     setOriginalProject,
-    selectedAddBackGroundVideoIndex,
-    setSelectedAddBackGroundVideoIndex,
-    currentClickedVideo,
-    setCurrentClickedVideo,
-    videosId,
+    videoWithBackgroundThumbnail,
+    setVideoWithBackgroundThumbnail,
     videoUrlsWithBackground,
     setVideoUrlsWithBackground,
     cloudinaryUrl,
+    currentClickedVideo,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);
@@ -263,6 +262,18 @@ const VideoMerger = ({ files = [] }) => {
 
         return updated;
       });
+
+      setVideoWithBackgroundThumbnail((prev) => {
+        const updated = [...prev];
+
+        if (updated.length == 0) {
+          while (updated.length < projectVideosID.length) {
+            updated.push(null);
+          }
+        }
+
+        return updated;
+      });
       return;
     }
 
@@ -434,67 +445,6 @@ const VideoMerger = ({ files = [] }) => {
     processVideos();
   }, [files, ranges]);
 
-  // useEffect(() => {
-  //   if (selectedBackground) {
-  //     const backgroundName = extractVideoName(selectedBackground);
-
-  //     const isSample = selectedBackground.includes("/samples/");
-
-  //     const formattedBackground = isSample
-  //       ? `samples:${backgroundName}`
-  //       : backgroundName;
-
-  //     setBackground(formattedBackground);
-  //   }
-  // }, [selectedBackground]);
-
-  // useEffect(() => {
-  //   const fetchAndSetMergedVideo = async () => {
-  //     if (!mergedVideo || !selectedBackground) return;
-
-  //     try {
-  //       const transformedVideo = generateCloudinaryUrl(
-  //         projectVideosID,
-  //         background
-  //       );
-  //       console.log("transformedVideo:", transformedVideo);
-  //       setCloudinaryUrl(transformedVideo);
-  //       setProjectInfo((prev) => ({
-  //         ...prev,
-  //       }));
-  //       setIsLoading(true);
-  //       const videoBlob = await fetchVideoBlob(transformedVideo);
-  //       setVideoFile(
-  //         new File([videoBlob], "mergedVideo.mp4", { type: "video/mp4" })
-  //       );
-  //       setProjectVideo(videoBlob);
-
-  //       const responseLyric = await getLyricById(projectInfo.id);
-  //       if (responseLyric.data.length === 0) {
-  //         setMergedVideo(URL.createObjectURL(videoBlob));
-  //         const cloudinaryUrl = await uploadToCloudinary(transformedVideo);
-  //         projectInfo.asset = cloudinaryUrl;
-  //         updateProject(projectInfo);
-  //         return;
-  //       }
-  //       const finalVideo = await processVideoWithLyrics(
-  //         videoBlob,
-  //         projectInfo.id,
-  //         addExistLyricForVideo
-  //       );
-  //       setMergedVideo(URL.createObjectURL(finalVideo));
-  //       const cloudinaryUrl = await uploadToCloudinary(finalVideo);
-  //       projectInfo.asset = cloudinaryUrl;
-  //       updateProject(projectInfo);
-  //     } catch (error) {
-  //       console.error("Error loading video:", error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
-  //   fetchAndSetMergedVideo();
-  // }, [videoName, background]);
   useEffect(() => {
     console.log("projectInfo:", projectInfo);
   }, [projectInfo]);
@@ -504,15 +454,23 @@ const VideoMerger = ({ files = [] }) => {
       videoUrlsWithBackground.lenght != 0 &&
       videoUrlsWithBackground[0] != null
     ) {
-      setProjectInfo((prev) => ({
-        ...prev,
-        videos: prev.videos.map((video, index) => ({
-          ...video,
-          assetWithBackground: videoUrlsWithBackground[index],
-        })),
-      }));
+      setProjectInfo((prev) => {
+        return {
+          ...prev,
+          videos: prev.videos.map((video, index) => ({
+            ...video,
+            assetWithBackground: videoUrlsWithBackground[index],
+          })),
+        };
+      });
     }
   }, [videoUrlsWithBackground]);
+
+  useEffect(() => {
+    if (videoUrlsWithBackground[currentClickedVideo] != null) {
+      setIsShowRemoveBgButton(true);
+    }
+  }, [currentClickedVideo]);
 
   useEffect(() => {
     const fetchAndSetMergedVideo = async () => {
@@ -534,7 +492,6 @@ const VideoMerger = ({ files = [] }) => {
           // setMergedVideo(URL.createObjectURL(videoBlob));
           // projectInfo.asset = cloudinaryUrl;
           // updateProject(projectInfo);
-          console.log("no lyriccccccccccccccccccccc");
           return;
         }
 

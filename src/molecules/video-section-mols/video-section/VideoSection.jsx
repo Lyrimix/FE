@@ -15,6 +15,7 @@ import {
   addAllVideosToProject,
   uploadToCloudinary,
 } from "../../../utils/project";
+import { useSaveContext } from "../../../utils/context/SaveContext";
 
 export const VideoSection = () => {
   const { uploadFiles, isUploading } = useFileUpload();
@@ -31,6 +32,8 @@ export const VideoSection = () => {
     setVideoThumbnail,
     setVideosId,
   } = useProjectContext();
+  const { setShowSaveButton } = useSaveContext();
+
   const [mergedFiles, setMergedFiles] = useState(selectedFiles);
 
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
@@ -81,6 +84,7 @@ export const VideoSection = () => {
       console.error("Background upload failed:", error);
     } finally {
       setIsLoading(false);
+      setShowSaveButton(true);
     }
   };
 

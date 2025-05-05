@@ -12,7 +12,7 @@ export const useFileUpload = () => {
     event,
     setVideoThumbnail,
     setSortedVideos,
-    setModalOpen
+    setModalOpen,
   ) => {
     const files = Array.from(event.target.files);
     if (files.length === 0) return;

@@ -13,7 +13,7 @@ export const PROJECT_MAIN_THEME = "#CFF2E6";
 
 //TIMELINE
 export const MIN_SCALE = 2;
-export const SCALE = 30;
+export const SCALE = 15;
 export const MIN_SCALE_COUNT = 10;
 export const ROW_HEIGHT = 40;
 
@@ -28,7 +28,7 @@ export const MOCK_EFFECT = {
   },
 };
 //CLOUDINARY
-export const CLOUD_NAME = "dpn5w1om5";
+export const CLOUD_NAME = "dta6fx6ja";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
@@ -79,11 +79,11 @@ export const TABS = {
 };
 
 export const BACKGROUND_IMAGES = [
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/cld-sample-5.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/cld-sample-4.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/cld-sample-3.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/cld-sample-2.jpg",
-  "https://res.cloudinary.com/dpn5w1om5/image/upload/v1739947631/cld-sample.jpg",
+  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample-5.jpg",
+  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample-4.jpg",
+  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample-3.jpg",
+  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample-2.jpg",
+  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample.jpg",
 ];
 
 export const ContentType = {
@@ -98,7 +98,7 @@ export const scaleWidth = 160;
 export const scale = 5;
 export const startLeft = 20;
 export const Rates = [0.2, 0.5, 1.0, 1.5, 2.0];
-export const autoScrollFrom = 10000;
+export const autoScrollFrom = 2900;
 
 //EXPORT OPTION
 export const exportOptions = ["Format", "mp4", "avi"];

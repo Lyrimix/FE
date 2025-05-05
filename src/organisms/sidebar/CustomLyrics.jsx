@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Select from "react-select";
 import { Offcanvas, OffcanvasHeader, OffcanvasBody, Button } from "reactstrap";
 import {
   ASS_FONTS,
@@ -38,14 +39,14 @@ const CustomLyrics = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
   const { alignAttribute, setAlignAttribute } = useProjectContext();
 
   const colors = [
-    { label: "Primary Colour", value: primaryColor, setter: setPrimaryColor },
+    { label: "Primary", value: primaryColor, setter: setPrimaryColor },
     {
-      label: "Secondary Colour",
+      label: "Secondary",
       value: secondaryColor,
       setter: setSecondaryColor,
     },
-    { label: "Outline Colour", value: outlineColor, setter: setOutlineColor },
-    { label: "Back Colour", value: backColor, setter: setBackColor },
+    { label: "Outline", value: outlineColor, setter: setOutlineColor },
+    { label: "Background", value: backColor, setter: setBackColor },
   ];
   const INPUT_FIELDS = [
     { label: "Scale X", value: scaleX, onChange: setScaleX, placeholder: "X" },
@@ -196,6 +197,7 @@ const CustomLyrics = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
     handleSaveLyric(assContent);
   };
 
+  const fontOptions = ASS_FONTS.map((f) => ({ value: f, label: f }));
   return (
     <Offcanvas
       isOpen={isOpen}
@@ -203,269 +205,293 @@ const CustomLyrics = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
       direction="end"
       backdrop={false}
       className="custom-offcanvas"
+      fade={false}
     >
       <OffcanvasHeader
         toggle={toggle}
-        className="d-flex justify-content-between align-items-center px-3 py-3 bg-dark text-light"
+        className="header d-flex justify-content-between align-items-center px-3 py-3 text-light"
       >
-        <div className="d-flex gap-2 px-3 py-2 shadow-sm h-100 p-10 rounded-0">
-          Custom Lyrics
-        </div>
+        <div className="d-flex gap-1 px-1 py-2  h-100 p-10">Custom Lyrics</div>
       </OffcanvasHeader>
-      <OffcanvasBody className="bg-black">
-        <div
-          className="container border w-100 p-0"
-          style={{ overflowY: "auto" }}
-        >
-          <ul
-            className="nav nav-tabs w-100 p-0 m-0 bg-dark-subtle"
-            id="myTab"
-            role="tablist"
-          >
-            {TABS_CUSTOMS.map((tab) => (
-              <li
-                key={tab.id}
-                className="nav-item flex-fill p-0"
-                role="presentation"
+      <OffcanvasBody className="custom-lyric">
+        <div className="tab-content" id="myTabContent">
+          <h5 className=" mb-1 mt-1 name-text">Font</h5>
+
+          <div className="d-flex align-items-center gap-1 mb-2">
+            <Select
+              options={fontOptions}
+              value={fontOptions.find((option) => option.value === font)}
+              onChange={(selected) => setFont(selected.value)}
+              styles={{
+                container: (provided) => ({
+                  ...provided,
+                  width: "155px",
+                }),
+                control: (provided) => ({
+                  ...provided,
+                  minHeight: "30px",
+                  height: "30px",
+                  borderRadius: "6px",
+                  fontSize: "13px",
+                  padding: "0 6px",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                valueContainer: (provided) => ({
+                  ...provided,
+                  padding: "0 6px",
+                  height: "30px",
+                  display: "flex",
+                }),
+                indicatorsContainer: (provided) => ({
+                  ...provided,
+                  height: "30px",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                dropdownIndicator: (provided) => ({
+                  ...provided,
+                  padding: "0 6px",
+                  display: "flex",
+                  alignItems: "center",
+                }),
+                singleValue: (provided) => ({
+                  ...provided,
+                  display: "flex",
+                  alignItems: "center",
+                  lineHeight: "normal",
+                  fontSize: "13px",
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  fontSize: "13px",
+                }),
+
+                menuList: (provided) => ({
+                  ...provided,
+                  maxHeight: "120px",
+                  overflowY: "auto",
+                  paddingTop: 0,
+                  paddingBottom: 0,
+                }),
+                option: (provided) => ({
+                  ...provided,
+                  padding: "6px 8px",
+                  fontSize: "13px",
+                }),
+              }}
+            />
+
+            <input
+              type="number"
+              className="form-control form-control-sm text-center"
+              style={{
+                width: "70px",
+                height: "30px",
+                fontSize: "13px",
+                marginLeft: "20px",
+                borderRadius: "6px",
+                padding: "0 6px",
+                lineHeight: "1",
+              }}
+              value={fontSize}
+              onChange={(e) => setFontSize(e.target.value)}
+            />
+          </div>
+
+          <div className="d-flex align-items-center gap-2 mb-2">
+            {BUTTONS.map((btn) => (
+              <button
+                key={btn.state}
+                className={`btn btn-sm btn-toggle ${
+                  eval(btn.state) ? "btn-secondary" : "btn-light"
+                } ${btn.styleClass}`}
+                onClick={() => {
+                  switch (btn.state) {
+                    case "bold":
+                      setBold(!bold);
+                      break;
+                    case "italic":
+                      setItalic(!italic);
+                      break;
+                    case "underline":
+                      setUnderline(!underline);
+                      break;
+                    case "strikeOut":
+                      setStrikeOut(!strikeOut);
+                      break;
+                    default:
+                      break;
+                  }
+                }}
               >
-                <button
-                  className={`nav-link w-100 h-100 rounded-0 text-dark ${
-                    activeTab === tab.id ? "active" : ""
-                  }`}
-                  onClick={() => setActiveTab(tab.id)}
-                  id={`${tab.id}-tab`}
-                  data-bs-toggle="tab"
-                  data-bs-target={`#${tab.id}`}
-                  type="button"
-                  role="tab"
-                  aria-controls={tab.id}
-                  aria-selected={activeTab === tab.id}
-                >
-                  {tab.label}
-                </button>
-              </li>
+                {btn.label}
+              </button>
             ))}
-          </ul>
-          <div className="tab-content p-3" id="myTabContent">
-            <div
-              className={`tab-pane fade ${
-                activeTab === "font" ? "show active" : ""
-              }`}
-              id="font"
-              role="tabpanel"
-              aria-labelledby="font-tab"
-            >
-              <div className="d-flex align-items-center gap-1 mb-2">
-                <select
-                  className="form-select form-select-sm w-auto h-100 text-center rounded-0"
-                  onChange={(e) => setFont(e.target.value)}
-                  value={font}
+          </div>
+
+          <h5 className="mb-1 name-text">Color</h5>
+
+          <div className="d-flex flex-wrap gap-2">
+            {colors.map((color, index) => (
+              <div
+                key={index}
+                className="d-flex align-items-center justify-content-between px-2"
+                style={{
+                  width: "48%",
+                  height: "26px",
+                  backgroundColor: "#ddd",
+                  borderRadius: "4px",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "14px",
+
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
+                  }}
                 >
-                  {ASS_FONTS.map((font) => (
-                    <option key={font} value={font}>
-                      {font}
-                    </option>
-                  ))}
-                </select>
+                  {color.label}
+                </span>
+
                 <input
-                  type="number"
-                  className="form-control form-control-sm w-25 h-100 text-center rounded-0"
-                  value={fontSize}
-                  onChange={(e) => setFontSize(e.target.value)}
+                  type="color"
+                  style={{
+                    width: "20px",
+                    height: "20px",
+                    border: "none",
+                    backgroundColor: "transparent",
+                    cursor: "pointer",
+                  }}
+                  value={color.value.rgb}
+                  onChange={(e) => color.setter(e.target.value)}
                 />
               </div>
-
-              <div className="d-flex align-items-center gap-2 mb-2">
-                {BUTTONS.map((btn) => (
-                  <button
-                    key={btn.state}
-                    className={`btn btn-sm ${
-                      eval(btn.state) ? "btn-secondary" : "btn-light"
-                    } rounded-0 ${btn.styleClass}`}
-                    onClick={() => {
-                      switch (btn.state) {
-                        case "bold":
-                          setBold(!bold);
-                          break;
-                        case "italic":
-                          setItalic(!italic);
-                          break;
-                        case "underline":
-                          setUnderline(!underline);
-                          break;
-                        case "strikeOut":
-                          setStrikeOut(!strikeOut);
-                          break;
-                        default:
-                          break;
-                      }
-                    }}
-                  >
-                    {btn.label}
-                  </button>
-                ))}
+            ))}
+          </div>
+          <div
+            className="mb-1 d-grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "1px 5px",
+            }}
+          >
+            {INPUT_FIELDS.map((input) => (
+              <div key={input.label} className="d-flex flex-column">
+                <label
+                  className="form-label name-text"
+                  style={{
+                    fontSize: "14px",
+                    paddingTop: "3px",
+                  }}
+                >
+                  {input.label}
+                </label>
+                <input
+                  type="number"
+                  className="form-control form-control-sm rounded-2"
+                  style={{
+                    fontSize: "13px",
+                    padding: "0 6px",
+                    height: "24px",
+                  }}
+                  value={input.value}
+                  onChange={(e) => input.onChange(e.target.value)}
+                  placeholder={input.placeholder}
+                />
               </div>
-            </div>
+            ))}
+          </div>
 
-            <div
-              className={`tab-pane fade ${
-                activeTab === "color" ? "show active" : ""
-              }`}
-              id="color"
-              role="tabpanel"
-              aria-labelledby="color-tab"
-            >
-              {colors.map((color, index) => (
-                <div
-                  key={index}
-                  className="d-flex justify-content-between align-items-center mb-2"
-                >
-                  <input
-                    type="color"
-                    className="form-control form-control-sm rounded-0 p-1"
-                    style={{
-                      width: "32px",
-                      height: "30px",
-                      cursor: "pointer",
-                      padding: "0",
-                    }}
-                    value={color.value.rgb}
-                    onChange={(e) => color.setter(e.target.value)}
-                  />
-                  <span className="w-75 text-light">{color.label}</span>
-                </div>
-              ))}
-            </div>
-
-            <div
-              className={`tab-pane fade ${
-                activeTab === "align" ? "show active" : ""
-              }`}
-              id="align"
-              role="tabpanel"
-              aria-labelledby="align-tab"
-            >
-              <div className="mb-3">
-                <div
-                  className="tab-pane fade show active"
-                  id="align"
-                  role="tabpanel"
-                  aria-labelledby="align-tab"
-                >
-                  <div
-                    className="mb-3 d-grid gap-3"
-                    style={{ gridTemplateColumns: "repeat(2, 1fr)" }}
-                  >
-                    {INPUT_FIELDS.map((input, index) => (
-                      <div
-                        key={input.label}
-                        className={`d-flex ${
-                          index < 2 ? "flex-column" : "align-items-center gap-2"
-                        }`}
-                      >
-                        <p className="text-light mb-1">{input.label}</p>
-                        <input
-                          type="number"
-                          className="form-control w-75 rounded-0 input-field"
-                          value={input.value}
-                          onChange={(e) => input.onChange(e.target.value)}
-                          placeholder={input.placeholder}
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="container">
-                    <div className="row">
-                      <div className="col-6 d-flex flex-column justify-content-center align-items-center">
-                        <div className="mb-2 fw-bold text-light">Alignment</div>
-                        <div className="align-box">
-                          {POSITIONS.map((pos, index) => (
-                            <div
-                              key={pos}
-                              className={`align-item ${
-                                selected === index ? "active" : ""
-                              }`}
-                              onClick={() => handleSelectAlign(pos)}
-                            >
-                              {pos}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="col-6 d-flex flex-column justify-content-center">
-                        <div className="mb-2 mt-1 fw-bold text-light">
-                          Margin
-                        </div>
-                        <div className="d-flex flex-column gap-2">
-                          {MARGINS.map((margin) => (
-                            <input
-                              key={margin.id}
-                              type="number"
-                              className="form-control input-margin w-50 rounded-0"
-                              value={margin.value}
-                              placeholder={margin.placeholder}
-                              onChange={(e) =>
-                                handleMarginChange(margin.id, e.target.value)
-                              }
-                            />
-                          ))}
-                        </div>
-                      </div>
+          <div className="container my-1">
+            <div className="row">
+              <div className="col-md-6 d-flex flex-column ">
+                <h5 className="mb-1 mt-1 name-text">Alignment</h5>
+                <div className="align-box d-grid gap-2">
+                  {POSITIONS.map((pos, index) => (
+                    <div
+                      key={pos}
+                      className={`align-item ${
+                        selected === index ? "active" : ""
+                      }`}
+                      onClick={() => handleSelectAlign(pos)}
+                      title={pos}
+                    >
+                      &nbsp;
                     </div>
-                  </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="col-md-6 d-flex flex-column ">
+                <div className="mb-0 mt-1 name-text">Margin</div>
+                <div className="d-flex flex-column gap-2">
+                  {MARGINS.map((margin) => (
+                    <input
+                      key={margin.id}
+                      type="number"
+                      className="form-control form-margin input-margin rounded-2"
+                      value={margin.value}
+                      onChange={(e) =>
+                        handleMarginChange(margin.id, e.target.value)
+                      }
+                      placeholder={margin.placeholder}
+                      aria-label={margin.id}
+                    />
+                  ))}
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div
-          id="box-preview"
-          style={{
-            alignItems: getVerticalAlign(),
-            justifyContent: getHorizontalAlign(),
-          }}
-        >
-          <span
-            className="preview-text"
+          <div
+            id="box-preview"
             style={{
-              fontFamily: font,
-              justifyContent: getHorizontalAlign(),
               alignItems: getVerticalAlign(),
-              fontSize: `${fontSize}px`,
-              backgroundColor: `${backColor}`,
-              color: `${primaryColor}`,
-              textShadow: `2px 2px 4px ${secondaryColor}`,
-              WebkitTextStroke: `${outline}px`,
-              WebkitTextStrokeColor: `${outlineColor}`,
-              fontWeight: bold ? "bold" : "normal",
-              fontStyle: italic ? "italic" : "normal",
-              textDecoration: `${underline ? "underline" : ""} ${
-                strikeOut ? "line-through" : ""
-              }`,
-              transform: `scale(${scaleX / 100}, ${scaleY / 100}) `,
-              borderStyle: borderStyle === "1" ? "solid" : "none",
-              textShadow: `1px 1px ${shadow}px #fff`,
-              marginLeft: `${marginL}px`,
-              marginRight: `${marginR}px`,
-              marginTop: `${marginV}px`,
+              justifyContent: getHorizontalAlign(),
             }}
           >
-            Preview
-          </span>
-        </div>
+            <span
+              className="preview-text "
+              style={{
+                fontFamily: font,
+                justifyContent: getHorizontalAlign(),
+                alignItems: getVerticalAlign(),
+                fontSize: `${fontSize}px`,
+                backgroundColor: `${backColor}`,
+                color: `${primaryColor}`,
+                textShadow: `2px 2px 4px ${secondaryColor}`,
+                WebkitTextStroke: `${outline}px`,
+                WebkitTextStrokeColor: `${outlineColor}`,
+                fontWeight: bold ? "bold" : "normal",
+                fontStyle: italic ? "italic" : "normal",
+                textDecoration: `${underline ? "underline" : ""} ${
+                  strikeOut ? "line-through" : ""
+                }`,
+                transform: `scale(${scaleX / 100}, ${scaleY / 100}) `,
+                borderStyle: borderStyle === "1" ? "solid" : "none",
+                textShadow: `1px 1px ${shadow}px #fff`,
+                marginLeft: `${marginL}px`,
+                marginRight: `${marginR}px`,
+                marginTop: `${marginV}px`,
+              }}
+            >
+              Preview
+            </span>
+          </div>
 
-        <Button
-          color="light"
-          className="mt-5 w-100"
-          onClick={() => {
-            handleSave();
-          }}
-        >
-          Save
-        </Button>
+          <Button
+            className="mt-2 w-100"
+            onClick={() => {
+              handleSave();
+            }}
+          >
+            Save
+          </Button>
+        </div>
       </OffcanvasBody>
     </Offcanvas>
   );

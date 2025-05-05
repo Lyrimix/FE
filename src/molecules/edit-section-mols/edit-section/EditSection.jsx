@@ -42,6 +42,10 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
     setPrevRanges,
     currentRange,
     setCurrentRange,
+    duration,
+    isRemoveBackground,
+    setDuration,
+    setIsShowRemoveBgButton,
   } = useVideoContext();
   const [editorData, setEditorData] = useState([]);
   const {
@@ -70,6 +74,10 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
     videoUrlsWithBackground,
     setVideoUrlsWithBackground,
     videosId,
+    videoWithBackgroundThumbnail,
+    setVideoWithBackgroundThumbnail,
+    isEffect,
+    setIsEffect,
   } = useProjectContext();
   const [hoveredAction, setHoveredAction] = useState(null);
   const [effects, setEffects] = useState([]);
@@ -82,6 +90,8 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
     prevEditorDataRef,
     shouldUpdateProject,
     setShouldUpdateProject,
+    showSaveButton,
+    setShowSaveButton,
   } = useSaveContext();
   const pendingSetRanges = useRef(false);
   const prevSoEoRef = useRef([]);
@@ -96,7 +106,12 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
   });
   const TOOLTIP_OFFSET_X = 10;
   const TOOLTIP_OFFSET_Y = -20;
-  const prevShouldHideRef = useRef();
+
+  useEffect(() => {
+    const total = fileLength.reduce((acc, curr) => acc + curr, 0);
+    const floored = Math.floor(total);
+    setDuration(floored);
+  }, [fileLength]);
 
   useEffect(() => {
     if (!projectVideo) {
@@ -161,11 +176,6 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
   }, [ranges, editorData, isDemoCutting, cloudinaryUrl]);
 
   useEffect(() => {
-    console.log("changinggggg:", shouldUpdateProject);
-    console.log("isDemoCutting:", isDemoCutting);
-    console.log("projectInfo.id:", projectInfo.id);
-    console.log("ranges.length:", ranges.length);
-
     if (
       shouldUpdateProject &&
       cloudinaryUrl &&
@@ -196,16 +206,13 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
       setProjectInfo(updatedProject);
 
       updateProject(updatedProject)
-        .then(() =>
-          console.log(
-            "Project updated successfullyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
-          )
-        )
+        .then(() => console.log("editSection updatedProject:", updatedProject))
         .catch((error) => console.error("Error updating project:", error))
         .finally(() => {
           setIsDemoCutting(true);
           setIsFirstTimeCut(false);
           hasClickedSaveRef.current = false;
+
           setShouldUpdateProject(false);
         });
     }
@@ -320,6 +327,7 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
     if (!newData || newData.length === 0) return;
 
     if (isDemoCutting) {
+      setShowSaveButton(true);
       handleDemoCuttingMode(newData, fileLength);
     } else {
       handleNormalMode(newData, fileLength);
@@ -371,9 +379,56 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
     console.log("projectInfo:", projectInfo);
   }, [projectInfo]);
 
-  // useEffect(() => {
-  //   console.log("videoUrlsWithBackground:", videoUrlsWithBackground);
-  // }, [videoUrlsWithBackground]);
+  useEffect(() => {
+    if (isRemoveBackground === true) {
+      handleRemoveBackground();
+    }
+  }, [isRemoveBackground]);
+
+  const handleRemoveBackground = async () => {
+    if (videoUrlsWithBackground[currentClickedVideo] == null) return;
+
+    const removeBackgroundResponse = await removeBackgroundOfEachVideo(
+      videoUrlsWithBackground[currentClickedVideo],
+      videosId[currentClickedVideo]
+    );
+
+    const asset = removeBackgroundResponse.data.result.asset;
+
+    setVideoUrlsWithBackground((prev) => {
+      const updated = [...prev];
+      updated[currentClickedVideo] = null;
+      return updated;
+    });
+
+    setVideoWithBackgroundThumbnail((prev) => {
+      const updated = [...prev];
+      updated[currentClickedVideo] = null;
+      return updated;
+    });
+
+    setProjectInfo((prev) => {
+      const updatedVideos = [...prev.videos];
+      updatedVideos[currentClickedVideo] = {
+        ...updatedVideos[currentClickedVideo],
+        asset: asset,
+        assetWithBackground: null,
+      };
+
+      return {
+        ...prev,
+        videos: updatedVideos,
+      };
+    });
+
+    setProjectVideosId((prev) => {
+      const updated = [...prev];
+      updated[currentClickedVideo] = asset;
+      return updated;
+    });
+
+    setIsShowRemoveBgButton(false);
+  };
 
   const renderActionItem = useCallback(
     ({ action, handleDelete, videoThumbnail, isSelected, shouldHide }) => {
@@ -394,7 +449,7 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
         getTrackIndexFromId(action.id) === currentClickedVideo;
 
       const backgroundColor =
-        isOriginal && isSameTrack ? "red" : isSelected ? "#ffdd88" : "#ccc";
+        isOriginal && isSameTrack ? "#0dcaf0" : isSelected ? "#ffdd88" : "#ccc";
 
       return (
         <ActionItem
@@ -406,45 +461,56 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
           }}
           action={action}
           handleDelete={handleDelete}
-          thumbnail={thumbnailItem.thumbnailUrl}
-          onDoubleClick={async (clickedAction) => {
-            if (videoUrlsWithBackground[currentClickedVideo] == null) {
-            }
-            // console.log("videoUrlsWithBackground", videoUrlsWithBackground);
-            // console.log(
-            //   "projectVideoIds:",
-            //   projectVideosID[currentClickedVideo]
-            // );
-            const removeBackgroundResponse = await removeBackgroundOfEachVideo(
-              videoUrlsWithBackground[currentClickedVideo],
-              videosId[currentClickedVideo]
-            );
-            const asset = removeBackgroundResponse.data.result.asset;
-            setVideoUrlsWithBackground((prev) => {
-              const updated = [...prev];
-              updated[currentClickedVideo] = null;
-              return updated;
-            });
-            setProjectInfo((prev) => {
-              const updatedVideos = [...prev.videos];
-              updatedVideos[currentClickedVideo] = {
-                ...updatedVideos[currentClickedVideo],
-                asset: asset,
-                assetWithBackground: null,
-              };
+          thumbnail={
+            videoWithBackgroundThumbnail[originalIndex]
+              ? videoWithBackgroundThumbnail[originalIndex]
+              : thumbnailItem.thumbnailUrl
+          }
+          // onDoubleClick={async (clickedAction) => {
+          //   if (videoUrlsWithBackground[currentClickedVideo] == null) {
+          //   }
+          //   // console.log("videoUrlsWithBackground", videoUrlsWithBackground);
+          //   // console.log(
+          //   //   "projectVideoIds:",
+          //   //   projectVideosID[currentClickedVideo]
+          //   // );
+          //   const removeBackgroundResponse = await removeBackgroundOfEachVideo(
+          //     videoUrlsWithBackground[currentClickedVideo],
+          //     videosId[currentClickedVideo]
+          //   );
+          //   const asset = removeBackgroundResponse.data.result.asset;
+          //   setVideoUrlsWithBackground((prev) => {
+          //     const updated = [...prev];
+          //     updated[currentClickedVideo] = null;
+          //     return updated;
+          //   });
 
-              return {
-                ...prev,
-                videos: updatedVideos,
-              };
-            });
-            setProjectVideosId((prev) => {
-              const updated = [...prev];
-              updated[currentClickedVideo] =
-                removeBackgroundResponse.data.result.asset;
-              return updated;
-            });
-          }}
+          //   setVideoWithBackgroundThumbnail((prev) => {
+          //     const updated = [...prev];
+          //     updated[currentClickedVideo] = null;
+          //     return updated;
+          //   });
+
+          //   setProjectInfo((prev) => {
+          //     const updatedVideos = [...prev.videos];
+          //     updatedVideos[currentClickedVideo] = {
+          //       ...updatedVideos[currentClickedVideo],
+          //       asset: asset,
+          //       assetWithBackground: null,
+          //     };
+
+          //     return {
+          //       ...prev,
+          //       videos: updatedVideos,
+          //     };
+          //   });
+          //   setProjectVideosId((prev) => {
+          //     const updated = [...prev];
+          //     updated[currentClickedVideo] =
+          //       removeBackgroundResponse.data.result.asset;
+          //     return updated;
+          //   });
+          // }}
         />
       );
     },
@@ -582,7 +648,11 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
   };
 
   useEffect(() => {
-    console.log("currentClickedVideo:", currentClickedVideo);
+    if (videoUrlsWithBackground[currentClickedVideo] != null) {
+      setIsShowRemoveBgButton(true);
+    } else {
+      setIsShowRemoveBgButton(false);
+    }
   }, [currentClickedVideo]);
 
   const handleClickAction = (e, param) => {

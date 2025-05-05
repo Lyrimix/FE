@@ -23,6 +23,7 @@ import EffectVideo from "../../organisms/sidebar/EffectVideo";
 import { useSaveContext } from "../../utils/context/SaveContext";
 import { addBackgroundToSingleVideo } from "../../apis/ProjectApi";
 import { useEffect } from "react";
+import { ConstantColorFactor } from "three";
 
 const Sidebar = () => {
   const [selectedTab, setSelectedTab] = useState(null);
@@ -33,6 +34,8 @@ const Sidebar = () => {
     setSelectedBackground,
     projectVideo,
     setProjectVideo,
+    setIsShowRemoveBgButton,
+    isRemoveBackground,
   } = useVideoContext();
   const { hasClickedSaveRef, prevEditorDataRef, setShouldUpdateProject } =
     useSaveContext();
@@ -52,6 +55,8 @@ const Sidebar = () => {
     setVideoUrlsWithBackground,
     isEffect,
     setIsEffect,
+    setProjectInfo,
+    setVideoWithBackgroundThumbnail,
   } = useProjectContext();
   const [customLyrics, setCustomLyrics] = useState(null);
   const [effectVideo, setIsEffectVideo] = useState(null);
@@ -82,10 +87,6 @@ const Sidebar = () => {
     console.log("videoUrlsWithBackground:", videoUrlsWithBackground);
   }, [videoUrlsWithBackground]);
 
-  useEffect(() => {
-    console.log("isEffect:", isEffect);
-  }, [isEffect]);
-
   const handleSampleImageClick = async (img) => {
     setIsSidebarOptionsOpen(false);
     if (!selectedFiles.length) {
@@ -93,7 +94,6 @@ const Sidebar = () => {
       return;
     }
     let adddedBackgroundVideoUrl;
-
     if (videoUrlsWithBackground[currentClickedVideo] == null) {
       adddedBackgroundVideoUrl = await addBackgroundToSingleVideo(
         projectVideosID[currentClickedVideo],
@@ -131,13 +131,69 @@ const Sidebar = () => {
 
       return updated;
     });
+
+    setVideoWithBackgroundThumbnail((prev) => {
+      const updated = [...prev];
+
+      updated[currentClickedVideo] = img;
+      return updated;
+    });
+
     setShouldUpdateProject((prev) => !prev);
     setIsDemoCutting(false);
+    setIsShowRemoveBgButton(true);
 
-    if (isEffect) {
-      await handleEffectClick(selectedEffect, sliderValue, true);
-    }
+    // if (isEffect) {
+    //   await handleEffectClick(selectedEffect, sliderValue, true);
+    // }
   };
+  const prevRef = useRef({
+    hadBg: false,
+    bg: null,
+    effect: null,
+    slider: null,
+  });
+
+  useEffect(() => {
+    const currentBg = videoUrlsWithBackground[currentClickedVideo];
+    const hasBgNow = !!currentBg;
+
+    const shouldRun =
+      isEffect &&
+      hasBgNow &&
+      // Có background lần đầu
+      (!prevRef.current.hadBg ||
+        currentBg !== prevRef.current.bg ||
+        selectedEffect !== prevRef.current.effect ||
+        sliderValue !== prevRef.current.slider);
+
+    if (shouldRun) {
+      console.log("🏞️ applying effect with bg");
+      prevRef.current = {
+        hadBg: true,
+        bg: currentBg,
+        effect: selectedEffect,
+        slider: sliderValue,
+      };
+      handleEffectClick(selectedEffect, sliderValue, true);
+    } else {
+      console.log("🚫 no effect re-apply");
+    }
+  }, [
+    isEffect,
+    videoUrlsWithBackground,
+    currentClickedVideo,
+    selectedEffect,
+    sliderValue,
+  ]);
+
+  useEffect(() => {
+    if (isRemoveBackground === true) {
+      if (isEffect) {
+        handleEffectClick(selectedEffect, sliderValue, true);
+      }
+    }
+  }, [isRemoveBackground]);
 
   const handleUpdateClick = () => {
     hasClickedSaveRef.current = true;
@@ -371,10 +427,24 @@ const Sidebar = () => {
     setProjectVideo(videoBlob);
     setVideoBlob(URL.createObjectURL(videoBlob));
     const newCloudinaryUrl = await uploadToCloudinary(videoBlob);
-    projectInfo.asset = newCloudinaryUrl;
-    updateProject(projectInfo).then(() =>
-      console.log("updatedInfo:", projectInfo)
-    );
+    console.log("sidebar videoUrlsWithBackground:", videoUrlsWithBackground);
+    const updatedProject = {
+      ...projectInfo,
+      asset: newCloudinaryUrl,
+      videos: projectInfo.videos.map((video, index) => {
+        if (index === currentClickedVideo) {
+          return {
+            ...video,
+            assetWithBackground: videoUrlsWithBackground[currentClickedVideo],
+          };
+        }
+        return video;
+      }),
+    };
+
+    console.log("sidebar updatedProjectInfo:", updatedProject);
+    setProjectInfo(updatedProject);
+    updateProject(updatedProject);
 
     // handleUpdateClick();
   };

@@ -6,17 +6,41 @@ import {
   scaleWidth,
   startLeft,
   Rates,
-  autoScrollFrom,
   EVENT_BUS_EVENTS,
   ENGINE_EVENTS,
+  autoScrollFrom,
 } from "../../utils/constant";
+import { FiSave } from "react-icons/fi";
+import { useSaveContext } from "../../utils/context/SaveContext";
+import { useProjectContext } from "../../utils/context/ProjectContext";
 import eventBus from "../../utils/eventBus";
+import "./Player.css";
+import { useVideoContext } from "../../utils/context/VideoContext";
 
 const { Option } = Select;
 
 const TimelinePlayer = ({ timelineState, autoScrollWhenPlay }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [time, setTime] = useState(0);
+  const {
+    hasClickedSaveRef,
+    prevEditorDataRef,
+    showSaveButton,
+    setShowSaveButton,
+  } = useSaveContext();
+  const { setIsDemoCutting } = useProjectContext();
+  const { setIsRemoveBackground, isShowRemoveBgButton } = useVideoContext();
+
+  const handleUpdateClick = () => {
+    hasClickedSaveRef.current = true;
+    setIsDemoCutting(false);
+    setShowSaveButton(false);
+    prevEditorDataRef.current = {};
+  };
+
+  const handleRemoveBackgroundClick = () => {
+    setIsRemoveBackground((prev) => !prev);
+  };
 
   useEffect(() => {
     if (!timelineState.current) return;
@@ -31,6 +55,7 @@ const TimelinePlayer = ({ timelineState, autoScrollWhenPlay }) => {
     });
     engine.listener.on(ENGINE_EVENTS.AFTER_SET_TIME, ({ time }) => {
       setTime(time);
+
       eventBus.emit(EVENT_BUS_EVENTS.TIME_UPDATED, time);
     });
     engine.listener.on(EVENT_BUS_EVENTS.SET_TIME_BY_TICK, ({ time }) => {
@@ -88,6 +113,28 @@ const TimelinePlayer = ({ timelineState, autoScrollWhenPlay }) => {
             </Option>
           ))}
         </Select>
+      </div>
+      <div className="save-changes">
+        {showSaveButton && (
+          <button
+            className="save-button btn btn-sm btn-success d-flex align-items-center gap-2 px-3 py-1 rounded ms-2"
+            onClick={handleUpdateClick}
+          >
+            <FiSave />
+            Save
+          </button>
+        )}
+      </div>
+
+      <div className="remove-background">
+        {isShowRemoveBgButton === true && (
+          <button
+            className="btn btn-sm btn-danger d-flex align-items-center gap-2 px-3 py-1 rounded ms-2"
+            onClick={handleRemoveBackgroundClick}
+          >
+            Remove Background
+          </button>
+        )}
       </div>
     </div>
   );

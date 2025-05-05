@@ -17,7 +17,6 @@ export const updateVideoAssetWithBackground = (videoUrlsWithBackground, updatedS
     if(url == null) return;
     // Update so_ và eo_ bằng regex
     let updatedUrl = url;
-    // console.log("updatedUrl:",updatedUrl)
 
     // Update so
     if (updatedUrl.includes('so_')) {

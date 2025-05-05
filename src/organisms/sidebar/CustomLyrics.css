@@ -1,18 +1,31 @@
 #box-preview {
-  width: 327px;
-  height: 150px;
-  padding: 10px;
-  border: 1px solid #ddd;
+  margin-top: 4px;
+  width: 320px;
+  height: 80px;
+  border: 1px solid #043c38;
   overflow: hidden;
   display: flex;
-}
 
+}
+.header{
+  background-color: rgb(33, 37, 41) !important;
+  height: 11%;
+}
+.custom-lyric{
+  background-color: black;
+  padding: 0 10px !important;
+}
+.name-text{
+  color: white !important;
+  font-size: 16px !important;
+  margin-bottom: 0px !important;
+}
 .preview-text{
   margin: 0;
-  padding: 10px;
+  padding: 4px;
   display: inline-block;
   max-width: 100%;
-  max-height: 100%;
+  height: 40px !important;
   white-space: nowrap;
   overflow: visible;
   text-overflow: ellipsis;
@@ -27,11 +40,13 @@
 .input-align{
   width: 70px;
   height: 28px;
+  
 }
 
 .bold {
   width: 30px;
   height: 30px;
+  
   font-weight: bold;
 }
 
@@ -52,11 +67,36 @@
   height: 30px;
   text-decoration: line-through;
 }
+.form-select-font{
+  width: 155px;
+  
+}
+.form-select {
+  max-width: 200px; 
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  
+}
 
+.form-select-font {
+  max-width: 155px;
+  
+  overflow: hidden; 
+}
+
+.form-select-font option {
+  white-space: nowrap;
+}
+.form-control-color {
+  appearance: none;
+  border-radius: 4px;
+}
 
 .input-field {
-  width: 70px;
+  width: 50px;
   height: 28px;
+  border:1px solid ;
 }
 
 .grid-two-columns {
@@ -72,7 +112,7 @@
 }
 
 .align-item {
-  border: 1px solid #6c757d;
+  border:1px solid  !important;
   aspect-ratio: 1/1;
   cursor: pointer;
   user-select: none;
@@ -85,10 +125,113 @@
 }
 
 .align-item.active {
-  background-color: #4c7273;
+  background-color: #21f8ff;
   color: white;
 }
 
 .input-margin {
+  height: 24px;
+  width: 70px !important;
+}
+
+
+.btn-toggle {
+  min-width: 28px;
   height: 28px;
+  font-size: 13px;
+  display: flex;
+  /* border:1px solid  !important; */
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease-in-out;
+  padding: 1px 2px;
+
+}
+
+.btn-toggle:hover {
+  background-color: #e9ecef;
+}
+
+.btn-secondary {
+  background-color: #0dcaf0 !important;
+  color: #fff !important;
+}
+
+.align-box {
+  display: grid;
+  grid-template-columns: repeat(3, 20px);
+  gap: 2px !important;
+}
+
+.align-item {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  cursor: pointer;
+  text-align: center;
+  line-height: 40px;
+  font-size: 0; 
+  position: relative;
+  transition: all 0.2s ease-in-out;
+}
+
+.align-item.active {
+  border-color: #0dcaf0;
+  background-color: #0dcaf0;
+}
+
+.align-item:hover {
+  background-color: #0dcaf0;
+}
+
+.input-margin {
+  
+  font-size: 14px;
+  border-radius: 6px;
+}
+
+.name-text {
+  font-weight: 600;
+  color: #333;
+}
+
+.form-margin{
+  width: 20px;
+}
+
+.custom-offcanvas {
+  transition: transform 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transform: translateX(100%);
+  opacity: 0;
+  visibility: hidden;
+}
+
+.custom-offcanvas.show {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+}
+
+.custom-offcanvas {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 400px;
+  background: white;
+  z-index: 1050;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.5s ease;
+  visibility: hidden;
+}
+
+.custom-offcanvas.show {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
 }

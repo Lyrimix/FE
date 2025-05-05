@@ -1,0 +1,19 @@
+.save-changes button {
+    font-size: 0.85rem;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .save-changes button:hover {
+    background-color: #28a745;
+    opacity: 0.9;
+  }
+
+.timeline-player {
+  height: 35px !important;
+}
+
+.save-button {
+  background-color: #0dcaf0 !important;
+
+}
+  

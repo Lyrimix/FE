@@ -19,6 +19,10 @@ export const VideoProvider = ({ children }) => {
   const [prevRanges, setPrevRanges] = useState([]);
   const [currentRange, setCurrentRange] = useState([]);
 
+  //Remove Background
+  const [isRemoveBackground, setIsRemoveBackground] = useState(false);
+  const [isShowRemoveBgButton, setIsShowRemoveBgButton] = useState(false);
+
   const handleChange = (index, newRange) => {
     if (!Array.isArray(newRange)) {
       <AutoDismissToast message={("newRange is not an array:", newRange)} />;
@@ -75,6 +79,10 @@ export const VideoProvider = ({ children }) => {
         setPrevRanges,
         currentRange,
         setCurrentRange,
+        isRemoveBackground,
+        setIsRemoveBackground,
+        isShowRemoveBgButton,
+        setIsShowRemoveBgButton,
       }}
     >
       {children}

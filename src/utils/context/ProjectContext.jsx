@@ -18,7 +18,6 @@ export const ProjectProvider = ({ children }) => {
   const [originalStartAndEndTime, setOriginalStartAndEndTime] = useState([]);
   const [isDemoCutting, setIsDemoCutting] = useState(true);
   const [isFirstTimeCut, setIsFirstTimeCut] = useState(true);
-  const [videoThumbnail, setVideoThumbnail] = useState([]);
   const [prevSoEo, setPrevSoEo] = useState([]);
   const [originalProject, setOriginalProject] = useState(null);
   const [currentCutTime, setCurrentCutTime] = useState(null);
@@ -31,8 +30,12 @@ export const ProjectProvider = ({ children }) => {
   //Add and remove background for each video
   const [videosId, setVideosId] = useState([]);
   const [videoUrlsWithBackground, setVideoUrlsWithBackground] = useState([]);
-
   const [isEffect, setIsEffect] = useState(false);
+
+  //thumbnail
+  const [videoThumbnail, setVideoThumbnail] = useState([]);
+  const [videoWithBackgroundThumbnail, setVideoWithBackgroundThumbnail] =
+    useState([]);
 
   return (
     <ProjectContext.Provider
@@ -86,6 +89,8 @@ export const ProjectProvider = ({ children }) => {
         setVideoUrlsWithBackground,
         isEffect,
         setIsEffect,
+        videoWithBackgroundThumbnail,
+        setVideoWithBackgroundThumbnail,
       }}
     >
       {children}

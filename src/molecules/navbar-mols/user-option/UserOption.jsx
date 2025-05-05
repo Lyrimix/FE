@@ -41,9 +41,6 @@ export const UserOption = () => {
   return (
     <div className="container p-0">
       <div className="user-option d-flex justify-content-center align-items-center p-3 ">
-        <div className="user-option__header user-option__header--left  d-flex align-items-center justify-content-center">
-          <ExportOptions options={sizeOptions}></ExportOptions>
-        </div>
         <div className="user-option__header--right d-flex gap-3">
           <input
             ref={fileInputRef}
@@ -53,20 +50,20 @@ export const UserOption = () => {
             className="d-none"
             onChange={uploadFiles}
           />
-          <button
+          {/* <button
             className="user-option__btn d-flex align-items-center gap-2"
             onClick={handleUploadClick}
           >
             <FiUpload />
             Upload
-          </button>
-          <button
+          </button> */}
+          {/* <button
             className="user-option__btn d-flex align-items-center gap-2"
             onClick={handleUpdateClick}
           >
             <FiSave />
             Save
-          </button>
+          </button> */}
           <button
             className="user-option__btn d-flex align-items-center gap-2"
             onClick={handleExportClick}
