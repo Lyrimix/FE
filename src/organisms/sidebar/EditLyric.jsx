@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Offcanvas, OffcanvasHeader, OffcanvasBody, Button } from "reactstrap";
 import "./EditLyric.css";
 import { INPUT, TABS } from "../../utils/constant";
-import { FaMinus } from "react-icons/fa";
+import { FaTrash, FaSyncAlt, FaSave } from "react-icons/fa";
 import TimeInput from "../../atoms/inputs/TimeInput";
 
 const EditLyric = ({
@@ -110,22 +110,22 @@ const EditLyric = ({
       backdrop={false}
       className="custom-offcanvas"
     >
-      <OffcanvasHeader toggle={toggle} className="bg-dark text-white">
+      <OffcanvasHeader toggle={toggle} className="bg-white text-black">
         Edit Lyrics
       </OffcanvasHeader>
-      <OffcanvasBody className="bg-black">
-        <div className="overflow-auto space-edit">
+      <OffcanvasBody className=" body">
+        <div className=" space-edit item">
           {lyricEdit.map((line, index) => (
             <div
               key={index}
               onClick={() => handleSelect(index)}
               className={`p-2 mb-2 rounded ${
                 selectedIndex === index
-                  ? "border border-info"
+                  ? "border border-dark"
                   : "border border-secondary"
-              } bg-black transition`}
+              }  transition`}
             >
-              <div className="d-flex gap-2">
+              <div className="d-flex gap-2 ">
                 <TimeInput
                   value={line.start}
                   onChange={(e) => handleChange(index, "start", e.target.value)}
@@ -139,18 +139,18 @@ const EditLyric = ({
                 />
 
                 <button
-                  className="bg-black text-white mb-2 ms-3"
+                  className="custom-button-add text-black mb-2 ms-2"
                   onClick={() => handleAddLine(index)}
                   title="Add a new line"
                 >
                   +
                 </button>
                 <button
-                  className="bg-black text-white mb-2 "
+                  className="custom-button-delete text-black mb-2 "
                   onClick={() => handleDeleteLine(index)}
                   title="Remove"
                 >
-                  <FaMinus size={10} />
+                  <FaTrash size={12} />
                 </button>
               </div>
 
@@ -158,21 +158,26 @@ const EditLyric = ({
                 type="text"
                 value={line.text}
                 onChange={(e) => handleChange(index, "text", e.target.value)}
-                className="form-control text-white border-0 bg-transparent"
+                className="form-control text-black border-0 bg-transparent input-white"
+                placeholder="New text"
               />
             </div>
           ))}
         </div>
-        <Button color="light" className="mt-3 w-100" onClick={onRefreshLyric}>
-          Reload
+        <Button
+          color="light"
+          className="mt-3 button-reload"
+          onClick={onRefreshLyric}
+        >
+          <FaSyncAlt />
         </Button>
         <Button
           color="light"
-          className="mt-3 w-100"
+          className="mt-3 w-40 button-save"
           onClick={handleSave}
           disabled={lyricEdit.length === 0}
         >
-          Save
+          <FaSave />
         </Button>
       </OffcanvasBody>
     </Offcanvas>

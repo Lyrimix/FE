@@ -35,5 +35,12 @@
 }
 
 .sidebar__item.active .icon-button__tooltip {
-  color: #0dcaf0;
+  color: #0dcaf0
 }
+
+.sidebar__item.active .icon-button {
+  color: #0dcaf0
+}
+
+
+

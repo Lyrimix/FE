@@ -89,6 +89,7 @@ const Sidebar = () => {
 
   const handleSampleImageClick = async (img) => {
     setIsSidebarOptionsOpen(false);
+    setIsLoading(true);
     if (!selectedFiles.length) {
       alert("No files have been selected");
       return;
@@ -142,6 +143,7 @@ const Sidebar = () => {
     setShouldUpdateProject((prev) => !prev);
     setIsDemoCutting(false);
     setIsShowRemoveBgButton(true);
+    setIsLoading(false);
 
     // if (isEffect) {
     //   await handleEffectClick(selectedEffect, sliderValue, true);

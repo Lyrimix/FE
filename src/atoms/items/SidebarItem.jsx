@@ -8,7 +8,7 @@ const SidebarItem = ({ icon, label, isSelected, onClick }) => {
       className={`sidebar__item ${isSelected ? "active" : ""}`}
       onClick={onClick}
     >
-      <IconButton icon={icon} label={label} />
+      <IconButton icon={icon} label={label} isSelected={isSelected} />
     </div>
   );
 };

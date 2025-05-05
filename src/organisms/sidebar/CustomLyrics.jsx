@@ -209,7 +209,7 @@ const CustomLyrics = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
     >
       <OffcanvasHeader
         toggle={toggle}
-        className="header d-flex justify-content-between align-items-center px-3 py-3 text-light"
+        className="header d-flex bg-white justify-content-between align-items-center px-3 py-3 text-black"
       >
         <div className="d-flex gap-1 px-1 py-2  h-100 p-10">Custom Lyrics</div>
       </OffcanvasHeader>
@@ -406,11 +406,11 @@ const CustomLyrics = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
             ))}
           </div>
 
-          <div className="container my-1">
-            <div className="row">
+          <div className="container my-1 g-0">
+            <div className="row g-0">
               <div className="col-md-6 d-flex flex-column ">
                 <h5 className="mb-1 mt-1 name-text">Alignment</h5>
-                <div className="align-box d-grid gap-2">
+                <div className="align-box d-grid gap-2 ">
                   {POSITIONS.map((pos, index) => (
                     <div
                       key={pos}
@@ -455,7 +455,7 @@ const CustomLyrics = ({ isOpen, toggle, lyric, handleSaveLyric }) => {
             }}
           >
             <span
-              className="preview-text "
+              className="preview-text rounded-2"
               style={{
                 fontFamily: font,
                 justifyContent: getHorizontalAlign(),

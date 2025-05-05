@@ -60,11 +60,6 @@ export const ExportForm = ({ isOpen, toggle }) => {
             />
           </div>
         </div>
-
-        <FormGroup className="mb-3">
-          <Input id="nameInput" name="name" placeholder="Name" type="text" />
-        </FormGroup>
-        <ExportOptions options={exportOptions} className="mb-3" />
       </ModalBody>
       <ModalFooter>
         <Button

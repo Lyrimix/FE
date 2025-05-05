@@ -50,9 +50,6 @@ const UploadButton = () => {
     setIsUploading(true);
 
     try {
-      const cloudinaryUrl = await uploadToCloudinary(projectVideo);
-      projectInfo.asset = cloudinaryUrl;
-      updateProject(projectInfo);
       const uploadResponse = await uploadYoutube(accessToken, projectInfo.id);
       const videoId = uploadResponse.data.videoId;
       window.open(`https://studio.youtube.com/video/${videoId}/edit`, "_blank");

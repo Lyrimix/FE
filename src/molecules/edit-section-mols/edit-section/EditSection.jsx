@@ -683,6 +683,7 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
         )}
 
         <Timeline
+          // style={{ backgroundColor: "white" }}
           key={videoThumbnail.map((v) => v.thumbnailUrl).join("-")}
           editorData={editorData}
           effects={effects}

@@ -1,26 +1,26 @@
 #box-preview {
   margin-top: 4px;
-  width: 320px;
-  height: 80px;
+  width: 340px;
+  height: 100px;
   border: 1px solid #043c38;
   overflow: hidden;
   display: flex;
-
 }
-.header{
+.header {
   background-color: rgb(33, 37, 41) !important;
-  height: 11%;
+  height: 8%;
 }
-.custom-lyric{
-  background-color: black;
+.custom-lyric {
+  background-color: #EFF3F5;
   padding: 0 10px !important;
 }
-.name-text{
-  color: white !important;
+.name-text {
+  color: black !important;
   font-size: 16px !important;
   margin-bottom: 0px !important;
 }
-.preview-text{
+
+.preview-text {
   margin: 0;
   padding: 4px;
   display: inline-block;
@@ -32,21 +32,21 @@
   border-style: solid;
 }
 
-.align-box{
+.align-box {
   width: 100px;
   height: 100px;
 }
 
-.input-align{
+
+.input-align {
   width: 70px;
   height: 28px;
-  
 }
 
 .bold {
   width: 30px;
   height: 30px;
-  
+
   font-weight: bold;
 }
 
@@ -67,22 +67,20 @@
   height: 30px;
   text-decoration: line-through;
 }
-.form-select-font{
+.form-select-font {
   width: 155px;
-  
 }
 .form-select {
-  max-width: 200px; 
+  max-width: 200px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  
 }
 
 .form-select-font {
   max-width: 155px;
-  
-  overflow: hidden; 
+
+  overflow: hidden;
 }
 
 .form-select-font option {
@@ -96,7 +94,7 @@
 .input-field {
   width: 50px;
   height: 28px;
-  border:1px solid ;
+  border: 1px solid;
 }
 
 .grid-two-columns {
@@ -112,7 +110,7 @@
 }
 
 .align-item {
-  border:1px solid  !important;
+  border: 1px solid !important;
   aspect-ratio: 1/1;
   cursor: pointer;
   user-select: none;
@@ -134,7 +132,6 @@
   width: 70px !important;
 }
 
-
 .btn-toggle {
   min-width: 28px;
   height: 28px;
@@ -146,7 +143,6 @@
   border-radius: 6px;
   transition: all 0.2s ease-in-out;
   padding: 1px 2px;
-
 }
 
 .btn-toggle:hover {
@@ -173,7 +169,7 @@
   cursor: pointer;
   text-align: center;
   line-height: 40px;
-  font-size: 0; 
+  font-size: 0;
   position: relative;
   transition: all 0.2s ease-in-out;
 }
@@ -188,7 +184,6 @@
 }
 
 .input-margin {
-  
   font-size: 14px;
   border-radius: 6px;
 }
@@ -198,7 +193,7 @@
   color: #333;
 }
 
-.form-margin{
+.form-margin {
   width: 20px;
 }
 
@@ -234,4 +229,8 @@
   transform: translateX(0);
   opacity: 1;
   visibility: visible;
+}
+.offcanvas-header .btn-close {
+  filter: invert(28%) sepia(96%) saturate(7454%) hue-rotate(357deg)
+    brightness(97%) contrast(105%);
 }

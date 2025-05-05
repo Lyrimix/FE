@@ -18,3 +18,42 @@
 .custom-close-btn:hover {
   color: red;
 }
+
+.custom-border-bottom {
+  border-bottom: 1px solid #17a2b8;
+}
+.canvas-body {
+  background-color: transparent;
+  overflow-y: scroll;
+}
+.custom-close-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  color: white;
+  cursor: pointer;
+}
+
+.custom-close-btn:hover {
+  color: red;
+}
+
+.custom-offcanvas .btn-close:hover {
+  filter: invert(24%) sepia(93%) saturate(7491%) hue-rotate(357deg)
+    brightness(103%) contrast(119%);
+}
+.button-upload {
+  background-color: #0dcaf0 !important;
+  height: 50px;
+  font-size: 20px !important;
+}
+.offcanvas-body::-webkit-scrollbar {
+  display: none;
+}
+
+.offcanvas-body {
+  scrollbar-width: none;
+}

@@ -15,7 +15,7 @@ export const PROJECT_MAIN_THEME = "#CFF2E6";
 export const MIN_SCALE = 2;
 export const SCALE = 15;
 export const MIN_SCALE_COUNT = 10;
-export const ROW_HEIGHT = 40;
+export const ROW_HEIGHT = 45;
 
 export const MOCK_EFFECT = {
   effect0: {
@@ -193,7 +193,7 @@ export const EFFECT_GROUPS = [
         type: "Vertical Open",
         type_request: "vertopen",
         video:
-          "https://res.cloudinary.com/dnuyd3qxz/video/upload/v1744196003/czecgy8yloccg7fxqlfz.mp4",
+          "https://res.cloudinary.com/dm8flim64/video/upload/v1744601794/lsdb6x6tr1pt9tpubp5e.mp4",
       },
       {
         effect: "VERTCLOSE",

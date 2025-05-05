@@ -2,8 +2,61 @@
   width: 360px !important;
 }
 .input-time {
-  max-width: 100px;
+  max-width: 110px;
 }
 .space-edit {
-  max-height: 490px;
+  max-height: 540px;
+  background-color: #EFF3F5;
 }
+.custom-offcanvas .btn-close {
+  filter: brightness(0);
+  opacity: 1;
+}
+
+.custom-button-delete {
+  border: 1px solid black;
+  border-radius: 4px;
+  color: white;
+}
+.custom-button-add {
+  border: 1px solid black;
+  border-radius: 4px;
+  color: white;
+}
+
+.custom-button-delete:hover {
+  border-color: red;
+  color: red !important;
+}
+.border-black {
+   border-color: black;
+}
+.custom-button-add:hover {
+  border-color: #00ff00;
+  color: #00ff00 !important;
+}
+.button-save {
+  margin-left: 20px;
+  width: 140px;
+  color: #00ff00 !important;
+  border-color: black !important;
+}
+.button-reload {
+  width: 140px;
+  margin-left: 10px;
+  color: lightskyblue !important;
+  border-color: black !important;
+}
+.button-save:hover {
+  background-color: white !important;
+  border-color: #00ff00 !important;
+}
+.button-reload:hover {
+  background-color: white !important;
+  border-color: #0dcaf0 !important;
+}
+
+.body {
+  background-color: #EFF3F5;
+}
+
