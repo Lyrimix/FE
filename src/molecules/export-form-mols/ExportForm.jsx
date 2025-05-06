@@ -50,7 +50,7 @@ export const ExportForm = ({ isOpen, toggle }) => {
     >
       <ModalHeader toggle={toggle}>Export Project</ModalHeader>
       <ModalBody>
-        <h3 className="fs-6 mb-3">Cover image and video</h3>
+        {/* <h3 className="fs-6 mb-3">Cover image and video</h3> */}
         <div className="mb-3 d-flex justify-content-center">
           <div style={{ width: "200px" }}>
             <ThumbnailPreview

@@ -37,12 +37,13 @@ export const API_URL = "http://localhost:8080/Lyrimix";
 //SAMPLE IMAGE
 export const SIDEBAR_ITEMS = [
   { icon: <FaImage />, label: "Background" },
+  { icon: <FaMagic />, label: "Effect" },
+  { icon: <FaClosedCaptioning />, label: "Lyric" },
+
   { icon: <FaVideo />, label: "Media" },
   { icon: <FaMusic />, label: "Audio" },
-  { icon: <FaMagic />, label: "Effect" },
   { icon: <FaFont />, label: "Text" },
   { icon: <FaCog />, label: "Settings" },
-  { icon: <FaClosedCaptioning />, label: "Lyric" },
 ];
 
 export const EXPANDED_ITEMS = {
@@ -54,7 +55,7 @@ export const EXPANDED_ITEMS = {
   Lyric: [
     "Create lyric automatically",
     "Edit lyric manually",
-    "Hidden Lyrics",
+    "Hide Lyrics",
     "Custom lyrics",
     "Upload lyric file",
   ],
@@ -193,28 +194,28 @@ export const EFFECT_GROUPS = [
         type: "Vertical Open",
         type_request: "vertopen",
         video:
-          "https://res.cloudinary.com/dm8flim64/video/upload/v1744601794/lsdb6x6tr1pt9tpubp5e.mp4",
+          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746514505/vertopen_nl02s8.mp4",
       },
       {
         effect: "VERTCLOSE",
         type: "Vertical Close",
         type_request: "vertclose",
         video:
-          "https://res.cloudinary.com/dm8flim64/video/upload/v1744601794/lsdb6x6tr1pt9tpubp5e.mp4",
+          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746514507/vertclose_iageyl.mp4",
       },
       {
         effect: "HORZOPEN",
         type: "Horizontal Open",
         type_request: "horzopen",
         video:
-          "https://res.cloudinary.com/dm8flim64/video/upload/v1744601794/mezniqacfxgerqerewij.mp4",
+          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746514506/horzopen_x8rojt.mp4",
       },
       {
         effect: "HORZCLOSE",
         type: "Horizontal Close",
         type_request: "horzclose",
         video:
-          "https://res.cloudinary.com/dm8flim64/video/upload/v1744601794/yicuydqc8cx0wmpdyl7h.mp4",
+          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746514504/horzclose_miweku.mp4",
       },
     ],
   },

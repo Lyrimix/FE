@@ -114,7 +114,7 @@ const EditLyric = ({
         Edit Lyrics
       </OffcanvasHeader>
       <OffcanvasBody className=" body">
-        <div className=" space-edit item">
+        <div className="overflow-auto space-edit item">
           {lyricEdit.map((line, index) => (
             <div
               key={index}

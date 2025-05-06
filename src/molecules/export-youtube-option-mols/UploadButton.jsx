@@ -73,7 +73,7 @@ const UploadButton = () => {
       disabled={isUploading}
       className="btn bg-custom-secondary w-20 text-dark"
     >
-      {isUploading ? "Uploading..." : "Upload to YouTubes"}
+      {isUploading ? "Uploading..." : "Upload to YouTube"}
     </button>
   );
 };

@@ -95,7 +95,7 @@ const VideoSorterModal = ({
             onConfirmUpload(videos);
           }}
         >
-          Accepted
+          Accept
         </Button>
 
         <Button color="danger" onClick={toggle}>
