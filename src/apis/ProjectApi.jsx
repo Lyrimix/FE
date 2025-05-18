@@ -10,7 +10,7 @@ import { AutoDismissToast } from "../molecules/auto-dismiss-toast-mols/AutoDismi
 export const addVideosToProject = async (payload) => {
   return axios.post(`${API_URL}/video`, payload, {
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": ContentType.Json,
     },
   });
 };
@@ -85,6 +85,31 @@ export const uploadToCloudinary = async (file) => {
   try {
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`,
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+    const data = await response.json();
+    if (data.secure_url) {
+      return data.secure_url;
+    } else {
+      <AutoDismissToast message={("Upload failed", data)} />;
+      return null;
+    }
+  } catch (error) {
+    <AutoDismissToast message={("Error uploading to Cloudinary:", error)} />;
+    return null;
+  }
+};
+
+export const uploadImageToCloudinary = async (file) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+  try {
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
       {
         method: "POST",
         body: formData,
@@ -255,7 +280,7 @@ export const uploadVideoToCloudinary = async (file) => {
 export const createProject = async () => {
   return axios.post(
     `${API_URL}/project/createProject`,
-    { name: "Nga's project" },
+    { name: "Lyrimix's project" },
     { headers: { "Content-Type": ContentType.Json } }
   );
 };

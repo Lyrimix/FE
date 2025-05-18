@@ -69,11 +69,12 @@ const UploadButton = () => {
 
   return (
     <button
-      onClick={handleUpload}
-      disabled={isUploading}
+      // onClick={handleUpload}
+      // disabled={isUploading}
       className="btn bg-custom-secondary w-20 text-dark"
     >
-      {isUploading ? "Uploading..." : "Upload to YouTube"}
+      {/* {isUploading ? "Uploading..." : "Upload to YouTube"} */}
+      Upload to YouTube
     </button>
   );
 };

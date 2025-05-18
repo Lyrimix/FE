@@ -6,6 +6,7 @@ import { HomePage } from "./pages/homepage/HomePage";
 import { GlobalLoadingModal } from "./organisms/global-loading/GlobalLoadingModal";
 import { SaveProvider } from "./utils/context/SaveContext";
 import OauthCallback from "./pages/OAuthCallback";
+import LoginPage from "./pages/loginpage/LoginPage";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
               <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/oauth-callback" element={<OauthCallback />} />
+                <Route path="/login" element={<LoginPage />} />
               </Routes>
               <GlobalLoadingModal />
             </Router>

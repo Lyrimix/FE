@@ -164,21 +164,20 @@ const EditLyric = ({
             </div>
           ))}
         </div>
-        <Button
+        <button
           color="light"
           className="mt-3 button-reload"
           onClick={onRefreshLyric}
         >
-          <FaSyncAlt />
-        </Button>
-        <Button
-          color="light"
-          className="mt-3 w-40 button-save"
+          Reload
+        </button>
+        <button
+          className="mt-3 button-save"
           onClick={handleSave}
           disabled={lyricEdit.length === 0}
         >
-          <FaSave />
-        </Button>
+          Save
+        </button>
       </OffcanvasBody>
     </Offcanvas>
   );

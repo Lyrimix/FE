@@ -83,7 +83,7 @@ const TimeInput = ({ value, onChange, className }) => {
       inputMode="numeric"
       value={value}
       className={`font-mono ${className}`}
-      onChange={() => {}} // Disable manual input
+      onChange={onChange} // Disable manual input
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       maxLength={fixedFormat.length}

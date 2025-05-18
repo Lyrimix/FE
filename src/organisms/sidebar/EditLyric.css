@@ -6,7 +6,7 @@
 }
 .space-edit {
   max-height: 540px;
-  background-color: #EFF3F5;
+  background-color: #eff3f5;
 }
 .custom-offcanvas .btn-close {
   filter: brightness(0);
@@ -29,27 +29,38 @@
   color: red !important;
 }
 .border-black {
-   border-color: black;
+  border-color: black;
 }
 .custom-button-add:hover {
   border-color: #00ff00;
   color: #00ff00 !important;
 }
-.button-save {
-  margin-left: 20px;
-  width: 140px;
-  color: #00ff00 !important;
-  border-color: black !important;
-}
+
 .button-reload {
   width: 140px;
+  height: 40px;
   margin-left: 10px;
-  color: lightskyblue !important;
-  border-color: black !important;
+  color: #0dcaf0 !important;
+  border-color: rgb(255, 255, 255) !important;
+  background-color: white; /* Màu nền của nút /
+  transition: box-shadow 0.3s ease, transform 0.3s ease; / Thêm hiệu ứng chuyển động khi hover */
+  border-radius: 6px;
 }
+
+.button-save {
+  margin-left: 20px !important;
+
+  width: 140px;
+  height: 40px;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px;
+  background-color: #0dcaf0 !important;
+  transition: transform 0.3s ease !important;
+}
+
 .button-save:hover {
-  background-color: white !important;
-  border-color: #00ff00 !important;
+  transform: scale(1.05) !important;
 }
 .button-reload:hover {
   background-color: white !important;
@@ -57,6 +68,5 @@
 }
 
 .body {
-  background-color: #EFF3F5;
+  background-color: #eff3f5;
 }
-

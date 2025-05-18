@@ -10,8 +10,10 @@ import { ExportForm } from "../../export-form-mols/ExportForm";
 import { generateCloudinaryUrlForSingleVideo } from "../../../utils/cloudinaryUtils";
 import { BACKGROUND_IMAGES } from "../../../utils/constant";
 import { addBackgroundToSingleVideo } from "../../../apis/ProjectApi";
+import { useNavigate } from "react-router-dom";
 
 export const UserOption = () => {
+  const navigate = useNavigate();
   const [isExport, setIsExport] = useState(false);
   const {
     setIsDemoCutting,
@@ -50,6 +52,12 @@ export const UserOption = () => {
             className="d-none"
             onChange={uploadFiles}
           />
+          <button
+            className="user-option__btn d-flex align-items-center gap-2"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </button>
           {/* <button
             className="user-option__btn d-flex align-items-center gap-2"
             onClick={handleUploadClick}

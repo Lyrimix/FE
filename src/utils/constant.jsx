@@ -28,12 +28,11 @@ export const MOCK_EFFECT = {
   },
 };
 //CLOUDINARY
-export const CLOUD_NAME = "dta6fx6ja";
+export const CLOUD_NAME = "dn3umiee1";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
-export const API_URL =
-  "https://deploy-final-05-05-production.up.railway.app/Lyrimix";
+export const API_URL = "http://localhost:8080/Lyrimix";
 
 //SAMPLE IMAGE
 export const SIDEBAR_ITEMS = [
@@ -41,16 +40,16 @@ export const SIDEBAR_ITEMS = [
   { icon: <FaMagic />, label: "Effect" },
   { icon: <FaClosedCaptioning />, label: "Lyric" },
 
-  { icon: <FaVideo />, label: "Media" },
-  { icon: <FaMusic />, label: "Audio" },
-  { icon: <FaFont />, label: "Text" },
-  { icon: <FaCog />, label: "Settings" },
+  // { icon: <FaVideo />, label: "Media" },
+  // { icon: <FaMusic />, label: "Audio" },
+  // { icon: <FaFont />, label: "Text" },
+  // { icon: <FaCog />, label: "Settings" },
 ];
 
 export const EXPANDED_ITEMS = {
   Media: ["Upload Video", "Choose from Library"],
   Audio: ["Upload Audio", "Choose from Playlist"],
-  Effect: ["Apply Filters", "Add Animations"],
+  // Effect: ["Apply Filters", "Add Animations"],
   Text: ["Add Title", "Customize Font"],
   Settings: ["General", "Preferences"],
   Lyric: [
@@ -81,11 +80,11 @@ export const TABS = {
 };
 
 export const BACKGROUND_IMAGES = [
-  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample-5.jpg",
-  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample-4.jpg",
-  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample-3.jpg",
-  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample-2.jpg",
-  "https://res.cloudinary.com/dta6fx6ja/image/upload/v1739947631/cld-sample.jpg",
+  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample-5.jpg",
+  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample-4.jpg",
+  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample-3.jpg",
+  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample-2.jpg",
+  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample.jpg",
 ];
 
 export const ContentType = {
