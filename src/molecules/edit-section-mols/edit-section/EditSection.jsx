@@ -26,6 +26,7 @@ import {
 } from "../../../apis/ProjectApi";
 import { extractSoAndEoFromUrl } from "../../../utils/cloudinaryUtils";
 import "./EditSection.css";
+import "./EditSection.scss";
 
 export const EditSection = ({ maxDuration = 1000000 }) => {
   const {

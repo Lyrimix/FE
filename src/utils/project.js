@@ -4,9 +4,13 @@ import {
   addVideosToProject,
   uploadVideoToCloudinary,
   createProject,
+  getListProjectByToken,
 } from "../apis/ProjectApi";
 
-export const updateVideoAssetWithBackground = (videoUrlsWithBackground, updatedSoAndEo) => {
+export const updateVideoAssetWithBackground = (
+  videoUrlsWithBackground,
+  updatedSoAndEo
+) => {
   if (!videoUrlsWithBackground || !updatedSoAndEo) return [];
 
   return videoUrlsWithBackground.map((url, index) => {
@@ -14,24 +18,36 @@ export const updateVideoAssetWithBackground = (videoUrlsWithBackground, updatedS
     if (!soAndEo) return url; // Nếu không có update thì trả về url cũ
 
     const [startOffset, endOffset] = soAndEo;
-    if(url == null) return;
+    if (url == null) return;
     // Update so_ và eo_ bằng regex
     let updatedUrl = url;
 
     // Update so
-    if (updatedUrl.includes('so_')) {
-      updatedUrl = updatedUrl.replace(/so_[\d\.]+/, `so_${startOffset.toFixed(2)}`);
+    if (updatedUrl.includes("so_")) {
+      updatedUrl = updatedUrl.replace(
+        /so_[\d\.]+/,
+        `so_${startOffset.toFixed(2)}`
+      );
     } else {
       // Nếu không có thì thêm so_
-      updatedUrl = updatedUrl.replace('/upload/', `/upload/so_${startOffset.toFixed(2)},`);
+      updatedUrl = updatedUrl.replace(
+        "/upload/",
+        `/upload/so_${startOffset.toFixed(2)},`
+      );
     }
 
     // Update eo
-    if (updatedUrl.includes('eo_')) {
-      updatedUrl = updatedUrl.replace(/eo_[\d\.]+/, `eo_${endOffset.toFixed(2)}`);
+    if (updatedUrl.includes("eo_")) {
+      updatedUrl = updatedUrl.replace(
+        /eo_[\d\.]+/,
+        `eo_${endOffset.toFixed(2)}`
+      );
     } else {
       // Nếu không có thì thêm eo_
-      updatedUrl = updatedUrl.replace('/upload/', `/upload/eo_${endOffset.toFixed(2)},`);
+      updatedUrl = updatedUrl.replace(
+        "/upload/",
+        `/upload/eo_${endOffset.toFixed(2)},`
+      );
     }
 
     return updatedUrl;
@@ -53,14 +69,14 @@ export const updateProjectBackgrounds = (
     const endTime = ranges[index]?.[1] || 0;
     const duration = endTime - startTime;
     const asset = reversedIDs.length > 0 ? reversedIDs[index] : null;
-    const assetWithBackground = videoUrlsWithBackground[index]
+    const assetWithBackground = videoUrlsWithBackground[index];
     return {
       ...bg,
       startTime,
       endTime,
       duration,
       ...(asset && { asset }),
-      assetWithBackground
+      assetWithBackground,
     };
   });
 
@@ -131,9 +147,13 @@ export const generateTimelineData = (
   ];
 };
 
-export const createNewProject = async (setProjectInfo, projectLength) => {
+export const createNewProject = async (
+  setProjectInfo,
+  projectLength,
+  token
+) => {
   try {
-    const response = await createProject();
+    const response = await createProject(token);
 
     const result = response.data?.result;
     if (!result) throw new Error("Invalid project creation response");
@@ -154,6 +174,18 @@ export const createNewProject = async (setProjectInfo, projectLength) => {
     return null;
   }
 };
+
+export const getListProject = async (token) => {
+  try {
+    const response = await getListProjectByToken(token);
+    const result = response.data?.result;
+    if (!result) throw new Error("Invalid getListProjectById response");
+    return result;
+  } catch (error) {
+    console.error("Fetching project list failed:", error);
+    return null;
+  }
+}
 
 export const prepareFormData = async (videos) => {
   let totalLength = 0;

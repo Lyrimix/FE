@@ -1,55 +1,93 @@
-import { BiUser, BiLockAlt, BiEnvelope } from "react-icons/bi";
-import { BsFacebook, BsGoogle } from "react-icons/bs";
+import React, { useState } from "react";
+import { BsPerson, BsEnvelope, BsLock } from "react-icons/bs";
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+import { register } from "../../apis/ProjectApi";
 
 export default function RegisterForm() {
+  const [formData, setFormData] = useState({
+    fullname: "",
+    username: "",
+    email: "",
+    password: "",
+  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData((prev) => {
+      const updated = { ...prev, [name]: value };
+      console.log("Updated formData:", updated);
+      return updated;
+    });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await register(formData);
+      alert("Register success!");
+      console.log(res.data);
+    } catch (err) {
+      const msg = err.response?.data?.message || "Đăng ký thất bại";
+      alert(msg);
+      console.error(err);
+    }
+  };
   return (
-    <form className="w-full text-center text-gray-800">
-      <h1 className="text-3xl mb-5">Registration</h1>
-      <div className="relative my-4">
-        <input
-          type="text"
-          placeholder="Username"
-          required
-          className="w-full py-3 pr-12 pl-5 bg-gray-200 rounded-md outline-none font-medium"
-        />
-        <BiUser className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
-      </div>
-      <div className="relative my-4">
-        <input
-          type="email"
-          placeholder="Email"
-          required
-          className="w-full py-3 pr-12 pl-5 bg-gray-200 rounded-md outline-none font-medium"
-        />
-        <BiEnvelope className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
-      </div>
-      <div className="relative my-4">
-        <input
-          type="password"
-          placeholder="Password"
-          required
-          className="w-full py-3 pr-12 pl-5 bg-gray-200 rounded-md outline-none font-medium"
-        />
-        <BiLockAlt className="absolute right-4 top-1/2 transform -translate-y-1/2 text-xl text-gray-500" />
-      </div>
-      <button className="w-full h-12 bg-[#84fccc] text-white font-semibold rounded-md">
-        Register
-      </button>
-      <p className="text-sm my-4">or register with social platform</p>
-      <div className="flex justify-center space-x-4 text-2xl">
-        <a
-          href="#"
-          className="border-2 border-gray-300 p-2 rounded-md text-gray-700"
-        >
-          <BsGoogle />
-        </a>
-        <a
-          href="#"
-          className="border-2 border-gray-300 p-2 rounded-md text-gray-700"
-        >
-          <BsFacebook />
-        </a>
-      </div>
-    </form>
+    <div className="form-box register">
+      <form action="">
+        <h1>Registration</h1>
+        <div className="input-box">
+          <input
+            type="text"
+            name="fullname"
+            placeholder="Fullname"
+            required
+            onChange={handleChange}
+          />
+        </div>
+        <div className="input-box">
+          <input
+            type="text"
+            name="username"
+            placeholder="Username"
+            required
+            onChange={handleChange}
+          />
+          <BsPerson className="icon" />
+        </div>
+        <div className="input-box">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            required
+            onChange={handleChange}
+          />
+          <BsEnvelope className="icon" />
+        </div>
+        <div className="input-box">
+          <input
+            type="password"
+            name="password"
+            placeholder=""
+            required
+            onChange={handleChange}
+          />
+          <BsLock className="icon" />
+        </div>
+        <button type="submit" className="login-page-btn" onClick={handleSubmit}>
+          Registration
+        </button>
+        <p>or Registration with social platform</p>
+        <div className="social-icons">
+          <a href="#">
+            <FaGoogle />
+          </a>
+          <a href="#">
+            <FaFacebook />
+          </a>
+        </div>
+      </form>
+    </div>
   );
 }

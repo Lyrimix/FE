@@ -28,7 +28,7 @@ export const MOCK_EFFECT = {
   },
 };
 //CLOUDINARY
-export const CLOUD_NAME = "dn3umiee1";
+export const CLOUD_NAME = "ds7sx6zop";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
@@ -80,11 +80,11 @@ export const TABS = {
 };
 
 export const BACKGROUND_IMAGES = [
-  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample-5.jpg",
-  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample-4.jpg",
-  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample-3.jpg",
-  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample-2.jpg",
-  "https://res.cloudinary.com/dn3umiee1/image/upload/v1739947631/cld-sample.jpg",
+  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample-5.jpg",
+  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample-4.jpg",
+  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample-3.jpg",
+  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample-2.jpg",
+  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample.jpg",
 ];
 
 export const ContentType = {

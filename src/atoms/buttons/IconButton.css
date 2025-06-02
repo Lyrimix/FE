@@ -17,6 +17,7 @@
   color: white;
   font-size: 14px;
   text-align: center;
+  transition: color 0.3s ease;
 }
 
 .icon-button {
@@ -28,19 +29,10 @@
   color: inherit;
 }
 
-.icon-button__tooltip {
-  margin-left: 8px;
-  font-size: 14px;
-  transition: color 0.3s ease;
-}
-
 .sidebar__item.active .icon-button__tooltip {
-  color: #0dcaf0
+  color: #0dcaf0;
 }
 
 .sidebar__item.active .icon-button {
-  color: #0dcaf0
+  color: #0dcaf0;
 }
-
-
-

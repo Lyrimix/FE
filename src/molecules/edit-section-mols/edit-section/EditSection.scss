@@ -1,0 +1,38 @@
+.player-config {
+  background-color: rgb(255, 255, 255);
+  .timeline-player {
+    background-color: #ffffff;
+    color: #180909;
+    .rate-control .ant-select {
+      .ant-select-selector {
+        background-color: #cec370;
+        color: #080000;
+      }
+      .ant-select-arrow {
+        color: #000000;
+      }
+    }
+  }
+}
+.timeline-editor {
+  background-color: #310858;
+  .ReactVirtualized__Grid__innerScrollContainer {
+    background-color: #450000;
+    .timeline-editor-edit-row {
+      background-color: #761111;
+      background-size: 0px !important;
+    }
+  }
+  .timeline-editor-cursor {
+    border-left: 1px solid #ffffff;
+    border-right: 1px solid #ffffff;
+    path {
+      fill: #ffffff;
+    }
+  }
+}
+// .main-content__edit-section{
+//     div {
+//         background-color: #310858 !important;
+//     }
+// }

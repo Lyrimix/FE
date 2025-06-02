@@ -40,15 +40,16 @@ export const VideoSection = () => {
   const [modalOpen, setModalOpen] = useState(false);
 
   const [sortedVideos, setSortedVideos] = useState([]);
-
   const handleConfirmUpload = async (sortedVideos) => {
     setSelectedFiles((prev) => [...prev, ...sortedVideos]);
     setPreviewUrls(sortedVideos[sortedVideos.length - 1].url);
     toggleModal();
     setIsLoading(true);
+    const token = localStorage.getItem("token");
+    console.log("token: ", token);
     const projectId =
       projectInfo?.id ??
-      (await createNewProject(setProjectInfo, projectLength));
+      (await createNewProject(setProjectInfo, projectLength, token));
     if (!projectId) {
       return;
     }

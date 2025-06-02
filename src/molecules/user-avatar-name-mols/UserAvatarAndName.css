@@ -1,0 +1,31 @@
+.user-info-display {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 10px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  max-width: fit-content;
+  cursor: pointer;
+  transition: background-position 0.8s ease-out, transform 0.2s;
+
+}
+
+.user-info-display:hover{
+    transform: scale(1.05);
+}
+
+.user-avatar-display {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ccc;
+}
+
+.user-name-display {
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  user-select: none;
+}

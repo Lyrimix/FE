@@ -7,6 +7,20 @@ import {
 } from "../utils/constant";
 import { AutoDismissToast } from "../molecules/auto-dismiss-toast-mols/AutoDismissToast";
 
+export const register = async (payload) => {
+  return axios.post(`${API_URL}/user`, payload, {
+    headers: {
+      "Content-Type": ContentType.Json,
+    },
+  });
+};
+export const login = async (payload) => {
+  return axios.post(`${API_URL}/auth/token`, payload, {
+    headers: {
+      "Content-Type": ContentType.Json,
+    },
+  });
+};
 export const addVideosToProject = async (payload) => {
   return axios.post(`${API_URL}/video`, payload, {
     headers: {
@@ -277,12 +291,29 @@ export const uploadVideoToCloudinary = async (file) => {
   }
 };
 
-export const createProject = async () => {
+export const createProject = async (token) => {
+  console.log("token at api", token);
   return axios.post(
     `${API_URL}/project/createProject`,
-    { name: "Lyrimix's project" },
-    { headers: { "Content-Type": ContentType.Json } }
+    {
+      name: "Lyrimix's project",
+    },
+    {
+      headers: {
+        "Content-Type": ContentType.Json,
+        Authorization: `Bearer ${token}`,
+      },
+    }
   );
+};
+
+export const getListProjectByToken = async (token) => {
+  return axios.get(`${API_URL}/project/getListProjectByToken`, {
+    headers: {
+      "Content-Type": ContentType.Json,
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const addBackgroundToSingleVideo = async (

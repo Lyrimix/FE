@@ -1,0 +1,155 @@
+:root {
+  --color-black: #000;
+  --color-white: #fff;
+  --color-mint: #758458;
+  --color-dark-forest: #102f15;
+}
+.modal-dialog  {
+  max-width: 750px !important;
+}
+
+/* Tùy chỉnh cho backdrop */
+.user-onboarding-modal .modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.75); /* Màu đen trong suốt */
+}
+
+/* Đảm bảo modal ở trên cùng */
+.user-onboarding-modal .modal-dialog {
+  z-index: 1050;
+}
+
+.project-grid {
+  display: grid;
+  /* Điều chỉnh minmax để các mục nhỏ hơn, ví dụ: 200px */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px; /* Khoảng cách giữa các ô */
+  padding: 20px;
+  justify-items: center; /* Căn giữa các mục trong ô lưới của chúng */
+}
+
+.project-item {
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  max-height: 150px;
+  max-width: 200px;
+}
+
+.project-item:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+.project-video {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.project-name {
+  padding: 10px; /* Đã giảm padding */
+  margin: 0;
+  font-size: 1em; /* Kích thước font nhỏ hơn */
+  color: #333;
+  background-color: #f9f9f9;
+  border-top: 1px solid #eee;
+  white-space: nowrap; /* Ngăn không cho văn bản xuống dòng */
+  overflow: hidden; /* Ẩn phần văn bản tràn ra ngoài */
+  text-overflow: ellipsis; /* Thêm dấu chấm lửng cho văn bản tràn */
+}
+
+/* Kiểu dáng cho nút tạo dự án */
+.create-project-item {
+  /* Đảm bảo nút có cùng chiều cao với video và tên dự án */
+  height: auto; /* Cho phép chiều cao tự điều chỉnh */
+  max-height: 150px; /* Đã giảm chiều cao tối thiểu tương đương với project-item có video */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #e3f2fd; /* Nền xanh nhạt */
+  border: 2px dashed #90caf9; /* Viền nét đứt */
+  color: #1565c0; /* Màu chữ xanh đậm */
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.create-project-item:hover {
+  background-color: #bbdefb; /* Nền xanh đậm hơn khi di chuột */
+  border-color: #42a5f5;
+}
+
+.create-project-item button {
+  background: none; /* Xóa nền mặc định của nút */
+  border: none; /* Xóa viền mặc định của nút */
+  color: inherit; /* Kế thừa màu chữ từ phần tử cha */
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.create-project-item button:focus {
+  outline: none; /* Xóa outline khi focus */
+  box-shadow: none;
+}
+
+/* Đảm bảo responsive */
+@media (max-width: 600px) {
+  .project-grid {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(180px, 1fr)
+    ); /* Nhỏ hơn trên thiết bị di động */
+    gap: 15px;
+    padding: 10px;
+  }
+
+  .project-item {
+    max-width: 100%; /* Cho phép chiếm toàn bộ chiều rộng trên di động */
+  }
+
+  .project-video {
+    height: 100px; /* Đã giảm chiều cao video nhỏ hơn trên di động */
+  }
+
+  .create-project-item {
+    min-height: 140px; /* Đã giảm chiều cao tối thiểu cho nút trên di động */
+  }
+}
+
+/* Đảm bảo responsive */
+@media (max-width: 600px) {
+  .project-grid {
+    grid-template-columns: repeat(
+      auto-fit,
+      minmax(180px, 1fr)
+    ); /* Nhỏ hơn trên thiết bị di động */
+    gap: 15px;
+    padding: 10px;
+  }
+
+  .project-item {
+    max-width: 100%; /* Cho phép chiếm toàn bộ chiều rộng trên di động */
+  }
+
+  .project-video {
+    height: 120px; /* Chiều cao video nhỏ hơn trên di động */
+  }
+
+  .create-project-item {
+    min-height: 170px; /* Chiều cao tối thiểu cho nút trên di động */
+  }
+}

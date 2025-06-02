@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { BsPerson, BsEnvelope, BsLock } from "react-icons/bs";
 import { FaGoogle, FaFacebook } from "react-icons/fa";
+import LoginForm from "../../organisms/login-form/LoginForm";
+import RegisterForm from "../../organisms/login-form/RegisterForm";
 import "./LoginPage.css";
 
 export default function LoginRegister() {
@@ -9,64 +11,8 @@ export default function LoginRegister() {
   return (
     <div className="login-register">
       <div className={`containerLogin${active ? " active" : ""}`}>
-        <div className="form-box login">
-          <form action="">
-            <h1>Login</h1>
-            <div className="input-box">
-              <input type="text" placeholder="Username" required />
-              <BsPerson className="icon" />
-            </div>
-            <div className="input-box">
-              <input type="password" placeholder="" required />
-              <BsLock className="icon" />
-            </div>
-            <div className="forgot-link">
-              <a href="#">Forgot password</a>
-            </div>
-            <button type="submit" className="login-page-btn">
-              Login
-            </button>
-            <p>or login with social platform</p>
-            <div className="social-icons">
-              <a href="#">
-                <FaGoogle />
-              </a>
-              <a href="#">
-                <FaFacebook />
-              </a>
-            </div>
-          </form>
-        </div>
-
-        <div className="form-box register">
-          <form action="">
-            <h1>Registration</h1>
-            <div className="input-box">
-              <input type="text" placeholder="Username" required />
-              <BsPerson className="icon" />
-            </div>
-            <div className="input-box">
-              <input type="email" placeholder="Email" required />
-              <BsEnvelope className="icon" />
-            </div>
-            <div className="input-box">
-              <input type="password" placeholder="" required />
-              <BsLock className="icon" />
-            </div>
-            <button type="submit" className="login-page-btn">
-              Registration
-            </button>
-            <p>or Registration with social platform</p>
-            <div className="social-icons">
-              <a href="#">
-                <FaGoogle />
-              </a>
-              <a href="#">
-                <FaFacebook />
-              </a>
-            </div>
-          </form>
-        </div>
+        <LoginForm />
+        <RegisterForm />
 
         <div className="toggle-box">
           <div className="toggle-panel toggle-left">
