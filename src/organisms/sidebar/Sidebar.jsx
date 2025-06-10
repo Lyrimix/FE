@@ -31,6 +31,7 @@ const Sidebar = () => {
   const [isEditLyricOpen, setIsEditLyricOpen] = useState(false);
   const {
     selectedFiles,
+    selectedBackground,
     setSelectedBackground,
     projectVideo,
     setProjectVideo,
@@ -89,7 +90,7 @@ const Sidebar = () => {
 
   const handleSampleImageClick = async (img) => {
     setIsSidebarOptionsOpen(false);
-    setIsLoading(true);
+    // setIsLoading(true);
     if (!selectedFiles.length) {
       alert("No files have been selected");
       return;
@@ -452,7 +453,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="sidebar-custom d-flex flex-column align-items-center bg-black text-white vh-100 position-fixed top-0 start-0">
+    <div className="sidebar-custom d-flex flex-column align-items-center vh-100 position-fixed top-0 start-0">
       <SidebarGroup
         items={SIDEBAR_ITEMS}
         selectedTab={selectedTab}

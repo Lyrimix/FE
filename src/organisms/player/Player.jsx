@@ -74,12 +74,20 @@ const TimelinePlayer = ({ timelineState, autoScrollWhenPlay }) => {
     };
   }, []);
 
-  const handlePlayOrPause = () => {
-    if (!timelineState.current) return;
-    timelineState.current.isPlaying
-      ? timelineState.current.pause()
-      : timelineState.current.play({ autoEnd: true });
-  };
+const handlePlayOrPause = () => {
+  if (!timelineState.current) return;
+
+  const isActuallyPlaying = timelineState.current.isPlaying;
+  // console.log("timelineState.current.isPlaying:", isActuallyPlaying);
+
+  if (isActuallyPlaying) {
+    timelineState.current.pause();
+    setIsPlaying(false); // cập nhật ngay UI
+  } else {
+    timelineState.current.play({ autoEnd: true });
+    setIsPlaying(true); // cập nhật ngay UI
+  }
+};
 
   const handleRateChange = (value) => {
     if (timelineState.current) {

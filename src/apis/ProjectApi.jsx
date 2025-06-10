@@ -52,6 +52,15 @@ export const deleteBackGround = async (backgroundId) => {
   });
 };
 
+export const updatedUserInfo = async (token, payload) => {
+  return axios.patch(`${API_URL}/user`, payload, {
+    headers: {
+      "Content-Type": ContentType.Json,
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 export const exportProject = async (projectId, outputVideoPath) => {
   try {
     const response = await axios.get(`${API_URL}/project/exportProject`, {

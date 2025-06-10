@@ -78,7 +78,7 @@ export default function RegisterForm() {
         <button type="submit" className="login-page-btn" onClick={handleSubmit}>
           Registration
         </button>
-        <p>or Registration with social platform</p>
+        {/* <p>or Registration with social platform</p>
         <div className="social-icons">
           <a href="#">
             <FaGoogle />
@@ -86,7 +86,7 @@ export default function RegisterForm() {
           <a href="#">
             <FaFacebook />
           </a>
-        </div>
+        </div> */}
       </form>
     </div>
   );

@@ -2,7 +2,7 @@
   background: none;
   border: none;
   color: white;
-  font-size: 20px;
+  font-size: 35px;
   cursor: pointer;
   position: relative;
   display: flex;
@@ -14,10 +14,9 @@
   position: static;
   margin-top: 5px;
   background: none;
-  color: white;
-  font-size: 14px;
+  color: var(--color-deep-ocean-blue);
+  font-size: 12px;
   text-align: center;
-  transition: color 0.3s ease;
 }
 
 .icon-button {
@@ -30,9 +29,9 @@
 }
 
 .sidebar__item.active .icon-button__tooltip {
-  color: #0dcaf0;
+  color: var(--color-deep-ocean-blue);
 }
 
 .sidebar__item.active .icon-button {
-  color: #0dcaf0;
+  color: var(--color-deep-ocean-blue);
 }

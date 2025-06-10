@@ -5,7 +5,37 @@ import {
   uploadVideoToCloudinary,
   createProject,
   getListProjectByToken,
+  updatedUserInfo,
 } from "../apis/ProjectApi";
+
+export const updatedUser = async (token, userInfo) => {
+  try {
+    const response = await updatedUserInfo(token, userInfo);
+    console.log("gọi api đây", response);
+    alert("Success");
+    return response;
+  } catch (error) {
+    if (error.response) {
+      alert(error.response.data.message);
+    }
+    console.error("Fail to update user info", error.response.data.message);
+  }
+};
+
+export const getListProject = async (token) => {
+  try {
+    const response = await getListProjectByToken(token);
+    const result = response.data?.result;
+
+    if (!result) throw new Error("Invalid getListProjectById response");
+    return result;
+  } catch (error) {
+    if (error.response) {
+      alert(error.response.message);
+    }
+    return null;
+  }
+};
 
 export const updateVideoAssetWithBackground = (
   videoUrlsWithBackground,
@@ -174,18 +204,6 @@ export const createNewProject = async (
     return null;
   }
 };
-
-export const getListProject = async (token) => {
-  try {
-    const response = await getListProjectByToken(token);
-    const result = response.data?.result;
-    if (!result) throw new Error("Invalid getListProjectById response");
-    return result;
-  } catch (error) {
-    console.error("Fetching project list failed:", error);
-    return null;
-  }
-}
 
 export const prepareFormData = async (videos) => {
   let totalLength = 0;

@@ -1,20 +1,21 @@
 .save-changes button {
-    font-size: 0.85rem;
-    transition: all 0.2s ease-in-out;
-  }
-  
-  .save-changes button:hover {
-    background-color: #28a745;
-    opacity: 0.9;
-  }
+  font-size: 0.85rem;
+  transition: all 0.2s ease-in-out;
+}
 
 .timeline-player {
   height: 35px !important;
-  /* background-color: white !important; */
+  background-color: var(--color-sky-blue) !important;
 }
 
 .save-button {
-  background-color: #0dcaf0 !important;
-
+  background-color: var(--color-deep-ocean-blue) !important;
+  border-color: var(--color-deep-ocean-blue) !important;
+  transition: 0.3s ease;
 }
-  
+
+.save-changes button:hover {
+  background: var(--color-light-periwinkle) !important;
+  box-shadow: 0 2px 5px var(--color-black);
+  transform: scale(1.001);
+}

@@ -526,7 +526,7 @@ const VideoMerger = ({ files = [] }) => {
           <video
             ref={videoRef}
             src={mergedVideo}
-            controls
+            // controls
             className="w-100 h-100 rounded-3 object-fit-cover"
             onLoadedData={() => setIsRendered(true)}
           />

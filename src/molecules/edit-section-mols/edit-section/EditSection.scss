@@ -1,38 +1,48 @@
 .player-config {
-  background-color: rgb(255, 255, 255);
   .timeline-player {
-    background-color: #ffffff;
-    color: #180909;
+    color: var(--color-deep-ocean-blue);
     .rate-control .ant-select {
       .ant-select-selector {
-        background-color: #cec370;
-        color: #080000;
+        background-color: transparent;
+        color: var(--color-deep-ocean-blue);
       }
       .ant-select-arrow {
-        color: #000000;
+        color: var(--color-deep-ocean-blue);
       }
     }
   }
 }
 .timeline-editor {
-  background-color: #310858;
+  background-color: var(--color-sky-blue) !important;
+  font-size: 13px !important;
+  border-top: 1px solid var(--color-black);
   .ReactVirtualized__Grid__innerScrollContainer {
-    background-color: #450000;
+    background-color: var(--color-sky-blue);
+    .timeline-editor-time-unit {
+      color: var(--color-black) !important;
+      width: 20px !important;
+      border-right: 2px solid var(--color-black);
+    }
     .timeline-editor-edit-row {
-      background-color: #761111;
+      background-color: var(--color-sky-blue);
       background-size: 0px !important;
+    }
+    .timeline-editor-time-unit-scale{
+      color: var(--color-black);
     }
   }
   .timeline-editor-cursor {
-    border-left: 1px solid #ffffff;
-    border-right: 1px solid #ffffff;
+    border-left: 1px solid var(--color-black);
+    border-right: 1px solid var(--color-black);
     path {
-      fill: #ffffff;
+      fill: var(--color-black);
     }
   }
 }
-// .main-content__edit-section{
-//     div {
-//         background-color: #310858 !important;
-//     }
-// }
+.timeline-editor-action-left-stretch {
+  background-color: var(--color-deep-ocean-blue) !important
+  ;
+}
+.timeline-editor-action-right-stretch {
+  background-color: var(--color-deep-ocean-blue) !important;
+}

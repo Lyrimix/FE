@@ -1,6 +1,5 @@
 import React from "react";
 import IconButton from "../buttons/IconButton";
-import "./SidebarItem.css";
 
 const SidebarItem = ({ icon, label, isSelected, onClick }) => {
   return (

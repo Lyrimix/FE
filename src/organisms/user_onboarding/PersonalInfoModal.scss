@@ -1,0 +1,29 @@
+.PersonalInfoModal .btn-upload {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.PersonalInfoModal .btn-upload:hover {
+  background-color: #0056b3;
+}
+
+.PersonalInfoModal .d-flex.align-items-center {
+  gap: 10px;
+}
+
+.PersonalInfoModal img {
+  border-radius: 50%;
+  object-fit: cover;
+  width: 80px;
+  height: 80px;
+}
+
+.PersonalInfoModal .mb-3:hover {
+    transform: none !important;
+}

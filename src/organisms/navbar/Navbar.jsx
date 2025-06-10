@@ -10,7 +10,7 @@ export const Navbar = () => {
         <ProjectInfo projectName={PROJECT_NAME}></ProjectInfo>
       </div>
 
-      <div className="user-options">
+      <div className="user-options d-flex justify-content-center align-items-center">
         <UserOption></UserOption>
       </div>
     </div>

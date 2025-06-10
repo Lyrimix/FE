@@ -8,6 +8,24 @@
   transition: width 0.3s ease-in-out;
 }
 
+.sidebar__item {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+  transition: 0.3s ease;
+  padding: 3px;
+  height: 80px;
+  align-items: center;
+  color: var(--color-deep-ocean-blue);
+  /* border-radius: 10px; */
+}
+
+.sidebar__item:hover {
+  background: var(--color-light-periwinkle);
+  box-shadow: 0 2px 5px var(--color-black);
+  transform: scale(1.05);
+}
+
 .app-container {
   display: flex;
   transition: margin-left 0.3s ease-in-out;
@@ -25,25 +43,27 @@
 .sidebar-custom {
   width: 90px;
   transition: width 0.3s ease-in-out;
+  background-color: var(--color-light-periwinkle);
+  box-shadow: 1px 0px 15px var(--color-deep-ocean-blue);
 }
 
 .sidebar-custom.collapsed {
   width: 50px;
 }
 
-.sidebar {
+/* .sidebar {
   width: 113px;
-  background-color: black;
-  color: white;
+  background-color: rgb(183, 138, 138);
+  color: rgb(162, 71, 71);
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: width 0.3s ease-in-out;
   overflow: hidden;
   padding-top: 10px;
-}
+} */
 
-.sidebar__toggle {
+/* .sidebar__toggle {
   position: absolute;
   right: -15px;
   top: 50%;
@@ -59,7 +79,7 @@
   align-items: center;
   justify-content: center;
   transition: transform 0.3s ease-in-out;
-}
+} */
 
 .toggle-icon {
   transition: transform 0.3s ease-in-out;

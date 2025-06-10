@@ -663,7 +663,7 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
 
   return (
     <div className="container-fluid p-0">
-      <div className="w-100 h-100 d-flex flex-column border border-secondary rounded">
+      <div className="w-100 h-100 d-flex flex-column ">
         <div className="player-config w-100 h-5 d-flex">
           <TimelinePlayer
             timelineState={timelineState}

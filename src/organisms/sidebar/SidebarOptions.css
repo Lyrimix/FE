@@ -1,55 +1,66 @@
 .custom-border-bottom {
-  border-bottom: 1px solid #17a2b8;
+  border-bottom: 1px solid var(--color-deep-ocean-blue) !important;
+  background-color: var(--color-sky-blue);
 }
 .canvas-body {
   background-color: transparent;
 }
 .custom-close-btn {
   position: absolute;
-  right: 10px;
-  top: 10px;
+  right: 5px;
+  top: 5px;
   background: transparent;
   border: none;
   font-size: 24px;
-  color: white;
+  color: var(--color-white) !important;
   cursor: pointer;
 }
 
 .custom-close-btn:hover {
-  color: red;
+  color: var(--color-deep-ocean-blue) !important;
+}
+
+.offcanvas-title {
+  color: var(--color-deep-ocean-blue);
 }
 
 .custom-border-bottom {
   border-bottom: 1px solid #17a2b8;
+  padding: 30px !important;
 }
 .canvas-body {
-  background-color: transparent;
+  background-color: var(--color-sky-blue);
   overflow-y: scroll;
 }
-.custom-close-btn {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: transparent;
+
+/* .custom-offcanvas .btn-close:hover {
+  filter: invert(24%) sepia(93%) saturate(7491%) hue-rotate(357deg)
+    brightness(103%) contrast(119%);
+} */
+.button-upload {
+  background-color: var(--color-deep-ocean-blue);
+  color: var(--color-white);
+  border-radius: 5px;
   border: none;
-  font-size: 24px;
-  color: white;
+  height: 40px;
+  font-size: 20px !important;
+  transition: all 0.3s ease;
+}
+.button-upload:hover {
+  background-color: var(--color-tranquil-blue); /* đổi nền nhạt hơn */
+  transform: scale(1.05); /* phóng to nhẹ */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, var(--color-black)); /* bóng đổ */
   cursor: pointer;
 }
 
-.custom-close-btn:hover {
-  color: red;
+.mb-3 {
+  transition: all 0.3s ease;
+}
+.mb-3:hover {
+  transform: scale(1.05); /* phóng to nhẹ */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, var(--color-black)); /* bóng đổ */
 }
 
-.custom-offcanvas .btn-close:hover {
-  filter: invert(24%) sepia(93%) saturate(7491%) hue-rotate(357deg)
-    brightness(103%) contrast(119%);
-}
-.button-upload {
-  background-color: #0dcaf0 !important;
-  height: 50px;
-  font-size: 20px !important;
-}
 .offcanvas-body::-webkit-scrollbar {
   display: none;
 }
