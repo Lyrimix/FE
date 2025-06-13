@@ -10,7 +10,6 @@ import {
   Button,
 } from "reactstrap";
 import { ThumbnailPreview } from "../../atoms/medias/ThumbnailPreview";
-import { ExportOptions } from "../export-option-mols/ExportOptions";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { exportProject, updateProject } from "../../apis/ProjectApi";
 import { exportOptions } from "../../utils/constant";

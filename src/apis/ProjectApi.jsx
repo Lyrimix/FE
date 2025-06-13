@@ -61,6 +61,44 @@ export const updatedUserInfo = async (token, payload) => {
   });
 };
 
+export const deleteProject = async (projectId, token) => {
+  return axios.delete(`${API_URL}/project?projectId=${projectId}`, {
+    headers: {
+      "Content-Type": ContentType.Json,
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+export const exportLyric = async (projectId, selectedFormat) => {
+  try {
+    const response = await axios.get(`${API_URL}/lyrics/exportLyric`, {
+      params: { projectId, selectedFormat },
+      responseType: "blob",
+      headers: {
+        "Content-Type": ContentType.Json,
+      },
+    });
+    const disposition = response.headers["content-disposition"];
+    let filename = "lyric" + selectedFormat;
+    if (disposition) {
+      const match = disposition.match(/filename="(.+)"/);
+      if (match && match[1]) {
+        filename = match[1];
+      }
+    }
+
+    const url = window.URL.createObjectURL(response.data);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Export and download failed", error);
+  }
+};
 export const exportProject = async (projectId, outputVideoPath) => {
   try {
     const response = await axios.get(`${API_URL}/project/exportProject`, {

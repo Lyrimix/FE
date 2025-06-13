@@ -15,7 +15,7 @@ export const PersonalInfoModal = ({ show, onClose, personalInfo, onSave }) => {
     console.log("personalInfo", personalInfo);
     setFormData({
       ...personalInfo,
-      password: "", // Đảm bảo password luôn rỗng khi hiển thị form
+      password: "", 
     });
   }, [personalInfo]);
 
@@ -30,21 +30,15 @@ export const PersonalInfoModal = ({ show, onClose, personalInfo, onSave }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const dataToSave = { ...formData };
-    // Xóa trường password nếu người dùng không nhập gì
     if (dataToSave.password === "") {
       delete dataToSave.password;
     }
-    // Gọi hàm onSave (API call sẽ diễn ra ở đây)
     onSave(dataToSave);
-    // onSave sẽ gọi onClose() sau khi API hoàn tất.
-    // Nếu bạn muốn modal đóng ngay lập tức DÙ THÀNH CÔNG HAY THẤT BẠI:
-    // onClose();
-    // Nhưng thường thì bạn muốn đợi phản hồi API.
   };
 
   const onUploadButtonClick = () => {
     if (fileInputRef.current) {
-      fileInputRef.current.click(); // Kích hoạt click vào input file ẩn
+      fileInputRef.current.click();
     }
   };
 

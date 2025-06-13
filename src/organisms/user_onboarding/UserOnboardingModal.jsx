@@ -3,7 +3,7 @@ import { Modal, Button, Spinner } from "react-bootstrap";
 import { useUser } from "../../utils/context/UserContext";
 import { getListProject, updatedUser } from "../../utils/project.js";
 import { PersonalInfoModal } from "./PersonalInfoModal";
-
+import { ProjectDetailOverlay } from "../../molecules/project-detail-overlay/ProjectDetailOverlay.jsx";
 import "./UserOnboardingModal.css";
 
 export const UserOnboardingModal = ({
@@ -26,8 +26,9 @@ export const UserOnboardingModal = ({
   const { user, setUser } = useUser();
   const videoRefs = useRef({});
   const [showPersonalInfoModal, setShowPersonalInfoModal] = useState(false);
+  const [showProjectDetailOverlay, setShowProjectDetailOverlay]= useState(false);
+  const [refreshProjects, setRefreshProjects] = useState(false); // New state to trigger refresh
 
-  // --- useEffect để tải thông tin người dùng và dự án khi modal hiện lên ---
   useEffect(() => {
     if (show) {
       setIsLoadingData(true);
@@ -49,20 +50,24 @@ export const UserOnboardingModal = ({
             fullname: user.userFullname || "",
             phone: user.userPhoneNumber || "",
             username: user.username || "",
-            // password: user.password || "",
           });
         }
         setIsLoadingData(false);
       };
       loadInitialData();
     }
-  }, [show, user]);
+  }, [show, user, refreshProjects]);
 
   // --- Xử lý khi chọn dự án ---
-  const handleProjectSelect = (projectId) => {
-    setSelectedProjectId(projectId);
-    console.log("Selected project ID:", projectId); // in ra projectId
-    onProjectSelected(projectId);
+  const handleProjectSelect = (project) => {
+    // e.stopPropagation()
+    console.log("handleProjectSelect: ", project)
+    setSelectedProjectId(project);
+    setShowProjectDetailOverlay(true);
+
+  };
+   const handleProjectDeleted = () => {
+    setRefreshProjects(prev => !prev);
   };
 
   const handleOnClickUserInfo = (e) => {
@@ -123,10 +128,6 @@ export const UserOnboardingModal = ({
       videoElement.currentTime = 0; // Tua về đầu (tùy chọn)
     }
   };
-
-  const handleOnClickVideo = (project) =>{
-    project.stopPropagation()
-  }
 
   // -- Hàm xử lí khi click tạo dự án mới --
   const handleCreateProject = () => {
@@ -213,7 +214,7 @@ export const UserOnboardingModal = ({
                   <div
                     className="project-item flex flex-col justify-center items-center"
                     key={project.id}
-                    onClick={() => handleProjectSelect(project.id)}
+                    onClick={() => handleProjectSelect(project)}
                     onMouseEnter={() => handleVideoMouseEnter(project.id)}
                     onMouseLeave={() => handleVideoMouseLeave(project.id)}
                   >
@@ -222,17 +223,16 @@ export const UserOnboardingModal = ({
                         ref={(el) => (videoRefs.current[project.id] = el)}
                         src={project.asset}
                         className="project-video"
-                        onClick={handleOnClickVideo}
+                        // onClick={handleOnClickVideo}
                         muted
                         loop
                       >
-                        {/* Sử dụng thẻ <source> để chỉ định rõ loại video */}
                         <source src={project.asset} type="video/mp4" />
                         Your browser does not support video.
                       </video>
                     ) : (
                       <img
-                        src="https://placehold.co/300x150/cccccc/333333?text=no+videos"
+                        src="https://placehold.co/300x150/cccccc/333333?text=no+video"
                         alt="Không có video"
                         className="project-video w-full h-40 object-cover rounded-t-lg"
                       />
@@ -260,6 +260,12 @@ export const UserOnboardingModal = ({
         onClose={() => setShowPersonalInfoModal(false)}
         personalInfo={personalInfo}
         onSave={handleSavePersonalInfo}
+      />
+      <ProjectDetailOverlay
+        show={showProjectDetailOverlay}
+        onClose={() => setShowProjectDetailOverlay(false)}
+        project={selectedProjectId}
+        onProjectDeleted={handleProjectDeleted}
       />
     </>
   );

@@ -48,9 +48,9 @@ export const UserOption = () => {
       <div className="user-option">
         <div
           className="user-option__header--right d-flex gap-3"
-          onClick={handleOnClickUserInfo}
-        >
+        ><div  onClick={handleOnClickUserInfo}>
           <UserAvatarAndName />
+        </div>
 
           <button
             className="user-option__btn d-flex align-items-center gap-2"
