@@ -1,8 +1,19 @@
+:root {
+  --color-black: #000;
+  --color-white: #fff;
+  --color-sky-white: #daebfa;
+  --color-sky-blue: #c7e4f2;
+  --color-light-periwinkle: #9ac8e5;
+  --color-tranquil-blue: #6fa6d0;
+  --color-deep-ocean-blue: #33659a;
+  --color-button-hover-background: #b9d7ef;
+}
 .custom-offcanvas {
   width: 360px !important;
 }
 .input-time {
-  max-width: 110px;
+  max-width: 120px;
+  padding: 0px !important;
 }
 .space-edit {
   max-height: 540px;
@@ -12,38 +23,46 @@
   filter: brightness(0);
   opacity: 1;
 }
-
-.custom-button-delete {
-  border: 1px solid black;
-  border-radius: 4px;
-  color: white;
+.border-dark {
+background-color: var(--color-white);
 }
+.edit-item{
+  background-color: #daebfa;
+  border: 1px solid #923737;
+
+}
+.custom-button-delete,
 .custom-button-add {
-  border: 1px solid black;
-  border-radius: 4px;
-  color: white;
+  border: 1px solid #ccc; /* Viền xám nhạt */
+  border-radius: 6px; /* Bo tròn nhẹ hơn */
+  color: #000000 ; /* Chữ xám đậm hơn */
+  background-color: rgb(255, 255, 255); /* Nền trắng */
+  padding: 6px 10px; /* Padding nhỏ vừa phải */
+  font-size: 0.9em; /* Kích thước chữ nhỏ hơn một chút */
+  cursor: pointer;
+  transition: border-color 0.3s ease, color 0.3s ease; /* Hiệu ứng chuyển đổi mượt mà */
 }
 
 .custom-button-delete:hover {
-  border-color: red;
-  color: red !important;
+  border-color: #e74c3c; /* Đỏ tươi khi hover */
+  color: #e74c3c;
+  background-color: #fdecea; /* Nền đỏ nhạt khi hover */
 }
-.border-black {
-  border-color: black;
-}
+
 .custom-button-add:hover {
-  border-color: #00ff00;
-  color: #00ff00 !important;
+  border-color: #2ecc71; /* Xanh lá cây tươi khi hover */
+  color: #2ecc71;
+  background-color: #e8f8ef; /* Nền xanh lá cây nhạt khi hover */
 }
 
 .button-reload {
   width: 140px;
   height: 40px;
   margin-left: 10px;
-  color: #0dcaf0 !important;
+  color: var(--color-deep-ocean-blue) !important;
   border-color: rgb(255, 255, 255) !important;
-  background-color: white; /* Màu nền của nút /
-  transition: box-shadow 0.3s ease, transform 0.3s ease; / Thêm hiệu ứng chuyển động khi hover */
+  background-color: white;   
+  transition: transform 0.3s ease !important;
   border-radius: 6px;
 }
 
@@ -55,16 +74,18 @@
   color: white !important;
   border: none !important;
   border-radius: 6px;
-  background-color: #0dcaf0 !important;
+  background-color: var(--color-deep-ocean-blue) !important;
   transition: transform 0.3s ease !important;
 }
+
 
 .button-save:hover {
   transform: scale(1.05) !important;
 }
 .button-reload:hover {
   background-color: white !important;
-  border-color: #0dcaf0 !important;
+  border-color: var(--color-deep-ocean-blue) !important;
+  transform: scale(1.05)
 }
 
 .body {

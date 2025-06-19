@@ -5,6 +5,23 @@
 .canvas-body {
   background-color: transparent;
 }
+.option-btn {
+  background-color: var(--color-sky-white);
+  color: var(--color-deep-ocean-blue);
+  border-radius: 8px;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px !important;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); 
+}
+.option-btn:hover {
+  background-color: var(--color-button-hover-background); /* đổi nền nhạt hơn */
+  transform: scale(1.05); /* phóng to nhẹ */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, var(--color-black)); /* bóng đổ */
+  cursor: pointer;
+}
 .custom-close-btn {
   position: absolute;
   right: 5px;

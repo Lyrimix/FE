@@ -12,13 +12,10 @@ export const updatedUser = async (token, userInfo) => {
   try {
     const response = await updatedUserInfo(token, userInfo);
     console.log("gọi api đây", response);
-    alert("Success");
     return response;
   } catch (error) {
-    if (error.response) {
-      alert(error.response.data.message);
-    }
-    console.error("Fail to update user info", error.response.data.message);
+    console.error("Fail to update user info", error.response?.data?.message || "Unknown error");
+    throw error; 
   }
 };
 

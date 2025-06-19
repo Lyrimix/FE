@@ -1,5 +1,13 @@
+:root {
+  --color-black: #000;
+  --color-white: #fff;
+  --color-sky-blue: #c7e4f2;
+  --color-light-periwinkle: #9ac8e5;
+  --color-tranquil-blue: #6fa6d0;
+  --color-deep-ocean-blue: #33659a;
+}
 .PersonalInfoModal .btn-upload {
-  background-color: #007bff;
+  background-color: var(--color-deep-ocean-blue);
   border: none;
   color: white;
   padding: 6px 12px;
@@ -10,11 +18,23 @@
 }
 
 .PersonalInfoModal .btn-upload:hover {
-  background-color: #0056b3;
+  background-color: var(--color-sky-blue);
+  color: var(--color-deep-ocean-blue);
+  border-color: var(--color-deep-ocean-blue);
 }
 
 .PersonalInfoModal .d-flex.align-items-center {
   gap: 10px;
+}
+
+.PersonalInfoModal .submit-btn {
+  background-color: var(--color-deep-ocean-blue);
+  border-color: var(--color-deep-ocean-blue);
+}
+.PersonalInfoModal .submit-btn:hover {
+  background-color: var(--color-sky-blue);
+  color: var(--color-deep-ocean-blue);
+  border-color: var(--color-deep-ocean-blue);
 }
 
 .PersonalInfoModal img {
@@ -25,5 +45,5 @@
 }
 
 .PersonalInfoModal .mb-3:hover {
-    transform: none !important;
+  transform: none !important;
 }

@@ -168,7 +168,7 @@ export const PersonalInfoModal = ({ show, onClose, personalInfo, onSave }) => {
           <Button
             variant="primary"
             type="submit" 
-            className="w-100 mt-3"
+            className="w-100 mt-3 submit-btn"
             disabled={isUploading} 
           >
             Save Changes

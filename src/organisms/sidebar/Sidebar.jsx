@@ -77,6 +77,8 @@ const Sidebar = () => {
       setIsSidebarOptionsOpen(true);
     } else {
       setIsEffectVideoOpen(true);
+      setIsSidebarOptionsOpen(false);
+
       const videoMap = new Map();
       selectedFiles.forEach((file, index) => {
         const videoId = index + 1;

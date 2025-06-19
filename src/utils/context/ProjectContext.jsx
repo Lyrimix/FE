@@ -36,7 +36,8 @@ export const ProjectProvider = ({ children }) => {
   const [videoThumbnail, setVideoThumbnail] = useState([]);
   const [videoWithBackgroundThumbnail, setVideoWithBackgroundThumbnail] =
     useState([]);
-
+  const [playerTime, setPlayerTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
   return (
     <ProjectContext.Provider
       value={{
@@ -91,6 +92,10 @@ export const ProjectProvider = ({ children }) => {
         setIsEffect,
         videoWithBackgroundThumbnail,
         setVideoWithBackgroundThumbnail,
+        playerTime,
+        setPlayerTime,
+        isPlaying,
+        setIsPlaying,
       }}
     >
       {children}

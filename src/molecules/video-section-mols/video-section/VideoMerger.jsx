@@ -52,6 +52,8 @@ const VideoMerger = ({ files = [] }) => {
     setVideoUrlsWithBackground,
     cloudinaryUrl,
     currentClickedVideo,
+    setPlayerTime,
+    setIsPlaying,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);
@@ -67,18 +69,22 @@ const VideoMerger = ({ files = [] }) => {
   const { setShouldUpdateProject } = useSaveContext();
   const [updatedSoAndEo, setUpdatedSoAndEo] = useState([]);
   const soAndEoList = [];
+  const isManuallyPausedRef = useRef(false);
 
-  // useEffect(() => {
-  //   console.log("projectVideosID:", projectVideosID);
-  // }, [projectVideosID]);
+  useEffect(() => {
+    let animationFrameId;
 
-  // useEffect(() => {
-  //   console.log("videosId:", videosId);
-  // }, [videosId]);
+    const updateTime = () => {
+      if (videoRef.current) {
+        setPlayerTime(videoRef.current.currentTime);
+      }
+      animationFrameId = requestAnimationFrame(updateTime);
+    };
 
-  // useEffect(() => {
-  //   console.log("updatedSoAndEo:", updatedSoAndEo);
-  // }, [updatedSoAndEo]);
+    animationFrameId = requestAnimationFrame(updateTime);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, []);
 
   useEffect(() => {
     if (!pendingUpdateRef.current) {
@@ -139,12 +145,17 @@ const VideoMerger = ({ files = [] }) => {
     let isSeeking = false;
 
     const handlePlay = () => {
+      setIsPlaying(true);
+      isManuallyPausedRef.current = false; // reset
       if (!isSeeking) {
         video.play().catch((err) => console.error("Play error:", err));
       }
     };
 
     const handlePause = () => {
+      setIsPlaying(true);
+      isManuallyPausedRef.current = true; // dùng ref thay vì biến cục bộ // ✅ đánh dấu đang pause
+      setIsPlaying(false);
       video.pause();
     };
 

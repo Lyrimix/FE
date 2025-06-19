@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { BsPerson, BsEnvelope, BsLock } from "react-icons/bs";
-import { FaGoogle, FaFacebook } from "react-icons/fa";
 import LoginForm from "../../organisms/login-form/LoginForm";
 import RegisterForm from "../../organisms/login-form/RegisterForm";
 import "./LoginPage.css";

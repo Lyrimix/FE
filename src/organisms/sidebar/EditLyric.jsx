@@ -119,7 +119,7 @@ const EditLyric = ({
             <div
               key={index}
               onClick={() => handleSelect(index)}
-              className={`p-2 mb-2 rounded ${
+              className={`p-2 mb-2 rounded edit-item ${
                 selectedIndex === index
                   ? "border border-dark"
                   : "border border-secondary"

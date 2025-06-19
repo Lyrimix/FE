@@ -40,6 +40,7 @@
     "react-slider": "^2.0.6",
     "react-spinners": "^0.15.0",
     "react-time-range-picker": "^1.4.0",
+    "react-toastify": "^11.0.5",
     "react-video-editor-timeline": "^1.0.0",
     "reactstrap": "^9.2.3",
     "three": "^0.174.0",

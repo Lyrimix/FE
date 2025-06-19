@@ -8,7 +8,6 @@
   max-width: fit-content;
   cursor: pointer;
   transition: background-position 0.8s ease-out, transform 0.2s;
-
 }
 
 .user-info-display:hover{

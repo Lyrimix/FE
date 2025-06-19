@@ -83,14 +83,14 @@ const SidebarOptions = ({
         ) : (
           <div className="d-grid gap-2">
             {EXPANDED_ITEMS[selectedTab]?.map((item, index) => (
-              <Button
+              <button
                 key={index}
-                color="dark"
-                className="w-100 border border-light mb-1"
+                // color="dark"
+                className="option-btn w-100 mb-1"
                 onClick={() => handleOptionClick(item)}
               >
                 {item === TABS.HIDDENLYRICS ? showHideLabel : item}
-              </Button>
+              </button>
             ))}
           </div>
         )}

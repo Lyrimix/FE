@@ -1,10 +1,18 @@
+:root {
+  --color-black: #000;
+  --color-white: #fff;
+  --color-sky-blue: #c7e4f2;
+  --color-light-periwinkle: #9ac8e5;
+  --color-tranquil-blue: #6fa6d0;
+  --color-deep-ocean-blue: #33659a;
+}
 .list-group-item {
-    width: 160px;
-    height: 60px;
-    flex-shrink: 0;
-    border: 1px solid #ddd;
-    margin-right: 1%;
-    margin-left: 4%;
+  width: 160px;
+  height: 60px;
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+  margin-right: 1%;
+  margin-left: 4%;
 }
 
 .move-button {
@@ -24,4 +32,63 @@
   right: -10px;
 }
 
-  
+.button-left {
+  background-color: var(--color-light-periwinkle);
+  border-radius: 30%;
+  border: none;
+  padding: 10;
+  color: var(--color-white);
+}
+.button-left:hover {
+  background-color: var(--color-deep-ocean-blue);
+}
+.button-right {
+  background-color: var(--color-light-periwinkle);
+  border-radius: 30%;
+  border: none;
+  padding: 10;
+  color: var(--color-white);
+}
+.button-right:hover {
+  background-color: var(--color-deep-ocean-blue);
+}
+/* Class chung cho các thuộc tính giống nhau */
+.common-btn {
+  border: none;
+  color: white; /* Màu chữ chung */
+  padding: 10px 16px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.common-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.common-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5); /* Primary focus color */
+}
+
+/* Nút Chấp nhận/Đồng ý */
+.accept-btn {
+  background-color: var(--color-deep-ocean-blue); /* Màu chính của bạn, ví dụ xanh dương */
+}
+
+.accept-btn:hover {
+  background-color: var(--color-tranquil-blue, #5fa8d3); /* Nhạt hơn/tối hơn khi hover */
+}
+
+/* Nút Đóng/Hủy bỏ */
+.close-button {
+  background-color: var(--color-gray, #6c757d); /* Màu xám trung tính */
+  /* Hoặc background-color: var(--color-red, #dc3545); nếu là hành động nguy hiểm */
+}
+
+.close-button:hover {
+  background-color: var(--color-dark-gray, #5a6268); /* Tối hơn khi hover */
+  /* Hoặc background-color: var(--color-dark-red, #c82333); */
+}

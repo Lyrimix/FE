@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { BsPerson, BsEnvelope, BsLock } from "react-icons/bs";
-import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { register } from "../../apis/ProjectApi";
-
+import { toast } from "react-toastify";
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
     fullname: "",
@@ -24,11 +23,30 @@ export default function RegisterForm() {
 
     try {
       const res = await register(formData);
-      alert("Register success!");
+      toast.success("Register successful!", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
       console.log(res.data);
     } catch (err) {
-      const msg = err.response?.data?.message || "Đăng ký thất bại";
-      alert(msg);
+      const msg = err.response?.data?.message || "Registration failed";
+      toast.error(msg, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+      console.error(err);
       console.error(err);
     }
   };
@@ -78,15 +96,6 @@ export default function RegisterForm() {
         <button type="submit" className="login-page-btn" onClick={handleSubmit}>
           Registration
         </button>
-        {/* <p>or Registration with social platform</p>
-        <div className="social-icons">
-          <a href="#">
-            <FaGoogle />
-          </a>
-          <a href="#">
-            <FaFacebook />
-          </a>
-        </div> */}
       </form>
     </div>
   );

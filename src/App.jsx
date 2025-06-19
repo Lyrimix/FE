@@ -8,6 +8,9 @@ import { SaveProvider } from "./utils/context/SaveContext";
 import { UserProvider } from "./utils/context/UserContext";
 import OauthCallback from "./pages/OAuthCallback";
 import LoginPage from "./pages/loginpage/LoginPage";
+import { ToastContainer } from "react-toastify";
+// import 'react-toastify/dist/ReactToastify.css';
+import "./style/ToastifyCustom.css";
 
 function App() {
   return (
@@ -28,6 +31,17 @@ function App() {
           </VideoProvider>
         </UserProvider>
       </ProjectProvider>
+      <ToastContainer
+        position="top-right"
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

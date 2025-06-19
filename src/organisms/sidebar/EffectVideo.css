@@ -1,39 +1,59 @@
 .container-slider .MuiSlider-root {
-    color: rgb(255, 255, 255);
-    width: 50%; 
-    height: 4px;
-  }
+  color: rgb(255, 255, 255);
+  width: 50%;
+  height: 4px;
+}
 
-  .container-slider .MuiSlider-thumb {
-    width: 12px;  
-    height: 12px; 
-    background-color: rgb(255, 255, 255);  
-  }
-  .container-slider .MuiSlider-valueLabel {
-    font-size: 10px;  
-    padding: 1px 3px;  
-    border-radius: 2px; 
-    text-align: center;
-  }
-  .header {
-    height: 10%;
-  }
-  .body {
-    background-color: #EFF3F5;
-  }
-  .container-slider .MuiSlider-valueLabelCircle {
-    width: 16px;  
-    height: 16px;
-    font-size: 12px;  
-  }
+.container-slider .MuiSlider-thumb {
+  width: 12px;
+  height: 12px;
+  background-color: rgb(255, 255, 255);
+}
+.container-slider .MuiSlider-valueLabel {
+  font-size: 10px;
+  padding: 1px 3px;
+  border-radius: 2px;
+  text-align: center;
+}
+.header {
+  height: 10%;
+}
+.body {
+  background-color: #eff3f5;
+}
+.container-slider .MuiSlider-valueLabelCircle {
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+}
 
-  .effect-label{
-    font-size: 0.7rem;
-    opacity: 0.6;
-    text-align: center;
-    color: #ccc;
-  }
+.effect-label {
+  font-size: 0.7rem;
+  opacity: 0.6;
+  text-align: center;
+  color: #ccc;
+}
 
-.group-name, .duration_lable{
+.group-name,
+.duration_lable {
+  color: var(--color-deep-ocean-blue);
   font-size: 0.8rem;
+}
+.css-xvk2i-MuiSlider-track {
+  border: 1px solid var(--color-deep-ocean-blue) !important;
+  background-color: var(--color-sky-blue) !important;
+}
+.css-r64h58-MuiSlider-rail {
+  background-color: var(--color-tranquil-blue) !important;
+}
+.slider-group-wrapper{
+  display: flex;
+  align-items: center;
+  gap: 15px; 
+}
+.container-slider{
+  width: 100%;
+  .MuiSlider-root {
+    width: 100%;
+  }
 }

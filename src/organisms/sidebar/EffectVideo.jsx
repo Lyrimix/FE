@@ -71,6 +71,7 @@ const EffectVideo = ({
         <OffcanvasBody className="body">
           <div className="container w-100 p-0" style={{ overflowY: "auto" }}>
             <div className="p-3">
+            
               <div className="row g-2">
                 {EFFECT_GROUPS.map((group, groupIndex) => (
                   <div key={groupIndex} className="mb-2">
@@ -98,8 +99,8 @@ const EffectVideo = ({
                   </div>
                 ))}
               </div>
-
-              <div className="duration_lable text-light p-2 rounded fw-bold text-sm">
+              <div className="slider-group-wrapper">
+              <div className="duration_lable  p-2 rounded fw-bold text-sm">
                 DURATION
               </div>
               <div className="container-slider">
@@ -113,6 +114,7 @@ const EffectVideo = ({
                   valueLabelFormat={(value) => `${value}s`}
                 />
               </div>
+            </div>
             </div>
           </div>
         </OffcanvasBody>

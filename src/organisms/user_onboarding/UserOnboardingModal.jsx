@@ -4,6 +4,7 @@ import { useUser } from "../../utils/context/UserContext";
 import { getListProject, updatedUser } from "../../utils/project.js";
 import { PersonalInfoModal } from "./PersonalInfoModal";
 import { ProjectDetailOverlay } from "../../molecules/project-detail-overlay/ProjectDetailOverlay.jsx";
+import { ToastContainer, toast } from "react-toastify";
 import "./UserOnboardingModal.css";
 
 export const UserOnboardingModal = ({
@@ -26,7 +27,8 @@ export const UserOnboardingModal = ({
   const { user, setUser } = useUser();
   const videoRefs = useRef({});
   const [showPersonalInfoModal, setShowPersonalInfoModal] = useState(false);
-  const [showProjectDetailOverlay, setShowProjectDetailOverlay]= useState(false);
+  const [showProjectDetailOverlay, setShowProjectDetailOverlay] =
+    useState(false);
   const [refreshProjects, setRefreshProjects] = useState(false); // New state to trigger refresh
 
   useEffect(() => {
@@ -61,13 +63,12 @@ export const UserOnboardingModal = ({
   // --- Xử lý khi chọn dự án ---
   const handleProjectSelect = (project) => {
     // e.stopPropagation()
-    console.log("handleProjectSelect: ", project)
+    console.log("handleProjectSelect: ", project);
     setSelectedProjectId(project);
     setShowProjectDetailOverlay(true);
-
   };
-   const handleProjectDeleted = () => {
-    setRefreshProjects(prev => !prev);
+  const handleProjectDeleted = () => {
+    setRefreshProjects((prev) => !prev);
   };
 
   const handleOnClickUserInfo = (e) => {
@@ -78,35 +79,57 @@ export const UserOnboardingModal = ({
   const handleSavePersonalInfo = async (updatedInfo) => {
     console.log("Updated personal info:", updatedInfo);
     const token = localStorage.getItem("token");
+    const toastId = toast.loading("Storing personal information...");
     if (!token) {
-      alert(
-        "Bạn chưa đăng nhập hoặc phiên làm việc đã hết hạn. Vui lòng đăng nhập lại."
-      );
+      toast.update(toastId, {
+        render: "Your session has expired. Please log in again.",
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
       return;
     }
-    const response = await updatedUser(token, updatedInfo);
-    setPersonalInfo({
-      email: response.email || updatedInfo.email || "",
-      avatar: response.userAvataUrl || updatedInfo.avatar || "",
-      fullname: response.userFullname || updatedInfo.fullname || "",
-      phone: response.userPhoneNumber || updatedInfo.phone || "",
-      username: response.username || updatedInfo.username || "",
-    });
+    try {
+      const response = await updatedUser(token, updatedInfo);
 
-    // 2. Cập nhật thông tin người dùng trong UserContext
-    if (setUser) {
-      // Chỉ gọi setUser nếu nó tồn tại
-      setUser((prevUser) => ({
-        ...prevUser,
-        email: response.email || updatedInfo.email,
-        userAvatarUrl: response.userAvatarUrl || updatedInfo.avatar,
-        userFullname: response.userFullname || updatedInfo.fullname,
-        userPhoneNumber: response.userPhoneNumber || updatedInfo.phone,
-        username: response.username || updatedInfo.username,
-        // Không cập nhật password vào context
-      }));
+      setPersonalInfo({
+        email: response.email || updatedInfo.email || "",
+        avatar: response.userAvataUrl || updatedInfo.avatar || "",
+        fullname: response.userFullname || updatedInfo.fullname || "",
+        phone: response.userPhoneNumber || updatedInfo.phone || "",
+        username: response.username || updatedInfo.username || "",
+      });
+
+      if (setUser) {
+        setUser((prevUser) => ({
+          ...prevUser,
+          email: response.email || updatedInfo.email,
+          userAvatarUrl: response.userAvataUrl || updatedInfo.avatar,
+          userFullname: response.userFullname || updatedInfo.fullname,
+          userPhoneNumber: response.userPhoneNumber || updatedInfo.phone,
+          username: response.username || updatedInfo.username,
+        }));
+      }
+
+      toast.update(toastId, {
+        render: "Information updated successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message ||
+        "An error occurred while updating information.";
+      console.error("Lỗi khi cập nhật thông tin người dùng:", error);
+
+      toast.update(toastId, {
+        render: errorMessage,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
     }
-    setPersonalInfo(updatedInfo);
   };
 
   // --- Hàm xử lý khi chuột di vào video ---
@@ -244,17 +267,7 @@ export const UserOnboardingModal = ({
             </>
           )}
         </Modal.Body>
-        {/* <Modal.Footer>
-        <Button
-          variant="success"
-          onClick={handleConfirm}
-          disabled={!selectedProjectId && projects.length > 0} // Chỉ cho phép confirm nếu đã chọn dự án (nếu có dự án)
-        >
-          Tiếp tục vào dự án đã chọn
-        </Button>
-      </Modal.Footer> */}
       </Modal>
-      {/* Personal Info Modal */}
       <PersonalInfoModal
         show={showPersonalInfoModal}
         onClose={() => setShowPersonalInfoModal(false)}

@@ -16,11 +16,12 @@ import { useProjectContext } from "../../utils/context/ProjectContext";
 import eventBus from "../../utils/eventBus";
 import "./Player.css";
 import { useVideoContext } from "../../utils/context/VideoContext";
+import { ToastContainer, toast } from "react-toastify";
 
 const { Option } = Select;
 
 const TimelinePlayer = ({ timelineState, autoScrollWhenPlay }) => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [isPlaying, setIsPlaying] = useState(false);
   const [time, setTime] = useState(0);
   const {
     hasClickedSaveRef,
@@ -28,7 +29,8 @@ const TimelinePlayer = ({ timelineState, autoScrollWhenPlay }) => {
     showSaveButton,
     setShowSaveButton,
   } = useSaveContext();
-  const { setIsDemoCutting } = useProjectContext();
+  const { setIsDemoCutting, playerTime, isPlaying, setIsPlaying } =
+    useProjectContext();
   const { setIsRemoveBackground, isShowRemoveBgButton } = useVideoContext();
 
   const handleUpdateClick = () => {
@@ -45,19 +47,22 @@ const TimelinePlayer = ({ timelineState, autoScrollWhenPlay }) => {
   useEffect(() => {
     if (!timelineState.current) return;
     const engine = timelineState.current;
-    setIsPlaying(true);
+    setIsPlaying(false);
 
     engine.listener.on(ENGINE_EVENTS.PLAY, () => {
+      console.log("is playing");
       setIsPlaying(true);
     });
+
     engine.listener.on(ENGINE_EVENTS.PAUSE, () => {
       setIsPlaying(false);
     });
+
     engine.listener.on(ENGINE_EVENTS.AFTER_SET_TIME, ({ time }) => {
       setTime(time);
-
       eventBus.emit(EVENT_BUS_EVENTS.TIME_UPDATED, time);
     });
+
     engine.listener.on(EVENT_BUS_EVENTS.SET_TIME_BY_TICK, ({ time }) => {
       setTime(time);
       eventBus.emit(EVENT_BUS_EVENTS.TIME_UPDATED, time);
@@ -74,20 +79,20 @@ const TimelinePlayer = ({ timelineState, autoScrollWhenPlay }) => {
     };
   }, []);
 
-const handlePlayOrPause = () => {
-  if (!timelineState.current) return;
+  const handlePlayOrPause = () => {
+    if (!timelineState.current) return;
 
-  const isActuallyPlaying = timelineState.current.isPlaying;
-  // console.log("timelineState.current.isPlaying:", isActuallyPlaying);
+    const isActuallyPlaying = timelineState.current.isPlaying;
+    // console.log("timelineState.current.isPlaying:", isActuallyPlaying);
 
-  if (isActuallyPlaying) {
-    timelineState.current.pause();
-    setIsPlaying(false); // cập nhật ngay UI
-  } else {
-    timelineState.current.play({ autoEnd: true });
-    setIsPlaying(true); // cập nhật ngay UI
-  }
-};
+    if (isActuallyPlaying) {
+      timelineState.current.pause();
+      setIsPlaying(false); // cập nhật ngay UI
+    } else {
+      timelineState.current.play({ autoEnd: true });
+      setIsPlaying(true); // cập nhật ngay UI
+    }
+  };
 
   const handleRateChange = (value) => {
     if (timelineState.current) {
@@ -107,7 +112,7 @@ const handlePlayOrPause = () => {
       <div className="play-control" onClick={handlePlayOrPause}>
         {isPlaying ? <PauseOutlined /> : <CaretRightOutlined />}
       </div>
-      <div className="time">{timeRender(time)}</div>
+      <div className="time">{timeRender(playerTime.toFixed(1))}</div>
       <div className="rate-control">
         <Select
           size="small"

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { BsPerson, BsLock } from "react-icons/bs";
-import { FaGoogle, FaFacebook } from "react-icons/fa";
 import { login } from "../../apis/ProjectApi";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../utils/context/UserContext";
+import { toast } from "react-toastify";
+import "../../style/ToastifyCustom.css";
 export default function LoginForm() {
   const [formData, setFormData] = useState({
     username: "",
@@ -24,18 +25,25 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await login(formData); // Gọi API login
+      const res = await login(formData);
       const token = res.data.result.token || res.data.token;
       const user = res.data.result.user;
-      
-      localStorage.setItem("token", token); // Lưu token
-      setUser(user); // Lưu user info vào context
 
-      alert("Đăng nhập thành công!");
-      navigate("/homepage"); // Chuyển trang
+      localStorage.setItem("token", token);
+      setUser(user);
+
+      toast.success("Login successful!", {
+        autoClose: 2000,
+      });
+
+      setTimeout(() => {
+        navigate("/homepage");
+      }, 1000);
     } catch (err) {
-      const msg = err.response?.data?.message || "Đăng nhập thất bại";
-      alert(msg);
+      const msg = err.response?.data?.message || "Login failed";
+      toast.error(msg, {
+        autoClose: 5000,
+      });
       console.error(err);
     }
   };
@@ -63,21 +71,9 @@ export default function LoginForm() {
           />
           <BsLock className="icon" />
         </div>
-        <div className="forgot-link">
-          <a href="#">Forgot password</a>
-        </div>
         <button type="submit" className="login-page-btn" onClick={handleSubmit}>
           Login
         </button>
-        {/* <p>or login with social platform</p> */}
-        {/* <div className="social-icons">
-          <a onClick={handleGoogleLogin} style={{ cursor: "pointer" }}>
-            <FaGoogle />
-          </a>
-          <a onClick={handleFacebookLogin} style={{ cursor: "pointer" }}>
-            <FaFacebook />
-          </a>
-        </div> */}
       </form>
     </div>
   );

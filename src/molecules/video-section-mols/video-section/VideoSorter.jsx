@@ -8,6 +8,8 @@ import {
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
+import { FaArrowLeft } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import "./VideoSorter.css";
 
 const VideoSorterModal = ({
@@ -57,15 +59,15 @@ const VideoSorterModal = ({
                 key={video.id}
                 className="list-group-item position-relative d-flex align-items-center justify-content-center p-0"
               >
-                <Button
-                  color="primary"
+                <button
+                  // color="primary"
                   size="sm"
                   onClick={() => moveUp(index)}
                   disabled={index === 0}
-                  className="move-button move-button-left position-absolute"
+                  className="button-left move-button move-button-left position-absolute"
                 >
-                  ⬅️
-                </Button>
+                  <FaArrowLeft/>
+                </button>
 
                 <img
                   src={thumbnailUrl}
@@ -73,15 +75,15 @@ const VideoSorterModal = ({
                   className="w-100 h-100 rounded object-fit-cover"
                 />
 
-                <Button
-                  color="secondary"
+                <button
+                  // color="secondary"
                   size="sm"
                   onClick={() => moveDown(index)}
                   disabled={index === videos.length - 1}
-                  className="move-button move-button-right position-absolute"
+                  className="button-right move-button move-button-right position-absolute"
                 >
-                  ➡️
-                </Button>
+                  <FaArrowRight/>
+                </button>
               </ListGroupItem>
             );
           })}
@@ -89,18 +91,21 @@ const VideoSorterModal = ({
       </ModalBody>
 
       <ModalFooter>
-        <Button
+        <button
+        className="common-btn accept-btn"
           color="primary"
           onClick={() => {
             onConfirmUpload(videos);
           }}
         >
           Accept
-        </Button>
+        </button>
 
-        <Button color="danger" onClick={toggle}>
+        <button 
+        className="common-btn close-button"
+        color="danger" onClick={toggle}>
           Close
-        </Button>
+        </button>
       </ModalFooter>
     </Modal>
   );

@@ -28,10 +28,11 @@ export const MOCK_EFFECT = {
   },
 };
 //CLOUDINARY
-export const CLOUD_NAME = "ds7sx6zop";
+export const CLOUD_NAME = "dwwf8q2as";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
+// export const API_URL = "https://backend-production-9d88.up.railway.app/Lyrimix";
 export const API_URL = "http://localhost:8080/Lyrimix";
 
 //SAMPLE IMAGE
@@ -55,8 +56,8 @@ export const EXPANDED_ITEMS = {
   Lyric: [
     "Create lyric automatically",
     "Edit lyric manually",
-    "Hide Lyrics",
     "Custom lyrics",
+    "Hide Lyrics",
     "Upload lyric file",
   ],
 };
@@ -80,11 +81,14 @@ export const TABS = {
 };
 
 export const BACKGROUND_IMAGES = [
-  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample-5.jpg",
-  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample-4.jpg",
-  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample-3.jpg",
-  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample-2.jpg",
-  "https://res.cloudinary.com/ds7sx6zop/image/upload/v1739947631/cld-sample.jpg",
+  "https://res.cloudinary.com/dwwf8q2as/image/upload/v1750249603/ca1ebc4f8cd7f57dba1a3f1941eac31a_okyjmm.jpg",
+  "https://res.cloudinary.com/dwwf8q2as/image/upload/v1750249951/57759e336a8fb65b8d05f17dbfb6533d_wvgcvu.jpg",
+  "https://res.cloudinary.com/dwwf8q2as/image/upload/v1750249982/1d417ed54ba19db42567f0ec9dd2d6e2_wtit3n.jpg",
+  "https://res.cloudinary.com/dwwf8q2as/image/upload/v1750249983/5577cfb89a16253d102fc0e7bbeac2b6_czyiqy.jpg",
+  "https://res.cloudinary.com/dwwf8q2as/image/upload/v1750249556/86cc15202f94ab84160d132a384879b3_fprymb.jpg",
+  "https://res.cloudinary.com/dwwf8q2as/image/upload/v1750249984/12891f9d6b413fbe6f33802023a2ed22_pjoejs.jpg",
+  "https://res.cloudinary.com/dwwf8q2as/image/upload/v1750249984/dd92738efd60b31fdeff337b9334d7ef_ygqvqt.jpg",
+  "https://res.cloudinary.com/dwwf8q2as/image/upload/v1750249983/258318129a7fe3d08b13d320607bfcd5_joovqw.jpg",
 ];
 
 export const ContentType = {
@@ -185,40 +189,40 @@ export const BUTTONS = [
 ];
 
 export const EFFECT_GROUPS = [
-  {
-    name: "CURTAIN",
-    type: "curtain",
-    effects: [
-      {
-        effect: "VERTOPEN",
-        type: "Vertical Open",
-        type_request: "vertopen",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746514505/vertopen_nl02s8.mp4",
-      },
-      {
-        effect: "VERTCLOSE",
-        type: "Vertical Close",
-        type_request: "vertclose",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746514507/vertclose_iageyl.mp4",
-      },
-      {
-        effect: "HORZOPEN",
-        type: "Horizontal Open",
-        type_request: "horzopen",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746514506/horzopen_x8rojt.mp4",
-      },
-      {
-        effect: "HORZCLOSE",
-        type: "Horizontal Close",
-        type_request: "horzclose",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746514504/horzclose_miweku.mp4",
-      },
-    ],
-  },
+  // {
+  //   name: "CURTAIN",
+  //   type: "curtain",
+  //   effects: [
+  //     {
+  //       effect: "VERTOPEN",
+  //       type: "Vertical Open",
+  //       type_request: "vertopen",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749880890/vertopen_u4d6cu.mp4",
+  //     },
+  //     {
+  //       effect: "VERTCLOSE",
+  //       type: "Vertical Close",
+  //       type_request: "vertclose",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749880889/vertclose_bb3fki.mp4",
+  //     },
+  //     {
+  //       effect: "HORZOPEN",
+  //       type: "Horizontal Open",
+  //       type_request: "horzopen",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749880889/horzopen_bdk70b.mp4",
+  //     },
+  //     {
+  //       effect: "HORZCLOSE",
+  //       type: "Horizontal Close",
+  //       type_request: "horzclose",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749880889/horzclose_sg2aib.mp4",
+  //     },
+  //   ],
+  // },
   {
     name: "SLICE BLUR",
     type: "sliceblur",
@@ -228,62 +232,62 @@ export const EFFECT_GROUPS = [
         type: "Horizontal Slice",
         type_request: "hrslice",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746517841/hrslice_iy5tis.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353712/hrslice_ipmvu9.mp4",
       },
       {
         effect: "VDSLICE",
         type: "Vertical Slice",
         type_request: "vdslice",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746517841/vdslice_yy9il4.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353713/vdslice_ft5feg.mp4",
       },
       {
         effect: "HLSLICE",
         type: "Diagonal Slice",
         type_request: "hlslice",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746517840/hlslice_mwus1p.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353711/hlslice_lplggn.mp4",
       },
       {
         effect: "VUSLICE",
         type: "Zoom Slice",
         type_request: "vuslice",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746517841/vuslice_zolg1r.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353714/vuslice_rmqrkf.mp4",
       },
     ],
   },
   {
-    name: "SLICE",
-    type: "slice",
+    name: "SLIDE",
+    type: "slide",
     effects: [
       {
         effect: "SLIDEUP",
         type: "Slide Up",
         type_request: "slideup",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746518026/slideup_psbwb8.mp4",
+          "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749881296/slideup_e4t7di.mp4",
       },
       {
         effect: "SLIDELEFT",
         type: "Slide Left",
         type_request: "slideleft",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746518026/slideleft_gdeuhl.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353623/slideup_xxwuli.mp4",
       },
       {
         effect: "SLIDERIGHT",
         type: "Slide Right",
         type_request: "slideright",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746518026/slideright_iok5ly.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353621/slideright_uhlzjo.mp4",
       },
       {
         effect: "SLIDEDOWN",
         type: "Slide Down",
         type_request: "slidedown",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746518025/slidedown_mw1z8y.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353616/slidedown_jmvqod.mp4",
       },
     ],
   },
@@ -296,28 +300,28 @@ export const EFFECT_GROUPS = [
         type: "Bottom Left",
         type_request: "diagbl",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536264/diagbl_z9qvjw.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353376/diagbl_qbppll.mp4",
       },
       {
         effect: "SLIDEBOTTOMRIGHT",
         type: "Bottom Right",
         type_request: "diagbr",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536263/diagbr_lkojyk.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353376/diagbr_lmnyfg.mp4",
       },
       {
         effect: "SLIDETOPLEFT",
         type: "Top Left",
         type_request: "diagtl",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536263/diagtl_sg46qt.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353377/diagtl_hedbjp.mp4",
       },
       {
         effect: "SLIDETOPRIGHT",
         type: "Top Right",
         type_request: "diagtr",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536263/diagtr_rtmkqz.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353377/diagtr_uxqhov.mp4",
       },
     ],
   },
@@ -330,62 +334,28 @@ export const EFFECT_GROUPS = [
         type: "Smooth up",
         type_request: "smoothup",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536452/smoothup_mprowj.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353804/smoothup_w8xbfe.mp4",
       },
       {
         effect: "SMOOTHDOWN",
         type: "Smooth down",
         type_request: "smoothdown",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536452/smoothdown_xolknp.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353800/smoothdown_yv1wrt.mp4",
       },
       {
         effect: "SMOOTHLEFT",
         type: "Smooth left",
         type_request: "smoothleft",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536451/smoothleft_kbdfyg.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353800/smoothleft_xmnw6v.mp4",
       },
       {
         effect: "SMOOTHRIGHT",
         type: "Smooth right",
         type_request: "smoothright",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536452/smoothright_sbctcu.mp4",
-      },
-    ],
-  },
-  {
-    name: "DIAGONAL CORNER",
-    type: "diagonalcorner",
-    effects: [
-      {
-        effect: "WIPETOPLEFT",
-        type: "Top left",
-        type_request: "wipetl",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536577/wipetl_v0ty6i.mp4",
-      },
-      {
-        effect: "WIPETOPRIGHT",
-        type: "Top right",
-        type_request: "wipetr",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536579/wipetr_qp5iqf.mp4",
-      },
-      {
-        effect: "WIPEBOTTOMLEFT",
-        type: "Bottom left",
-        type_request: "wipebl",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536577/wipebl_cpy5ot.mp4",
-      },
-      {
-        effect: "WIPEBOTTOMRIGHT",
-        type: "Bottom right",
-        type_request: "wipebr",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536577/wipebr_wpfilc.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353801/smoothright_bcegab.mp4",
       },
     ],
   },
@@ -398,28 +368,56 @@ export const EFFECT_GROUPS = [
         type: "Wipe up",
         type_request: "wipeup",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536704/wipeup_u0cn4i.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351105/wipeup_aar8rt.mp4",
       },
       {
         effect: "WIPEDOWN",
         type: "Wipe down",
         type_request: "wipedown",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536703/wipedown_xukfat.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351105/wipedown_qgu6yo.mp4",
       },
       {
         effect: "WIPELEFT",
         type: "Wipe left",
         type_request: "wipeleft",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536704/wipeleft_jggohr.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351105/wipeleft_dt00ag.mp4",
       },
       {
         effect: "WIPERIGHT",
         type: "Wipe right",
         type_request: "wiperight",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536704/wiperight_t9a66j.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351105/wiperight_gydadz.mp4",
+      },
+      {
+        effect: "WIPETOPLEFT",
+        type: "Top left",
+        type_request: "wipetl",
+        video:
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351245/wipetl_mewihb.mp4",
+      },
+      {
+        effect: "WIPETOPRIGHT",
+        type: "Top right",
+        type_request: "wipetr",
+        video:
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351245/wipetr_jwqdd7.mp4",
+      },
+      {
+        effect: "WIPEBOTTOMLEFT",
+        type: "Bottom left",
+        type_request: "wipebl",
+        video:
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351246/wipebl_t1aj8x.mp4",
+      },
+      {
+        effect: "WIPEBOTTOMRIGHT",
+        type: "Bottom right",
+        type_request: "wipebr",
+        video:
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351245/wipebr_zkylfp.mp4",
       },
     ],
   },
@@ -432,126 +430,126 @@ export const EFFECT_GROUPS = [
         type: "Circle open",
         type_request: "circleopen",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536894/circleopen_ve0wsr.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351351/circleopen_dl1gsa.mp4",
       },
       {
         effect: "CIRCLECLOSE",
         type: "Circle close",
         type_request: "circleclose",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536894/circleclose_st9vr2.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351351/circleclose_eq0rjv.mp4",
       },
       {
         effect: "CIRCLECROP",
         type: "Circle crop",
         type_request: "circlecrop",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536894/circlecrop_rgvcbf.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351352/circlecrop_xbfunp.mp4",
       },
       {
         effect: "RECTANGLECROP",
         type: "Rectangle crop",
         type_request: "rectcrop",
         video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746536895/rectcrop_njc2ji.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750351351/rectcrop_gdvjkc.mp4",
       },
     ],
   },
-  {
-    name: "FADE DISSOLVE",
-    type: "fadedissolve",
-    effects: [
-      {
-        effect: "FADE",
-        type: "Fade",
-        type_request: "fade",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537011/fade_cez4iy.mp4",
-      },
-      {
-        effect: "FADEBLACK",
-        type: "Fade black",
-        type_request: "fadeblack",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537012/fadeblack_euuktj.mp4",
-      },
-      {
-        effect: "FADEGRAYS",
-        type: "Fade grays",
-        type_request: "fadegrays",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537017/fadegrays_b01b0m.mp4",
-      },
-      {
-        effect: "FADEWHITE",
-        type: "Fade white",
-        type_request: "fadewhite",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537012/fadewhite_fauhwj.mp4",
-      },
-      {
-        effect: "DISSOLVE",
-        type: "Dissolve",
-        type_request: "dissolve",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537011/dissolve_cmaehg.mp4",
-      },
-    ],
-  },
-  {
-    name: "SQUEEZE",
-    type: "squeezeh",
-    effects: [
-      {
-        effect: "SQUEEZE HORIZONTAL",
-        type: "Fade",
-        type_request: "squeezeh",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537147/squeezeh_febkgt.mp4",
-      },
-      {
-        effect: "SQUEEZE Vertical ",
-        type: "Squeeze Vertical",
-        type_request: "squeezev",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537150/squeezev_k9jiy9.mp4",
-      },
-    ],
-  },
-  {
-    name: "ORTHER",
-    type: "other",
-    effects: [
-      {
-        effect: "DISTANCE",
-        type: "distance",
-        type_request: "distance",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537239/distance_okwllw.mp4",
-      },
-      {
-        effect: "Horizontal ",
-        type: "horizontal blur",
-        type_request: "hblur",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537240/hblur_aaik0o.mp4",
-      },
-      {
-        effect: "PIXELIZE",
-        type: "pixelize",
-        type_request: "pixelize",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537241/pixelize_hnpeo7.mp4",
-      },
-      {
-        effect: "RADIAL",
-        type: "radial",
-        type_request: "radial",
-        video:
-          "https://res.cloudinary.com/dta6fx6ja/video/upload/v1746537241/radial_dez6bh.mp4",
-      },
-    ],
-  },
+  // {
+  //   name: "FADE DISSOLVE",
+  //   type: "fadedissolve",
+  //   effects: [
+  //     {
+  //       effect: "FADE",
+  //       type: "Fade",
+  //       type_request: "fade",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884615/fade_cgz5ke.mp4",
+  //     },
+  //     {
+  //       effect: "FADEBLACK",
+  //       type: "Fade black",
+  //       type_request: "fadeblack",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884616/fadeblack_gxqyuu.mp4",
+  //     },
+  //     {
+  //       effect: "FADEGRAYS",
+  //       type: "Fade grays",
+  //       type_request: "fadegrays",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884616/fadegrays_ioo4dh.mp4",
+  //     },
+  //     {
+  //       effect: "FADEWHITE",
+  //       type: "Fade white",
+  //       type_request: "fadewhite",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884618/fadewhite_n1c22s.mp4",
+  //     },
+  //     {
+  //       effect: "DISSOLVE",
+  //       type: "Dissolve",
+  //       type_request: "dissolve",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884616/dissolve_gifrrd.mp4",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "SQUEEZE",
+  //   type: "squeezeh",
+  //   effects: [
+  //     {
+  //       effect: "SQUEEZE HORIZONTAL",
+  //       type: "Fade",
+  //       type_request: "squeezeh",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884701/squeezeh_ip0tkv.mp4",
+  //     },
+  //     {
+  //       effect: "SQUEEZE Vertical ",
+  //       type: "Squeeze Vertical",
+  //       type_request: "squeezev",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884702/squeezev_fuszvx.mp4",
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: "ORTHER",
+  //   type: "other",
+  //   effects: [
+  //     {
+  //       effect: "DISTANCE",
+  //       type: "distance",
+  //       type_request: "distance",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884739/distance_csdzf8.mp4",
+  //     },
+  //     {
+  //       effect: "Horizontal ",
+  //       type: "horizontal blur",
+  //       type_request: "hblur",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884743/hblur_f1jdz1.mp4",
+  //     },
+  //     {
+  //       effect: "PIXELIZE",
+  //       type: "pixelize",
+  //       type_request: "pixelize",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884744/pixelize_udlrgm.mp4",
+  //     },
+  //     {
+  //       effect: "RADIAL",
+  //       type: "radial",
+  //       type_request: "radial",
+  //       video:
+  //         "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749884745/radial_iwpoin.mp4",
+  //     },
+  //   ],
+  // },
 ];
 
 export const SLIDER_VALUE = 2;
