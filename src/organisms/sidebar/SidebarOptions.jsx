@@ -4,6 +4,7 @@ import { FiUpload } from "react-icons/fi";
 import { BACKGROUND_IMAGES, EXPANDED_ITEMS, TABS } from "../../utils/constant";
 import { uploadImageToCloudinary } from "../../apis/ProjectApi";
 import "./SidebarOptions.css";
+import LyricOption from "../../molecules/lyric-option-mols/LyricOption";
 import { FiX } from "react-icons/fi";
 const SidebarOptions = ({
   isOpen,
@@ -81,17 +82,14 @@ const SidebarOptions = ({
             </div>
           </div>
         ) : (
-          <div className="d-grid gap-2">
-            {EXPANDED_ITEMS[selectedTab]?.map((item, index) => (
-              <button
-                key={index}
-                // color="dark"
-                className="option-btn w-100 mb-1"
-                onClick={() => handleOptionClick(item)}
-              >
-                {item === TABS.HIDDENLYRICS ? showHideLabel : item}
-              </button>
-            ))}
+          <div>
+            <LyricOption
+              selectedTab={selectedTab}
+              expandedItems={EXPANDED_ITEMS}
+              handleOptionClick={handleOptionClick}
+              showHideLabel={showHideLabel}
+              TABS={TABS} // Truyền state hasLyric xuống component con
+            />
           </div>
         )}
       </OffcanvasBody>

@@ -1,3 +1,4 @@
+import { Upload } from "antd";
 import {
   FaImage,
   FaVideo,
@@ -75,6 +76,7 @@ export const TABS = {
   CUSTOMLYRIC: "Custom lyrics",
   EDITLYRICMANUALLY: "Edit lyric manually",
   CREATELYRICAUTOMATICALLY: "Create lyric automatically",
+  UPLOADLYRIC: "Upload lyric file",
   DIALOGUE: "Dialogue:",
   HIDDENLYRICS: "Hidden Lyrics",
   SHOWLYRICS: "Show Lyrics",

@@ -450,14 +450,14 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
         getTrackIndexFromId(action.id) === currentClickedVideo;
 
       const backgroundColor =
-        isOriginal && isSameTrack ? "#0dcaf0" : isSelected ? "#ffdd88" : "#ccc";
+        isOriginal && isSameTrack ? "#00FF00" : isSelected ? "#ffdd88" : "#ccc";
 
       return (
         <ActionItem
           style={{
             position: "absolute",
             backgroundColor,
-            border: isSelected ? "2px solid orange" : "1px solid transparent",
+            border: isSelected ? "2px solid orange" : "2px solid transparent",
             transition: "all 0.2s ease",
           }}
           action={action}

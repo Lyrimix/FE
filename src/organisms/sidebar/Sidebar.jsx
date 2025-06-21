@@ -3,6 +3,7 @@ import SidebarGroup from "../../molecules/sidebar-mols/SidebarGroup";
 import { useVideoContext } from "../../utils/context/VideoContext";
 import {
   intergrateLyricToVideo,
+  uploadLyricFile,
   getLyricById,
   showHideLyrics,
   updateLyricByProjectId,
@@ -70,7 +71,7 @@ const Sidebar = () => {
   const [sliderValue, setSliderValue] = useState(0);
   const originalVideoUrlRef = useRef(null);
   const [selectedType, setSelectedType] = useState(null);
-
+  const fileInputRef = useRef(null);
   const onToggle = (tab) => {
     setSelectedTab(tab);
     if (tab != TABS.EFFECT) {
@@ -233,7 +234,9 @@ const Sidebar = () => {
         case TABS.HIDDENLYRICS:
           await toggleLyricsVisibility();
           break;
-
+        case TABS.UPLOADLYRIC:
+          await processUploadLyric();
+          break;
         default:
           console.warn("Unhandled option:", item);
       }
@@ -251,6 +254,47 @@ const Sidebar = () => {
       }
     } catch (error) {
       console.error("Error in handleOptionClick:", error);
+    }
+  };
+
+  const processUploadLyric = () => {
+    console.log("dddd");
+    // Kích hoạt click vào input file ẩn
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
+
+  // --- HÀM XỬ LÝ KHI NGƯỜI DÙNG CHỌN FILE ---
+  const handleFileChange = async (event) => {
+    // setIsLoading(true);
+    const file = event.target.files[0];
+
+    if (file) {
+      // 1. Kiểm tra định dạng file
+      const fileName = file.name;
+      const fileExtension = fileName.split(".").pop().toLowerCase();
+
+      if (fileExtension !== "ass") {
+        alert("Định dạng file không hợp lệ. Vui lòng chọn file .ass.");
+        setIsLoading(false);
+        event.target.value = null;
+        return;
+      }
+      const formData = createUploadLyricFormData(
+        projectVideo,
+        projectInfo.id,
+        file,
+        "." + fileExtension
+      );
+      const response = await uploadLyricFile(formData);
+      const videoBlob = await fetchVideoBlob(response.data.videoUrl);
+      setVideoBlob(URL.createObjectURL(videoBlob));
+      const cloudinaryUrl = await uploadToCloudinary(videoBlob);
+      projectInfo.asset = cloudinaryUrl;
+      updateProject(projectInfo);
+    } else {
+      // setIsLoading(false);
     }
   };
 
@@ -311,6 +355,20 @@ const Sidebar = () => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("projectId", projectId);
+    return formData;
+  };
+
+  const createUploadLyricFormData = (
+    videoFile,
+    projectId,
+    lyricFile,
+    format
+  ) => {
+    const formData = new FormData();
+    formData.append("fileVideo", videoFile);
+    formData.append("projectId", projectId);
+    formData.append("fileLyric", lyricFile);
+    formData.append("inputFormat", format);
     return formData;
   };
 
@@ -469,6 +527,7 @@ const Sidebar = () => {
         handleOptionClick={handleOptionClick}
         handleSampleImageClick={handleSampleImageClick}
         showHideLabel={showHideLabel}
+        z
       />
       <EditLyric
         isOpen={isEditLyricOpen}
@@ -495,6 +554,14 @@ const Sidebar = () => {
         selectedType={selectedType}
         setSelectedType={setSelectedType}
         hasClickedSaveRef={hasClickedSaveRef}
+      />
+      {/* INPUT FILE ẨN CHO LYRIC - Đặt ở đây để nó luôn trong DOM */}
+      <input
+        type="file"
+        accept=".ass"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        style={{ display: "none" }}
       />
     </div>
   );

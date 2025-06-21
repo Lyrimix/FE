@@ -139,6 +139,14 @@ export const intergrateLyricToVideo = async (formData) => {
   });
 };
 
+export const uploadLyricFile = async (formData) => {
+  return axios.post(`${API_URL}/lyrics`, formData, {
+    headers: {
+      "Content-Type": ContentType.FormData,
+    },
+  });
+};
+
 export const uploadToCloudinary = async (file) => {
   const formData = new FormData();
   formData.append("file", file);

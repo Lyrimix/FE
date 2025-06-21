@@ -202,7 +202,8 @@ export const UserOnboardingModal = ({
                     if (
                       window.confirm("Bạn có chắc chắn muốn đăng xuất không?")
                     ) {
-                      window.location.href = "http://localhost:5173/";
+                      window.location.href =
+                        "https://beamish-bonbon-e6f485.netlify.app/";
                     }
                   }}
                 >
