@@ -346,12 +346,15 @@ export const uploadVideoToCloudinary = async (file) => {
   }
 };
 
-export const createProject = async (token) => {
+export const createProject = async (token, projectName) => {
   console.log("token at api", token);
+
+  const nameToUse = projectName ? projectName : "Lyrimix's project";
+
   return axios.post(
     `${API_URL}/project/createProject`,
     {
-      name: "Lyrimix's project",
+      name: nameToUse, 
     },
     {
       headers: {

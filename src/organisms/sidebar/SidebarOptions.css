@@ -14,7 +14,7 @@
   font-size: 16px !important;
   transition: all 0.3s ease;
   cursor: pointer;
-  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1); 
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
 }
 .option-btn:hover {
   background-color: var(--color-button-hover-background); /* đổi nền nhạt hơn */
@@ -50,10 +50,6 @@
   overflow-y: scroll;
 }
 
-/* .custom-offcanvas .btn-close:hover {
-  filter: invert(24%) sepia(93%) saturate(7491%) hue-rotate(357deg)
-    brightness(103%) contrast(119%);
-} */
 .button-upload {
   background-color: var(--color-deep-ocean-blue);
   color: var(--color-white);

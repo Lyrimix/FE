@@ -14,8 +14,11 @@ export const updatedUser = async (token, userInfo) => {
     console.log("gọi api đây", response);
     return response;
   } catch (error) {
-    console.error("Fail to update user info", error.response?.data?.message || "Unknown error");
-    throw error; 
+    console.error(
+      "Fail to update user info",
+      error.response?.data?.message || "Unknown error"
+    );
+    throw error;
   }
 };
 
@@ -177,10 +180,11 @@ export const generateTimelineData = (
 export const createNewProject = async (
   setProjectInfo,
   projectLength,
-  token
+  token,
+  projectName
 ) => {
   try {
-    const response = await createProject(token);
+    const response = await createProject(token, projectName);
 
     const result = response.data?.result;
     if (!result) throw new Error("Invalid project creation response");

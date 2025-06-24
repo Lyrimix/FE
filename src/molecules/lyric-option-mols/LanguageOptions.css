@@ -1,0 +1,74 @@
+:root {
+  --color-black: #000;
+  --color-white: #fff;
+  --color-sky-blue: #c7e4f2;
+  --color-light-periwinkle: #9ac8e5;
+  --color-tranquil-blue: #6fa6d0;
+  --color-deep-ocean-blue: #33659a;
+}
+
+.language-options-container {
+  background-color: var(--color-sky-white);
+  border-radius: 8px;
+  opacity: 1;
+  max-height: 500px;
+  padding: 10px;
+
+  /* THÊM transition-delay Ở ĐÂY */
+  transition: opacity 0.3s ease-out, max-height 0.3s ease-out,
+    padding 0.3s ease-out;
+}
+.language-options-container.hidden {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-out, max-height 0.3s ease-out,
+    padding 0.3s ease-out;
+}
+
+.language-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--color-tranquil-blue);
+  font-size: 12px;
+  text-align: center;
+}
+
+.language-select {
+  width: 100%;
+  padding: 5px 5px;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid var(--color-deep-ocean-blue);
+  background-color: var(--color-white);
+  color: var(--color-deep-ocean-blue);
+  font-size: 12px;
+  display: block;
+  text-align: left;
+}
+
+/* Style cho option trong select nếu cần */
+.language-select option {
+  background-color: var(--color-white);
+  color: var(--color-deep-ocean-blue);
+
+}
+
+.create-button {
+  width: 100%;
+  height: auto; 
+  min-height: 35px; 
+  background-color: var(--color-deep-ocean-blue); /* Màu xanh dương */
+  color: white;
+  padding: 0.3rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s ease; /* Hiệu ứng chuyển động khi hover */
+}
+
+.create-button:hover {
+  background-color: var(--color-tranquil-blue); /* Màu xanh sẫm hơn khi hover */
+}

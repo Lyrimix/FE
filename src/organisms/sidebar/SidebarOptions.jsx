@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Offcanvas, OffcanvasHeader, OffcanvasBody, Button } from "reactstrap";
 import { FiUpload } from "react-icons/fi";
 import { BACKGROUND_IMAGES, EXPANDED_ITEMS, TABS } from "../../utils/constant";

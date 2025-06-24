@@ -13,10 +13,8 @@ import {
 import { ThumbnailPreview } from "../../atoms/medias/ThumbnailPreview";
 import { useProjectContext } from "../../utils/context/ProjectContext";
 import { exportProject, updateProject } from "../../apis/ProjectApi";
-import { exportOptions } from "../../utils/constant";
 import { useLoadingStore } from "../../store/useLoadingStore";
 import "./ExportForm.css";
-import UploadButton from "../export-youtube-option-mols/UploadButton";
 import { useVideoContext } from "../../utils/context/VideoContext";
 import { uploadToCloudinary } from "../../apis/ProjectApi";
 import { Spinner } from "react-bootstrap";
@@ -28,19 +26,6 @@ export const ExportForm = ({ isOpen, toggle }) => {
   const { projectVideo } = useVideoContext();
   const [isDownloadingVideo, setIsDownloadingVideo] = useState(false);
   const [showSubtitleFormatModal, setShowSubtitleFormatModal] = useState(false);
-  // const handleExportProject = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const cloudinaryUrl = await uploadToCloudinary(projectVideo);
-  //     projectInfo.asset = cloudinaryUrl;
-  //     updateProject(projectInfo);
-  //     await exportProject(projectInfo.id, ".mov");
-  //   } catch (error) {
-  //     console.error("Error sending files to the server:", error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
   const handleDownloadVideo = async () => {
     setIsDownloadingVideo(true);
     alert(`Download project video`);
@@ -88,15 +73,8 @@ export const ExportForm = ({ isOpen, toggle }) => {
         </div>
       </ModalBody>
       <ModalFooter>
-        {/* <Button
-          className="bg-custom-primary text-dark"
-          onClick={handleExportProject}
-        >
-          Export
-        </Button> */}
         <div className="button-section">
-          <Button
-            variant="primary"
+          <button
             onClick={handleDownloadVideo}
             className="download-button"
             disabled={isDownloadingVideo}
@@ -117,7 +95,7 @@ export const ExportForm = ({ isOpen, toggle }) => {
                 <FiDownload className="icon" /> Download Project Video
               </>
             )}
-          </Button>
+          </button>
           {/* {lyric && (
             <Button
               variant="primary"

@@ -1,0 +1,32 @@
+.language-options-wrapper {
+  opacity: 1;
+  max-height: 500px;
+  padding-top: 5px;
+  /* THÊM transition-delay Ở ĐÂY */
+  transition: opacity 0.3s ease-out, max-height 0.3s ease-out,
+    padding 0.3s ease-out;
+}
+.language-options-wrapper.hidden {
+  opacity: 0;
+  max-height: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease-out, max-height 0.3s ease-out,
+    padding 0.3s ease-out;
+}
+.create-btn {
+  background-color: var(--color-sky-white);
+  color: var(--color-deep-ocean-blue);
+  border-radius: 8px;
+  border: none;
+  font-size: 16px !important;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.create-btn:hover {
+  background-color: var(--color-button-hover-background); 
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, var(--color-black));
+  cursor: pointer;
+}

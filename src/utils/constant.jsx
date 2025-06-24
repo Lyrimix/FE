@@ -38,9 +38,9 @@ export const API_URL = "http://localhost:8080/Lyrimix";
 
 //SAMPLE IMAGE
 export const SIDEBAR_ITEMS = [
+  { icon: <FaClosedCaptioning />, label: "Lyric" },
   { icon: <FaImage />, label: "Background" },
   { icon: <FaMagic />, label: "Effect" },
-  { icon: <FaClosedCaptioning />, label: "Lyric" },
 
   // { icon: <FaVideo />, label: "Media" },
   // { icon: <FaMusic />, label: "Audio" },
@@ -78,7 +78,7 @@ export const TABS = {
   CREATELYRICAUTOMATICALLY: "Create lyric automatically",
   UPLOADLYRIC: "Upload lyric file",
   DIALOGUE: "Dialogue:",
-  HIDDENLYRICS: "Hidden Lyrics",
+  HIDDENLYRICS: "Hide Lyrics",
   SHOWLYRICS: "Show Lyrics",
 };
 
@@ -268,14 +268,14 @@ export const EFFECT_GROUPS = [
         type: "Slide Up",
         type_request: "slideup",
         video:
-          "https://res.cloudinary.com/dlqmbuvb0/video/upload/v1749881296/slideup_e4t7di.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353623/slideup_xxwuli.mp4",
       },
       {
         effect: "SLIDELEFT",
         type: "Slide Left",
         type_request: "slideleft",
         video:
-          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353623/slideup_xxwuli.mp4",
+          "https://res.cloudinary.com/dwwf8q2as/video/upload/v1750353620/slideleft_nrnk5s.mp4",
       },
       {
         effect: "SLIDERIGHT",

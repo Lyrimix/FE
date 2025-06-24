@@ -19,8 +19,17 @@ import { useSaveContext } from "../../../utils/context/SaveContext";
 
 export const VideoSection = () => {
   const { uploadFiles, isUploading } = useFileUpload();
-  const { selectedFiles, setSelectedFiles, previewUrls, setPreviewUrls } =
-    useVideoContext();
+    const {
+    selectedFiles,
+    setSelectedFiles,
+    previewUrls,
+    setPreviewUrls,
+    sortedVideos,
+    setSortedVideos,
+    modalOpen,
+    setModalOpen,
+    fileInputRef,
+  } = useVideoContext();
   const {
     projectInfo,
     setProjectInfo,
@@ -37,19 +46,16 @@ export const VideoSection = () => {
   const [mergedFiles, setMergedFiles] = useState(selectedFiles);
 
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
-  const [modalOpen, setModalOpen] = useState(false);
 
-  const [sortedVideos, setSortedVideos] = useState([]);
-  const handleConfirmUpload = async (sortedVideos) => {
+  const handleConfirmUpload = async (sortedVideos, name) => {
     setSelectedFiles((prev) => [...prev, ...sortedVideos]);
     setPreviewUrls(sortedVideos[sortedVideos.length - 1].url);
     toggleModal();
     setIsLoading(true);
     const token = localStorage.getItem("token");
-    console.log("token: ", token);
     const projectId =
       projectInfo?.id ??
-      (await createNewProject(setProjectInfo, projectLength, token));
+      (await createNewProject(setProjectInfo, projectLength, token, name)); //name
     if (!projectId) {
       return;
     }
@@ -91,7 +97,13 @@ export const VideoSection = () => {
 
   const toggleModal = () => setModalOpen((prev) => !prev);
   const triggerFileInput = () => {
-    document.getElementById("video-section__file-input").click();
+     const fileInput = document.getElementById("video-section__file-input");
+    if (!fileInput) return;
+
+    // 👇 Reset input value để đảm bảo onChange luôn trigger
+    fileInput.value = "";
+
+    fileInput.click();
   };
 
   useEffect(() => {

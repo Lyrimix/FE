@@ -1,43 +1,180 @@
-import React, { createContext, useContext, useState, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useRef,
+  useReducer,
+} from "react";
 
 const ProjectContext = createContext();
 
+export const defaultProjectState = {
+  projectId: null,
+  projectInfo: {},
+  videoFile: null,
+  videoBlob: null,
+  projectLength: 0,
+  cloudinaryUrl: null,
+  projectRatio: "16:9",
+  mergedVideo: null,
+  alignAttribute: null,
+  projectVideosID: [],
+  videosDuration: [],
+  originalStartAndEndTime: [],
+  isDemoCutting: true,
+  isFirstTimeCut: true,
+  prevSoEo: [],
+  originalProject: null,
+  currentCutTime: null,
+  originalStartEndOffset: [],
+  selectedAddBackGroundVideoIndex: null,
+  currentClickedVideo: 0,
+  videosId: [],
+  videoUrlsWithBackground: [],
+  isEffect: false,
+  videoThumbnail: [],
+  videoWithBackgroundThumbnail: [],
+  enhancedVideoUrl: null,
+  editorData: [],
+  videoVersions: [[], []],
+  effectType: [],
+  transitionVideoVersions: [null, null],
+  transitionEffectType: null,
+  playerTime: 0,
+  isPlaying: false,
+  selectedTranslateLang: "en",
+};
+
 export const ProjectProvider = ({ children }) => {
-  const [projectInfo, setProjectInfo] = useState({});
-  const [videoFile, setVideoFile] = useState(null);
-  const [videoBlob, setVideoBlob] = useState(null);
-  const [projectLength, setProjectLength] = useState(0);
-  const [cloudinaryUrl, setCloudinaryUrl] = useState(null);
+  const [projectId, setProjectId] = useState(defaultProjectState.projectId);
+  const [projectInfo, setProjectInfo] = useState(
+    defaultProjectState.projectInfo
+  );
+  const [videoFile, setVideoFile] = useState(defaultProjectState.videoFile);
+  const [videoBlob, setVideoBlob] = useState(defaultProjectState.videoBlob);
+  const [projectLength, setProjectLength] = useState(
+    defaultProjectState.projectLength
+  );
+  const [cloudinaryUrl, setCloudinaryUrl] = useState(
+    defaultProjectState.cloudinaryUrl
+  );
+  const [projectRatio, setProjectRatio] = useState(
+    defaultProjectState.projectRatio
+  );
+  const [mergedVideo, setMergedVideo] = useState(
+    defaultProjectState.mergedVideo
+  );
+  const [alignAttribute, setAlignAttribute] = useState(
+    defaultProjectState.alignAttribute
+  );
+  const [projectVideosID, setProjectVideosId] = useState(
+    defaultProjectState.projectVideosID
+  );
+  const [videosDuration, setVideosDuration] = useState(
+    defaultProjectState.videosDuration
+  );
+  const [originalStartAndEndTime, setOriginalStartAndEndTime] = useState(
+    defaultProjectState.originalStartAndEndTime
+  );
+  const [isDemoCutting, setIsDemoCutting] = useState(
+    defaultProjectState.isDemoCutting
+  );
+  const [isFirstTimeCut, setIsFirstTimeCut] = useState(
+    defaultProjectState.isFirstTimeCut
+  );
+  const [prevSoEo, setPrevSoEo] = useState(defaultProjectState.prevSoEo);
+  const [originalProject, setOriginalProject] = useState(
+    defaultProjectState.originalProject
+  );
+  const [currentCutTime, setCurrentCutTime] = useState(
+    defaultProjectState.currentCutTime
+  );
+  const [originalStartEndOffset, setOriginalStartEndOffset] = useState(
+    defaultProjectState.originalStartEndOffset
+  );
+  const [selectedAddBackGroundVideoIndex, setSelectedAddBackGroundVideoIndex] =
+    useState(defaultProjectState.selectedAddBackGroundVideoIndex);
+  const [currentClickedVideo, setCurrentClickedVideo] = useState(
+    defaultProjectState.currentClickedVideo
+  );
+  const [videosId, setVideosId] = useState(defaultProjectState.videosId);
+  const [videoUrlsWithBackground, setVideoUrlsWithBackground] = useState(
+    defaultProjectState.videoUrlsWithBackground
+  );
+  const [isEffect, setIsEffect] = useState(defaultProjectState.isEffect);
+  const [videoThumbnail, setVideoThumbnail] = useState(
+    defaultProjectState.videoThumbnail
+  );
+  const [videoWithBackgroundThumbnail, setVideoWithBackgroundThumbnail] =
+    useState(defaultProjectState.videoWithBackgroundThumbnail);
+  const [enhancedVideoUrl, setEnhancedVideoUrl] = useState(
+    defaultProjectState.enhancedVideoUrl
+  );
+  const [editorData, setEditorData] = useState(defaultProjectState.editorData);
+  const [videoVersions, setVideoVersions] = useState(
+    defaultProjectState.videoVersions
+  );
+  const [effectType, setEffectType] = useState(defaultProjectState.effectType);
+  const [transitionVideoVersions, setTransitionVideoVersions] = useState(
+    defaultProjectState.transitionVideoVersions
+  );
+  const [transitionEffectType, setTransitionEffectType] = useState(
+    defaultProjectState.transitionEffectType
+  );
+  const [playerTime, setPlayerTime] = useState(defaultProjectState.playerTime);
+  const [isPlaying, setIsPlaying] = useState(defaultProjectState.isPlaying);
+  const [selectedTranslateLang, setSelectedTranslateLang] = useState(
+    defaultProjectState.selectedTranslateLang
+  );
+
+  // refs
   const videoRef = useRef(null);
   const timelineState = useRef(null);
-  const [projectRatio, setProjectRatio] = useState("16:9");
-  const [mergedVideo, setMergedVideo] = useState(null);
-  const [alignAttribute, setAlignAttribute] = useState(null);
-  const [projectVideosID, setProjectVideosId] = useState([]);
-  const [videosDuration, setVideosDuration] = useState([]);
-  const [originalStartAndEndTime, setOriginalStartAndEndTime] = useState([]);
-  const [isDemoCutting, setIsDemoCutting] = useState(true);
-  const [isFirstTimeCut, setIsFirstTimeCut] = useState(true);
-  const [prevSoEo, setPrevSoEo] = useState([]);
-  const [originalProject, setOriginalProject] = useState(null);
-  const [currentCutTime, setCurrentCutTime] = useState(null);
   const setOriginalCutTimeRef = useRef(null);
-  const [originalStartEndOffset, setOriginalStartEndOffset] = useState([]);
-  const [selectedAddBackGroundVideoIndex, setSelectedAddBackGroundVideoIndex] =
-    useState(null);
-  const [currentClickedVideo, setCurrentClickedVideo] = useState(0);
 
-  //Add and remove background for each video
-  const [videosId, setVideosId] = useState([]);
-  const [videoUrlsWithBackground, setVideoUrlsWithBackground] = useState([]);
-  const [isEffect, setIsEffect] = useState(false);
+  // gom setter
+  const setters = {
+    projectId: setProjectId,
+    projectInfo: setProjectInfo,
+    videoFile: setVideoFile,
+    videoBlob: setVideoBlob,
+    projectLength: setProjectLength,
+    cloudinaryUrl: setCloudinaryUrl,
+    projectRatio: setProjectRatio,
+    mergedVideo: setMergedVideo,
+    alignAttribute: setAlignAttribute,
+    projectVideosID: setProjectVideosId,
+    videosDuration: setVideosDuration,
+    originalStartAndEndTime: setOriginalStartAndEndTime,
+    isDemoCutting: setIsDemoCutting,
+    isFirstTimeCut: setIsFirstTimeCut,
+    prevSoEo: setPrevSoEo,
+    originalProject: setOriginalProject,
+    currentCutTime: setCurrentCutTime,
+    originalStartEndOffset: setOriginalStartEndOffset,
+    selectedAddBackGroundVideoIndex: setSelectedAddBackGroundVideoIndex,
+    currentClickedVideo: setCurrentClickedVideo,
+    videosId: setVideosId,
+    videoUrlsWithBackground: setVideoUrlsWithBackground,
+    isEffect: setIsEffect,
+    videoThumbnail: setVideoThumbnail,
+    videoWithBackgroundThumbnail: setVideoWithBackgroundThumbnail,
+    enhancedVideoUrl: setEnhancedVideoUrl,
+    editorData: setEditorData,
+    videoVersions: setVideoVersions,
+    effectType: setEffectType,
+    transitionVideoVersions: setTransitionVideoVersions,
+    transitionEffectType: setTransitionEffectType,
+    playerTime: setPlayerTime,
+    isPlaying: setIsPlaying,
+    selectedTranslateLang: setSelectedTranslateLang,
+  };
+  const resetProjectContext = () => {
+    Object.entries(defaultProjectState).forEach(([key, value]) => {
+      if (setters[key]) setters[key](value);
+    });
+  };
 
-  //thumbnail
-  const [videoThumbnail, setVideoThumbnail] = useState([]);
-  const [videoWithBackgroundThumbnail, setVideoWithBackgroundThumbnail] =
-    useState([]);
-  const [playerTime, setPlayerTime] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
   return (
     <ProjectContext.Provider
       value={{
@@ -92,10 +229,27 @@ export const ProjectProvider = ({ children }) => {
         setIsEffect,
         videoWithBackgroundThumbnail,
         setVideoWithBackgroundThumbnail,
+        enhancedVideoUrl,
+        setEnhancedVideoUrl,
+        editorData,
+        setEditorData,
+        projectId,
+        setProjectId,
+        videoVersions,
+        setVideoVersions,
+        effectType,
+        setEffectType,
+        transitionVideoVersions,
+        setTransitionVideoVersions,
+        transitionEffectType,
+        setTransitionEffectType,
         playerTime,
         setPlayerTime,
         isPlaying,
         setIsPlaying,
+        selectedTranslateLang,
+        setSelectedTranslateLang,
+        resetProjectContext,
       }}
     >
       {children}

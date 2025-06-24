@@ -59,6 +59,7 @@ const Sidebar = () => {
     setIsEffect,
     setProjectInfo,
     setVideoWithBackgroundThumbnail,
+    selectedTranslateLang,
   } = useProjectContext();
   const [customLyrics, setCustomLyrics] = useState(null);
   const [effectVideo, setIsEffectVideo] = useState(null);
@@ -93,7 +94,7 @@ const Sidebar = () => {
 
   const handleSampleImageClick = async (img) => {
     setIsSidebarOptionsOpen(false);
-    // setIsLoading(true);
+    setIsLoading(true);
     if (!selectedFiles.length) {
       alert("No files have been selected");
       return;
@@ -258,8 +259,6 @@ const Sidebar = () => {
   };
 
   const processUploadLyric = () => {
-    console.log("dddd");
-    // Kích hoạt click vào input file ẩn
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
@@ -267,7 +266,7 @@ const Sidebar = () => {
 
   // --- HÀM XỬ LÝ KHI NGƯỜI DÙNG CHỌN FILE ---
   const handleFileChange = async (event) => {
-    // setIsLoading(true);
+    setIsLoading(true);
     const file = event.target.files[0];
 
     if (file) {
@@ -275,12 +274,19 @@ const Sidebar = () => {
       const fileName = file.name;
       const fileExtension = fileName.split(".").pop().toLowerCase();
 
-      if (fileExtension !== "ass") {
-        alert("Định dạng file không hợp lệ. Vui lòng chọn file .ass.");
+      if (
+        fileExtension !== "ass" &&
+        fileExtension !== "srt" &&
+        fileExtension !== "vtt"
+      ) {
+        alert("Invalid file format. Please select \".ass\", \".srt\", or \".vtt\" file");
+        console.log("fileExtension", fileExtension);
+
         setIsLoading(false);
         event.target.value = null;
         return;
       }
+      console.log("fileExtension", fileExtension);
       const formData = createUploadLyricFormData(
         projectVideo,
         projectInfo.id,
@@ -294,7 +300,7 @@ const Sidebar = () => {
       projectInfo.asset = cloudinaryUrl;
       updateProject(projectInfo);
     } else {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -302,7 +308,11 @@ const Sidebar = () => {
     setIsLoading(true);
 
     try {
-      const formData = createLyricFormData(projectVideo, projectInfo.id);
+      const formData = createLyricFormData(
+        projectVideo,
+        projectInfo.id,
+        selectedTranslateLang
+      );
       const response = await intergrateLyricToVideo(formData);
       await uploadVideo(response.data.videoUrl);
       const videoBlob = await fetchVideoBlob(response.data.videoUrl);
@@ -330,7 +340,8 @@ const Sidebar = () => {
 
   const toggleLyricsVisibility = async () => {
     setIsSidebarOptionsOpen(false);
-
+    console.log(toggleLyricsVisibility);
+    
     try {
       const responseLyric = await getLyricById(projectInfo.id);
       if (!responseLyric.data.length) {
@@ -351,10 +362,11 @@ const Sidebar = () => {
     }
   };
 
-  const createLyricFormData = (file, projectId) => {
+  const createLyricFormData = (file, projectId, selectedTranslateLang) => {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("projectId", projectId);
+    formData.append("targetLang", selectedTranslateLang);
     return formData;
   };
 

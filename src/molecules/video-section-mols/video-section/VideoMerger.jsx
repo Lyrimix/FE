@@ -18,7 +18,7 @@ import { useSaveContext } from "../../../utils/context/SaveContext";
 import { updateVideoAssetWithBackground } from "../../../utils/project";
 
 const VideoMerger = ({ files = [] }) => {
-  const [mergedVideo, setMergedVideo] = useState(null);
+  // const [mergedVideo, setMergedVideo] = useState(null);
   const setIsLoading = useLoadingStore((state) => state.setIsLoading);
   const [videoName, setVideoName] = useState(null);
   const [background, setBackground] = useState(null);
@@ -54,6 +54,8 @@ const VideoMerger = ({ files = [] }) => {
     currentClickedVideo,
     setPlayerTime,
     setIsPlaying,
+    mergedVideo,
+    setMergedVideo,
   } = useProjectContext();
   const [isInRange, setIsInRange] = useState(true);
   const [isRendered, setIsRendered] = useState(false);

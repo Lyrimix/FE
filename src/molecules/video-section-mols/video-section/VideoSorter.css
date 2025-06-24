@@ -84,11 +84,39 @@
 
 /* Nút Đóng/Hủy bỏ */
 .close-button {
-  background-color: var(--color-gray, #6c757d); /* Màu xám trung tính */
-  /* Hoặc background-color: var(--color-red, #dc3545); nếu là hành động nguy hiểm */
+  background-color: var(--color-gray, #6c757d); 
 }
 
 .close-button:hover {
-  background-color: var(--color-dark-gray, #5a6268); /* Tối hơn khi hover */
-  /* Hoặc background-color: var(--color-dark-red, #c82333); */
+  background-color: var(--color-dark-gray, #5a6268); 
+}
+.project-name-container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Khoảng cách giữa các phần tử */
+    width: 100%;
+    max-width: 400px;
+}
+
+label {
+    font-size: 1.1em;
+    color: var(--color-deep-ocean-blue);
+    font-weight: bold;
+}
+
+input[type="text"] {
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    outline: none; /* Bỏ viền khi focus */
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+    border-color: #007bff; /* Đổi màu viền khi focus */
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }

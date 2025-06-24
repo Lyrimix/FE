@@ -5,6 +5,9 @@ import { getListProject, updatedUser } from "../../utils/project.js";
 import { PersonalInfoModal } from "./PersonalInfoModal";
 import { ProjectDetailOverlay } from "../../molecules/project-detail-overlay/ProjectDetailOverlay.jsx";
 import { ToastContainer, toast } from "react-toastify";
+import { useProjectContext } from "../../utils/context/ProjectContext.jsx";
+import { useVideoContext } from "../../utils/context/VideoContext.jsx";
+import { useSaveContext } from "../../utils/context/SaveContext.jsx";
 import "./UserOnboardingModal.css";
 
 export const UserOnboardingModal = ({
@@ -30,7 +33,11 @@ export const UserOnboardingModal = ({
   const [showProjectDetailOverlay, setShowProjectDetailOverlay] =
     useState(false);
   const [refreshProjects, setRefreshProjects] = useState(false); // New state to trigger refresh
+  const { hasClickedSaveRef, prevEditorDataRef, resetSaveContext } =
+    useSaveContext();
+  const { resetVideoContext, fileInputRef } = useVideoContext();
 
+  const { setEditorData, resetProjectContext } = useProjectContext();
   useEffect(() => {
     if (show) {
       setIsLoadingData(true);
@@ -156,6 +163,12 @@ export const UserOnboardingModal = ({
   const handleCreateProject = () => {
     if (onNewProjectCreated) {
       onNewProjectCreated();
+      resetProjectContext();
+      resetVideoContext();
+      resetSaveContext();
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
     onClose();
   };

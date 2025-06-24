@@ -467,51 +467,6 @@ export const EditSection = ({ maxDuration = 1000000 }) => {
               ? videoWithBackgroundThumbnail[originalIndex]
               : thumbnailItem.thumbnailUrl
           }
-          // onDoubleClick={async (clickedAction) => {
-          //   if (videoUrlsWithBackground[currentClickedVideo] == null) {
-          //   }
-          //   // console.log("videoUrlsWithBackground", videoUrlsWithBackground);
-          //   // console.log(
-          //   //   "projectVideoIds:",
-          //   //   projectVideosID[currentClickedVideo]
-          //   // );
-          //   const removeBackgroundResponse = await removeBackgroundOfEachVideo(
-          //     videoUrlsWithBackground[currentClickedVideo],
-          //     videosId[currentClickedVideo]
-          //   );
-          //   const asset = removeBackgroundResponse.data.result.asset;
-          //   setVideoUrlsWithBackground((prev) => {
-          //     const updated = [...prev];
-          //     updated[currentClickedVideo] = null;
-          //     return updated;
-          //   });
-
-          //   setVideoWithBackgroundThumbnail((prev) => {
-          //     const updated = [...prev];
-          //     updated[currentClickedVideo] = null;
-          //     return updated;
-          //   });
-
-          //   setProjectInfo((prev) => {
-          //     const updatedVideos = [...prev.videos];
-          //     updatedVideos[currentClickedVideo] = {
-          //       ...updatedVideos[currentClickedVideo],
-          //       asset: asset,
-          //       assetWithBackground: null,
-          //     };
-
-          //     return {
-          //       ...prev,
-          //       videos: updatedVideos,
-          //     };
-          //   });
-          //   setProjectVideosId((prev) => {
-          //     const updated = [...prev];
-          //     updated[currentClickedVideo] =
-          //       removeBackgroundResponse.data.result.asset;
-          //     return updated;
-          //   });
-          // }}
         />
       );
     },

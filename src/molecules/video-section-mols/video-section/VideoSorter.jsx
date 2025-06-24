@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Modal,
   ModalHeader,
@@ -20,6 +20,7 @@ const VideoSorterModal = ({
   videoThumbnail,
   onConfirmUpload,
 }) => {
+  const [projectName, setProjectName] = useState("");
   const moveUp = (index) => {
     if (index === 0) return;
     const newVideos = [...videos];
@@ -29,6 +30,13 @@ const VideoSorterModal = ({
     ];
 
     setVideos(newVideos);
+  };
+  const handleProjectNameChange = (event) => {
+    setProjectName(event.target.value);
+  };
+  const handleAccept = () => {
+    onConfirmUpload(videos, projectName); // Pass videos AND projectName
+    setProjectName(""); // Optionally clear the input after submission
   };
 
   const moveDown = (index) => {
@@ -45,7 +53,7 @@ const VideoSorterModal = ({
 
   return (
     <Modal isOpen={isOpen} toggle={toggle} size="lg" style={{ height: "20%" }}>
-      <ModalHeader toggle={toggle}>Arraging video</ModalHeader>
+      <ModalHeader toggle={toggle}>Video import and arrangement</ModalHeader>
 
       <ModalBody>
         <ListGroup className="d-flex flex-row overflow-auto flex-nowrap w-100">
@@ -53,7 +61,6 @@ const VideoSorterModal = ({
             const originalIndex = video.originalIndex;
             const thumbnailItem = videoThumbnail[originalIndex];
             const thumbnailUrl = thumbnailItem?.thumbnailUrl;
-
             return (
               <ListGroupItem
                 key={video.id}
@@ -66,7 +73,7 @@ const VideoSorterModal = ({
                   disabled={index === 0}
                   className="button-left move-button move-button-left position-absolute"
                 >
-                  <FaArrowLeft/>
+                  <FaArrowLeft />
                 </button>
 
                 <img
@@ -82,28 +89,40 @@ const VideoSorterModal = ({
                   disabled={index === videos.length - 1}
                   className="button-right move-button move-button-right position-absolute"
                 >
-                  <FaArrowRight/>
+                  <FaArrowRight />
                 </button>
               </ListGroupItem>
             );
           })}
         </ListGroup>
+        <div class="project-name-container">
+          <label htmlFor="projectName">Project name:</label>
+          <input
+            type="text"
+            id="projectName"
+            name="projectName"
+            placeholder="project name"
+            required
+            value={projectName} // 4. Bind input value to state
+            onChange={handleProjectNameChange} // 5. Add onChange handler
+          />
+        </div>
       </ModalBody>
 
       <ModalFooter>
         <button
-        className="common-btn accept-btn"
+          className="common-btn accept-btn"
           color="primary"
-          onClick={() => {
-            onConfirmUpload(videos);
-          }}
+          onClick={handleAccept}
         >
           Accept
         </button>
 
-        <button 
-        className="common-btn close-button"
-        color="danger" onClick={toggle}>
+        <button
+          className="common-btn close-button"
+          color="danger"
+          onClick={toggle}
+        >
           Close
         </button>
       </ModalFooter>
