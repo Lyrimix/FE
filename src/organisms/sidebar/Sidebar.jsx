@@ -299,9 +299,8 @@ const Sidebar = () => {
       const cloudinaryUrl = await uploadToCloudinary(videoBlob);
       projectInfo.asset = cloudinaryUrl;
       updateProject(projectInfo);
-    } else {
-      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   const processAutomaticLyrics = async () => {

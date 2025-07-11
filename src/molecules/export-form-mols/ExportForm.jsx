@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FiDownload, FiFileText } from "react-icons/fi";
 import {
   Input,
@@ -16,7 +16,7 @@ import { exportProject, updateProject } from "../../apis/ProjectApi";
 import { useLoadingStore } from "../../store/useLoadingStore";
 import "./ExportForm.css";
 import { useVideoContext } from "../../utils/context/VideoContext";
-import { uploadToCloudinary } from "../../apis/ProjectApi";
+import { uploadToCloudinary, getProjectById } from "../../apis/ProjectApi";
 import { Spinner } from "react-bootstrap";
 import { SubtitleFormatSelectionModal } from "../subtitle-format-selection-modal/SubtitleFormatSelectionModal";
 
@@ -26,6 +26,7 @@ export const ExportForm = ({ isOpen, toggle }) => {
   const { projectVideo } = useVideoContext();
   const [isDownloadingVideo, setIsDownloadingVideo] = useState(false);
   const [showSubtitleFormatModal, setShowSubtitleFormatModal] = useState(false);
+  const [isLyric, setIsLyric] = useState(false);
   const handleDownloadVideo = async () => {
     setIsDownloadingVideo(true);
     alert(`Download project video`);
@@ -49,7 +50,25 @@ export const ExportForm = ({ isOpen, toggle }) => {
   const handleCloseSubtitleFormatModal = () => {
     setShowSubtitleFormatModal(false); // Close the subtitle format selection modal
   };
-  
+  useEffect(() => {
+    const fetchProjectData = async () => {
+      if (isOpen) {
+        try {
+          const response = await getProjectById(projectInfo.id);
+          console.log("response", response.data.result);
+          if (response.data.result.lyric){
+            setIsLyric(true) // Logic này cần được xem xét lại dựa trên cấu trúc response.data
+          }
+        } catch (error) {
+          console.error("Error fetching project data:", error);
+          // Xử lý lỗi nếu cần, ví dụ: alert('Failed to load project data.');
+        }
+      }
+    };
+
+    fetchProjectData();
+  }, [isOpen, projectInfo.id]);
+
   return (
     <Modal
       isOpen={isOpen}
@@ -96,23 +115,22 @@ export const ExportForm = ({ isOpen, toggle }) => {
               </>
             )}
           </button>
-          {/* {lyric && (
-            <Button
-              variant="primary"
+          {isLyric && (
+            <button
               onClick={handleDownloadSubtitle}
               className="download-button"
             >
               <FiFileText className="icon" /> Download Subtitles
-            </Button>
-          )} */}
+            </button>
+          )}
         </div>
       </ModalFooter>
       <SubtitleFormatSelectionModal
-              show={showSubtitleFormatModal}
-              onClose={handleCloseSubtitleFormatModal}
-              projectId={projectInfo.id}
-              projectName={projectInfo.name}
-            />
+        show={showSubtitleFormatModal}
+        onClose={handleCloseSubtitleFormatModal}
+        projectId={projectInfo.id}
+        projectName={projectInfo.name}
+      />
     </Modal>
   );
 };

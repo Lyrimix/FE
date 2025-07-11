@@ -33,8 +33,8 @@ export const CLOUD_NAME = "dwwf8q2as";
 export const UPLOAD_PRESET = "ml_default";
 
 //API
-// export const API_URL = "https://backend-production-9d88.up.railway.app/Lyrimix";
-export const API_URL = "http://localhost:8080/Lyrimix";
+export const API_URL = "https://backend-production-9d88.up.railway.app/Lyrimix";
+// export const API_URL = "http://localhost:8080/Lyrimix";
 
 //SAMPLE IMAGE
 export const SIDEBAR_ITEMS = [
